@@ -10,21 +10,25 @@ jobs:
       contents: write
     
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
-      
-      - name: Download Fox News
+        env:
+          FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+      - name: Download and save Fox News
         run: |
-          curl -L -H "User-Agent: Mozilla/5.0" \
-               https://www.foxnews.com/ > fox.html
+          # دانلود صفحه اصلی
+          curl -L -H "User-Agent: Mozilla/5.0" https://www.foxnews.com/ > fox_news.html
           
-          # فقط خطوط حاوی عنوان را ذخیره کن (برای دیباگ)
-          grep -i "title" fox.html | head -20 > titles.txt
+          # یک فایل JSON ساده بساز
+          echo '{"status":"success","time":"'$(date)'","file":"fox_news.html"}' > result.json
           
-          echo "Done at $(date)" > info.txt
-      
-      - name: Save
-        run: |
-          git add .
-          git commit -m "Downloaded fox news" || echo "No changes"
-          git push
+          echo "Done. Files are ready."
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: fox-news-output
+          path: |
+            fox_news.html
+            result.json
