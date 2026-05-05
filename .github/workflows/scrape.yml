@@ -1,34 +1,52 @@
-name: Simple Fox News Downloader
+name: Fox News Scraper
 
 on:
   workflow_dispatch:
+  schedule:
+    - cron: '0 */3 * * *'
 
 jobs:
-  download:
+  scrape:
     runs-on: ubuntu-latest
     permissions:
-      contents: write
+      contents: write  # برای نوشتن در مخزن
     
     steps:
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v4
-        env:
-          FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-
-      - name: Download and save Fox News
-        run: |
-          # دانلود صفحه اصلی
-          curl -L -H "User-Agent: Mozilla/5.0" https://www.foxnews.com/ > fox_news.html
-          
-          # یک فایل JSON ساده بساز
-          echo '{"status":"success","time":"'$(date)'","file":"fox_news.html"}' > result.json
-          
-          echo "Done. Files are ready."
-
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v4
         with:
-          name: fox-news-output
-          path: |
-            fox_news.html
-            result.json
+          persist-credentials: true
+      
+      - name: Fetch Fox News RSS
+        run: |
+          # دانلود RSS
+          curl -L "https://moxie.foxnews.com/google-publisher/latest.xml" > fox.rss
+          
+          # نصب xmlstarlet
+          sudo apt-get update
+          sudo apt-get install -y xmlstarlet
+          
+          # ساخت JSON
+          echo '{"source":"foxnews","timestamp":"'$(date -Iseconds)'","articles":[' > news.json
+          
+          xmlstarlet sel -t -m "//item" -v "title" -n -v "link" -n fox.rss | head -20 | while read title; do
+            read link
+            if [ -n "$title" ] && [ -n "$link" ]; then
+              title=$(echo "$title" | sed 's/"/\\"/g')
+              echo '{"title":"'$title'","link":"'$link'"},' >> news.json
+            fi
+          done
+          
+          sed -i '$ s/,$//' news.json
+          echo ']}' >> news.json
+          
+          # اضافه کردن timestamp برای لاگ
+          echo "Last update: $(date)" > last_update.txt
+      
+      - name: Commit and Push to Repository
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add news.json last_update.txt fox.rss
+          git commit -m "Auto-update news - $(date -Iseconds)" || echo "No changes to commit"
+          git push
