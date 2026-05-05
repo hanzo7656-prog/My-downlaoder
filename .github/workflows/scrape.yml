@@ -1,34 +1,37 @@
-name: Debug Fox News HTML
+name: Simple Fox News Downloader
 
 on:
   workflow_dispatch:
 
 jobs:
-  debug:
+  download:
     runs-on: ubuntu-latest
     permissions:
       contents: write
     
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
       
-      - name: Download and Analyze
+      - name: Download Fox News
         run: |
-          curl -L -H "User-Agent: Mozilla/5.0" https://www.foxnews.com/ > fox.html
+          # دانلود صفحه اصلی
+          curl -L -H "User-Agent: Mozilla/5.0" https://www.foxnews.com/ > fox_news.html
           
-          # جستجوی الگوهای مختلف تیتر
-          echo "=== Searching for headlines ===" > debug.txt
-          grep -i "headline" fox.html | head -10 >> debug.txt
-          echo "=== H2 tags ===" >> debug.txt
-          grep "<h2" fox.html | head -10 >> debug.txt
-          echo "=== H3 tags ===" >> debug.txt
-          grep "<h3" fox.html | head -10 >> debug.txt
-          echo "=== Links ===" >> debug.txt
-          grep "href=" fox.html | head -20 >> debug.txt
+          # یک فایل متنی ساده بسازیم (مطمئن)
+          echo "This is a test file" > test.txt
+          echo "Download completed at: $(date)" >> test.txt
+          
+          # یک فایل JSON ساده
+          echo '{"status":"success","time":"'$(date)'"}' > result.json
+          
+          # لیست فایل‌های ساخته شده
+          ls -la
       
-      - name: Save Debug
+      - name: Commit and push files
         run: |
-          git add fox.html debug.txt
-          git commit -m "Debug HTML structure" || echo "No changes"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add fox_news.html test.txt result.json
+          git commit -m "Add downloaded files - $(date)" || echo "No new files to commit"
           git push
