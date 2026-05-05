@@ -1,58 +1,30 @@
-name: Fox News Scraper
+name: Simple Fox News Downloader
 
 on:
-  workflow_dispatch:  # فقط دستی اجرا شود
-  schedule:
-    - cron: '0 */3 * * *'  # هر ۳ ساعت یکبار (اختیاری)
+  workflow_dispatch:
 
 jobs:
-  scrape:
+  download:
     runs-on: ubuntu-latest
     permissions:
-      contents: write  # برای ذخیره فایل در مخزن
+      contents: write
     
     steps:
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v4
       
-      - name: Scrape Fox News
+      - name: Download Fox News
         run: |
-          # دریافت صفحه اصلی فاکس نیوز
           curl -L -H "User-Agent: Mozilla/5.0" \
-               https://www.foxnews.com/ > fox_raw.html
+               https://www.foxnews.com/ > fox.html
           
-          # استخراج تیترها با grep ساده
-          grep -oP '(?<=<h2 class="title">)[^<]+' fox_raw.html > titles.txt
-          grep -oP '(?<=<a href=")[^"]+(?=" class="link")' fox_raw.html > links.txt
+          # فقط خطوط حاوی عنوان را ذخیره کن (برای دیباگ)
+          grep -i "title" fox.html | head -20 > titles.txt
           
-          # ساخت فایل JSON
-          echo '{"source":"foxnews","timestamp":"'$(date -Iseconds)'","articles":[' > news.json
-          
-          # ترکیب تیتر و لینک
-          paste titles.txt links.txt | head -10 | while IFS=$'\t' read title link; do
-            echo '{"title":"'$(echo "$title" | sed 's/"/\\"/g')'","link":"'$link'"},' >> news.json
-          done
-          
-          # بستن JSON
-          sed -i '$ s/,$//' news.json
-          echo ']}' >> news.json
+          echo "Done at $(date)" > info.txt
       
-      - name: Save results
+      - name: Save
         run: |
-          # ذخیره نتیجه در مخزن
-          cp news.json latest.json
-          echo "Last update: $(date)" > last_update.txt
-          
-          git config user.name "GitHub Actions"
-          git config user.email "actions@github.com"
-          git add latest.json last_update.txt
-          git commit -m "Update news from Fox News - $(date)" || echo "No changes"
+          git add .
+          git commit -m "Downloaded fox news" || echo "No changes"
           git push
-      
-      - name: Upload as Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: fox-news-data
-          path: |
-            news.json
-            fox_raw.html
