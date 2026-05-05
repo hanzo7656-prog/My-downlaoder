@@ -1,52 +1,34 @@
-name: Fox News Scraper
+name: Debug Fox News HTML
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: '0 */3 * * *'
 
 jobs:
-  scrape:
+  debug:
     runs-on: ubuntu-latest
     permissions:
-      contents: write  # برای نوشتن در مخزن
+      contents: write
     
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        with:
-          persist-credentials: true
       
-      - name: Fetch Fox News RSS
+      - name: Download and Analyze
         run: |
-          # دانلود RSS
-          curl -L "https://moxie.foxnews.com/google-publisher/latest.xml" > fox.rss
+          curl -L -H "User-Agent: Mozilla/5.0" https://www.foxnews.com/ > fox.html
           
-          # نصب xmlstarlet
-          sudo apt-get update
-          sudo apt-get install -y xmlstarlet
-          
-          # ساخت JSON
-          echo '{"source":"foxnews","timestamp":"'$(date -Iseconds)'","articles":[' > news.json
-          
-          xmlstarlet sel -t -m "//item" -v "title" -n -v "link" -n fox.rss | head -20 | while read title; do
-            read link
-            if [ -n "$title" ] && [ -n "$link" ]; then
-              title=$(echo "$title" | sed 's/"/\\"/g')
-              echo '{"title":"'$title'","link":"'$link'"},' >> news.json
-            fi
-          done
-          
-          sed -i '$ s/,$//' news.json
-          echo ']}' >> news.json
-          
-          # اضافه کردن timestamp برای لاگ
-          echo "Last update: $(date)" > last_update.txt
+          # جستجوی الگوهای مختلف تیتر
+          echo "=== Searching for headlines ===" > debug.txt
+          grep -i "headline" fox.html | head -10 >> debug.txt
+          echo "=== H2 tags ===" >> debug.txt
+          grep "<h2" fox.html | head -10 >> debug.txt
+          echo "=== H3 tags ===" >> debug.txt
+          grep "<h3" fox.html | head -10 >> debug.txt
+          echo "=== Links ===" >> debug.txt
+          grep "href=" fox.html | head -20 >> debug.txt
       
-      - name: Commit and Push to Repository
+      - name: Save Debug
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add news.json last_update.txt fox.rss
-          git commit -m "Auto-update news - $(date -Iseconds)" || echo "No changes to commit"
+          git add fox.html debug.txt
+          git commit -m "Debug HTML structure" || echo "No changes"
           git push
