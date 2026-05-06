@@ -1,82 +1,204 @@
-name: Read Article
+name: Universal Link Scraper
 
 on:
   workflow_dispatch:
     inputs:
-      article_url:
-        description: 'لینک خبر'
-        required: true
+      custom_url:
+        description: 'لینک دلخواه برای اسکرپ (اختیاری)'
+        required: false
         default: ''
-      chat_id:
-        description: 'آیدی چت'
-        required: true
-        default: ''
+  schedule:
+    - cron: '0 */4 * * *'
 
 jobs:
-  fetch:
+  scrape:
     runs-on: ubuntu-latest
-    steps:
-      - name: Install newspaper3k
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y python3-pip
-          pip3 install newspaper3k --break-system-packages || pip3 install newspaper3k
+    permissions:
+      contents: write
 
-      - name: Extract article content
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Smart Link Detection
         run: |
-          python3 << EOF
-          from newspaper import Article
-          import json
+          # تعیین منبع (پیش‌فرض یا ورودی کاربر)
+          if [ -n "${{ github.event.inputs.custom_url }}" ]; then
+            TARGET_URL="${{ github.event.inputs.custom_url }}"
+            echo "🟢 Using custom URL: $TARGET_URL" > log.txt
+          else
+            TARGET_URL="https://www.foxnews.com"
+            echo "🟢 Using default URL: Fox News" > log.txt
+          fi
           
-          url = "${{ github.event.inputs.article_url }}"
+          # دانلود هدف
+          curl -L -H "User-Agent: Mozilla/5.0" "$TARGET_URL" > target.html
+          echo "📄 Downloaded at $(date)" >> log.txt
+
+      - name: Universal Link Extraction
+        run: |
+          echo '{"source":"'$(echo "$TARGET_URL" | sed 's/https:\/\///; s/\/.*//')'","timestamp":"'$(date -Iseconds)'","articles":[' > news.json
           
-          try:
-              article = Article(url)
-              article.download()
-              article.parse()
+          # ============================================
+          # روش 1: جستجوی تمام لینک‌های داخلی با الگوهای مختلف
+          # ============================================
+          
+          # الگوی A: لینک‌های کامل با دامنه
+          grep -oP 'https?://[a-zA-Z0-9./?=_-]+' target.html | sort -u | while read link; do
+            # فیلتر لینک‌های تبلیغاتی و بی‌ربط
+            if [[ $link == *"foxnews.com"* ]] && [[ $link != *"google"* ]] && [[ $link != *"facebook"* ]] && [[ $link != *"twitter"* ]]; then
+              # پیدا کردن تیتر از نزدیک‌ترین متن
+              title=$(grep -B10 -A10 "$link" target.html | grep -oP '(?<=<title>)[^<]+' | head -1)
+              if [ -z "$title" ]; then
+                title=$(grep -B5 -A5 "$link" target.html | grep -oP '(?<=<h[1-6][^>]*>)[^<]+' | head -1)
+              fi
+              if [ -z "$title" ]; then
+                title=$(grep -B5 -A5 "$link" target.html | grep -oP '(?<=aria-label=")[^"]+' | head -1)
+              fi
               
-              text = article.text[:3500]
-              if len(article.text) > 3500:
-                  text += "..."
-              
-              result = {
-                  "success": True,
-                  "title": article.title,
-                  "text": text,
-                  "url": url
-              }
-          except Exception as e:
-              result = {
-                  "success": False,
-                  "error": str(e),
-                  "url": url
-              }
+              if [ -n "$title" ] && [ ${#title} -gt 10 ] && [ ${#title} -lt 200 ]; then
+                title=$(echo "$title" | sed 's/"/\\"/g' | sed 's/&amp;/\&/g')
+                echo "{\"title\":\"$title\",\"link\":\"$link\",\"type\":\"direct\"}," >> news.json
+              fi
+            fi
+          done
           
-          with open('result.json', 'w', encoding='utf-8') as f:
-              json.dump(result, f, ensure_ascii=False, indent=2)
-          EOF
+          # الگوی B: لینک‌های نسبی (بدون دامنه)
+          grep -oP '(?<=href=")[^"]*\.html?' target.html | grep -E '^/[a-z]' | sort -u | while read link; do
+            if [[ $link != http* ]] && [[ $link != "javascript:"* ]] && [[ $link != "#"* ]]; then
+              # ساخت لینک کامل
+              domain=$(echo "$TARGET_URL" | grep -oP 'https?://[^/]+')
+              full_link="${domain}${link}"
+              
+              # پیدا کردن تیتر نزدیک
+              title=$(grep -B10 -A10 "href=\"$link\"" target.html | grep -oP '(?<=<h[1-6][^>]*>)[^<]+' | head -1)
+              if [ -z "$title" ]; then
+                title=$(grep -B10 -A10 "href=\"$link\"" target.html | grep -oP '(?<=<a[^>]*>)[^<]+' | head -1)
+              fi
+              
+              if [ -n "$title" ] && [ ${#title} -gt 10 ] && [ ${#title} -lt 200 ]; then
+                title=$(echo "$title" | sed 's/"/\\"/g')
+                echo "{\"title\":\"$title\",\"link\":\"$full_link\",\"type\":\"relative\"}," >> news.json
+              fi
+            fi
+          done
+          
+          # الگوی C: لینک‌های دارای الگوی تاریخ
+          grep -oP 'https?://[a-zA-Z0-9./?=_-]*20[0-9]{2}/[0-9]{2}/[0-9]{2}/[a-zA-Z0-9./?=_-]*' target.html | sort -u | while read link; do
+            if ! grep -q "$link" news.json; then
+              # استخراج تیتر از تگ title صفحه (برای لینک‌های خارجی)
+              title=$(curl -s -L "$link" | grep -oP '(?<=<title>)[^<]+' | head -1)
+              if [ -n "$title" ] && [ ${#title} -gt 10 ]; then
+                title=$(echo "$title" | sed 's/"/\\"/g')
+                echo "{\"title\":\"$title\",\"link\":\"$link\",\"type\":\"dated\"}," >> news.json
+              fi
+            fi
+          done
+          
+          # ============================================
+          # روش 2: جستجوی هوشمند بر اساس کلمات کلیدی
+          # ============================================
+          
+          # اگر تعداد لینک‌ها کم است، از کلمات کلیدی استفاده کن
+          CURRENT_COUNT=$(grep -c '"type"' news.json)
+          
+          if [ "$CURRENT_COUNT" -lt 5 ]; then
+            echo "// KEYWORD SEARCH: Looking for news-related links" >> news.json
+            
+            # کلمات کلیدی خبری
+            KEYWORDS="news|article|story|post|202[0-9]|breaking|latest|update|report|video"
+            
+            grep -oP 'https?://[a-zA-Z0-9./?=_-]+' target.html | sort -u | while read link; do
+              if echo "$link" | grep -qiE "$KEYWORDS"; then
+                if ! grep -q "$link" news.json; then
+                  title=$(grep -B10 -A10 "$link" target.html | grep -oP '(?<=<title>)[^<]+' | head -1)
+                  if [ -z "$title" ]; then
+                    title=$(echo "$link" | grep -oP '[^/]+$' | sed 's/[-_]/ /g')
+                  fi
+                  
+                  if [ -n "$title" ]; then
+                    title=$(echo "$title" | sed 's/"/\\"/g')
+                    echo "{\"title\":\"$title\",\"link\":\"$link\",\"type\":\"keyword\"}," >> news.json
+                  fi
+                fi
+              fi
+            done
+          fi
+          
+          # ============================================
+          # پاکسازی و فیلتر نهایی
+          # ============================================
+          
+          # حذف تکراری‌ها
+          sed -i '$ s/,$//' news.json
+          echo ']}' >> news.json
+          
+          # فیلتر لینک‌های نامعتبر
+          jq '.articles = [.articles[] | select(.link != null and .link != "")] | .articles = unique_by(.link)' news.json > temp.json && mv temp.json news.json
+          
+          # حذف لینک‌های بی‌ربط
+          jq '.articles = [.articles[] | select(.link | contains("facebook") | not)]' news.json > temp.json && mv temp.json news.json
+          jq '.articles = [.articles[] | select(.link | contains("twitter") | not)]' news.json > temp.json && mv temp.json news.json
+          jq '.articles = [.articles[] | select(.link | contains("youtube") | not)]' news.json > temp.json && mv temp.json news.json
+          jq '.articles = [.articles[] | select(.link | contains("google") | not)]' news.json > temp.json && mv temp.json news.json
+          
+          # محدود کردن به 30 لینک اول
+          jq '.articles = .articles[:30]' news.json > temp.json && mv temp.json news.json
+          
+          TOTAL=$(jq '.articles | length' news.json)
+          echo "✅ Extracted $TOTAL links" >> log.txt
+          
+          # نمایش انواع لینک‌های پیدا شده
+          echo "" >> log.txt
+          echo "=== LINK TYPES FOUND ===" >> log.txt
+          jq -r '.articles[] | .type' news.json | sort | uniq -c >> log.txt
 
       - name: Send to Bale
         run: |
-          SUCCESS=$(jq -r '.success' result.json)
-          CHAT_ID="${{ github.event.inputs.chat_id }}"
+          COUNT=$(jq '.articles | length' news.json)
           
-          if [ "$SUCCESS" = "true" ]; then
-            TITLE=$(jq -r '.title' result.json)
-            TEXT=$(jq -r '.text' result.json)
-            URL=$(jq -r '.url' result.json)
-            
-            MESSAGE="📰 *${TITLE}*%0A%0A${TEXT}%0A%0A━━━━━━━━━━━━━━━━━━━━%0A🔗 [منبع خبر](${URL})%0A🤖 Fox News Bot"
-            
-            curl -s -X POST "https://tapi.bale.ai/bot${{ secrets.BALE_TOKEN }}/sendMessage" \
-              -H "Content-Type: application/x-www-form-urlencoded" \
-              --data-urlencode "chat_id=$CHAT_ID" \
-              --data-urlencode "text=$MESSAGE" \
-              --data-urlencode "parse_mode=Markdown"
+          if [ "$COUNT" -eq 0 ]; then
+            TEXT="⚠️ *هیچ لینکی یافت نشد*%0A%0A"
+            TEXT="${TEXT}ممکن است سایت مورد نظر ساختار متفاوتی داشته باشد.%0A"
+            TEXT="${TEXT}لطفاً فایل \`target.html\` را در مخزن بررسی کنید.%0A%0A"
+            TEXT="${TEXT}━━━━━━━━━━━━━━━━━━━━%0A📅 $(date '+%Y-%m-%d %H:%M:%S')%0A%0A"
+            TEXT="${TEXT}🌐 منبع: $TARGET_URL"
           else
-            ERROR=$(jq -r '.error' result.json)
-            curl -s -X POST "https://tapi.bale.ai/bot${{ secrets.BALE_TOKEN }}/sendMessage" \
-              -H "Content-Type: application/x-www-form-urlencoded" \
-              --data-urlencode "chat_id=$CHAT_ID" \
-              --data-urlencode "text=❌ خطا در دریافت خبر:%0A%0A$ERROR%0A%0Aلینک: ${{ github.event.inputs.article_url }}"
+            TEXT="🔗 *لینک‌های استخراج شده از:*%0A"
+            TEXT="${TEXT}\`${TARGET_URL}\`%0A%0A━━━━━━━━━━━━━━━━━━━━%0A%0A"
+            
+            for i in $(seq 0 $(($COUNT-1))); do
+              TITLE=$(jq -r ".articles[$i].title" news.json)
+              LINK=$(jq -r ".articles[$i].link" news.json)
+              TYPE=$(jq -r ".articles[$i].type" news.json)
+              
+              if [ "$TITLE" != "null" ] && [ -n "$TITLE" ]; then
+                # نمایش نوع لینک با ایموجی
+                TYPE_EMOJI="📄"
+                [ "$TYPE" == "direct" ] && TYPE_EMOJI="🔗"
+                [ "$TYPE" == "relative" ] && TYPE_EMOJI="📁"
+                [ "$TYPE" == "dated" ] && TYPE_EMOJI="📅"
+                [ "$TYPE" == "keyword" ] && TYPE_EMOJI="🔍"
+                
+                TEXT="${TEXT}${TYPE_EMOJI} ${TITLE}%0A"
+                TEXT="${TEXT}└ 📎 ${LINK}%0A%0A"
+              fi
+            done
           fi
+          
+          TEXT="${TEXT}━━━━━━━━━━━━━━━━━━━━%0A"
+          TEXT="${TEXT}📅 $(date '+%Y-%m-%d %H:%M:%S')%0A"
+          TEXT="${TEXT}📊 تعداد لینک‌ها: ${COUNT}%0A"
+          TEXT="${TEXT}%0A⚠️ لینک مورد نظر را کپی کرده و برای ربات بفرستید."
+          
+          curl -s -X POST "https://tapi.bale.ai/bot${{ secrets.BALE_TOKEN }}/sendMessage" \
+            -H "Content-Type: application/json" \
+            -d "{\"chat_id\": \"${{ secrets.CHAT_ID }}\", \"text\": \"$TEXT\", \"parse_mode\": \"Markdown\"}"
+
+      - name: Save Results
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add news.json target.html log.txt
+          git diff --staged --quiet || git commit -m "Universal scrape $(date +%Y%m%d-%H%M%S)"
+          git push origin HEAD:main
