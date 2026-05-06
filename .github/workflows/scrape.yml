@@ -1,63 +1,28 @@
-name: Fox News to Bale (Simple)
-
-on:
-  workflow_dispatch:
-  schedule:
-    - cron: '0 */4 * * *'
-
-jobs:
-  scrape:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Download Fox News
+      - name: Send to Bale (Pure Bash)
         run: |
-          curl -L -H "User-Agent: Mozilla/5.0" https://www.foxnews.com/ > fox_news.html
-          echo "Downloaded at $(date)"
+          # ساخت فایل موقت برای متن
+          cat > message.txt << 'EOF'
+🦊 اخبار لحظه‌ای فاکس نیوز
 
-      - name: Extract Headlines
-        run: |
-          grep -oP '(?<=<div class="title"><span>)[^<]+' fox_news.html | head -10 > headlines.txt
-          echo "✅ Extracted $(wc -l < headlines.txt) headlines"
 
-      - name: Send to Bale
-        run: |
-          # خواندن تیترها
-          HEADLINES=$(cat headlines.txt | head -5)
-          
-          # ساخت متن ساده با استفاده از echo -e
-          TEXT="🦊 اخبار لحظه‌ای فاکس نیوز
-          
-"
+EOF
           
           COUNT=1
           while IFS= read -r line; do
-            TEXT="${TEXT}${COUNT}. ${line}
-
-"
+            echo "${COUNT}. ${line}" >> message.txt
+            echo "" >> message.txt
             COUNT=$((COUNT+1))
-          done <<< "$HEADLINES"
+          done < headlines.txt
           
-          TEXT="${TEXT}━━━━━━━━━━━━━━━━━━━━
-📅 $(date '+%Y-%m-%d %H:%M:%S')
-🔗 مشاهده همه اخبار: https://raw.githubusercontent.com/${{ github.repository }}/main/news.json
-
-🤖 Fox News Bot"
+          echo "━━━━━━━━━━━━━━━━━━━━" >> message.txt
+          echo "📅 $(date '+%Y-%m-%d %H:%M:%S')" >> message.txt
+          echo "🔗 مشاهده همه اخبار: https://raw.githubusercontent.com/${{ github.repository }}/main/news.json" >> message.txt
+          echo "" >> message.txt
+          echo "🤖 Fox News Bot" >> message.txt
           
-          # ارسال با روش ساده
+          # خواندن متن و تبدیل به JSON
+          TEXT=$(cat message.txt | sed 's/"/\\"/g')
+          
           curl -s -X POST "https://tapi.bale.ai/bot${{ secrets.BALE_TOKEN }}/sendMessage" \
             -H "Content-Type: application/json" \
-            -d "{\"chat_id\": \"${{ secrets.BALE_CHAT_ID }}\", \"text\": $(echo "$TEXT" | python3 -c 'import json,sys; print(json.dumps(sys.stdin.read()))'), \"parse_mode\": \"Markdown\"}"
-
-      - name: Save and Commit
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add fox_news.html headlines.txt
-          git commit -m "Fox News update $(date)" || echo "No changes"
-          git push
+            -d "{\"chat_id\": \"${{ secrets.BALE_CHAT_ID }}\", \"text\": \"$TEXT\", \"parse_mode\": \"Markdown\"}"
