@@ -21,13 +21,11 @@ jobs:
           
           echo '{"source":"foxnews","timestamp":"'$(date -Iseconds)'","articles":[' > news.json
           
-          # استخراج لینک‌های خبری
           grep -oP 'href="\K[^"]+' fox.html | grep -E '^/[a-z]|https://www.foxnews.com/[a-z]' | while read link; do
             if [[ $link != http* ]]; then
               link="https://www.foxnews.com$link"
             fi
             
-            # پیدا کردن تیتر مرتبط
             title=$(grep -B5 -A5 "$link" fox.html | grep -oP '(?<=<h[23] class="title">)[^<]+' | head -1)
             
             if [ -n "$title" ] && [ ${#title} -gt 15 ]; then
@@ -38,40 +36,19 @@ jobs:
           
           sed -i '$ s/,$//' news.json
           echo ']}' >> news.json
-          
-          # فقط 10 خبر اول
-          head -15 news.json > temp.json && mv temp.json news.json
 
-      - name: Send to Bale with Buttons
+      - name: Send to Bale
         run: |
-          # ساخت دکمه‌های شیشه‌ای
-          BUTTONS=""
-          COUNT=0
+          # خواندن 5 تیتر اول
+          TITLES=$(jq -r '.articles[0:5][] | "• " + .title + "\nلینک: " + .link + "\n"' news.json)
           
-          jq -c '.articles[]' news.json | head -8 | while read article; do
-            TITLE=$(echo "$article" | jq -r '.title' | cut -c1-35)
-            URL=$(echo "$article" | jq -r '.link')
-            
-            if [ $COUNT -eq 0 ]; then
-              BUTTONS="${BUTTONS}["
-            fi
-            
-            BUTTONS="${BUTTONS}{\"text\":\"$TITLE\",\"callback_data\":\"$URL\"},"
-            COUNT=$((COUNT+1))
-            
-            if [ $COUNT -eq 2 ]; then
-              BUTTONS="${BUTTONS}],"
-              COUNT=0
-            fi
-          done
-          
-          # حذف ویرگول اضافی
-          BUTTONS=$(echo "$BUTTONS" | sed 's/,$//')
-          KEYBOARD="{\"inline_keyboard\":[$BUTTONS]}"
+          MESSAGE="🦊 *آخرین اخبار فاکس نیوز*%0A%0A${TITLES}%0A━━━━━━━━━━━━━━━━━━━━%0A📅 $(date '+%Y-%m-%d %H:%M:%S')%0A%0A⚠️ برای خواندن هر خبر، لینک آن را برای ربات بفرستید."
           
           curl -s -X POST "https://tapi.bale.ai/bot${{ secrets.BALE_TOKEN }}/sendMessage" \
-            -H "Content-Type: application/json" \
-            -d "{\"chat_id\":\"${{ secrets.CHAT_ID }}\",\"text\":\"🦊 *آخرین اخبار فاکس نیوز*%0A%0Aروی هر خبر کلیک کنید:\",\"parse_mode\":\"Markdown\",\"reply_markup\":$KEYBOARD}"
+            -H "Content-Type: application/x-www-form-urlencoded" \
+            --data-urlencode "chat_id=${{ secrets.CHAT_ID }}" \
+            --data-urlencode "text=$MESSAGE" \
+            --data-urlencode "parse_mode=Markdown"
 
       - name: Commit
         run: |
