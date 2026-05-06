@@ -1,9 +1,9 @@
-name: 🦊 Fox News Professional Scraper
+name: Fox News Professional Scraper
 
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 */4 * * *'  # هر ۴ ساعت
+    - cron: '0 */4 * * *'
 
 jobs:
   scrape:
@@ -12,106 +12,79 @@ jobs:
       contents: write
 
     steps:
-      - name: 📥 Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: 🌐 Download Fox News
+      - name: Download Fox News homepage
         run: |
-          echo "📡 Downloading Fox News homepage..."
+          echo "Downloading Fox News..."
           curl -L -H "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36" \
                https://www.foxnews.com/ > fox_news.html
-          echo "✅ Downloaded: $(wc -c < fox_news.html) bytes"
+          echo "Downloaded: $(wc -c < fox_news.html) bytes"
 
-      - name: 🔍 Extract Headlines
+      - name: Extract ALL headlines using discovered patterns
         run: |
-          echo '{
-  "source": "foxnews.com",
-  "timestamp": "'$(date -Iseconds)'",
-  "total_headlines": 0,
-  "articles": [' > news.json
+          echo "{" > news.json
+          echo "  \"source\": \"foxnews.com\"," >> news.json
+          echo "  \"timestamp\": \"$(date -Iseconds)\"," >> news.json
+          echo "  \"articles\": [" >> news.json
           
-          # روش 1: استخراج از div class="title" (تیترهای اصلی صفحه اول)
-          grep -oP '(?<=<div class="title">)[^<]+' fox_news.html | \
-            sed 's/&amp;/\&/g; s/&lt;/</g; s/&gt;/>/g; s/&quot;/"/g' | \
-            while IFS= read -r title; do
-              if [ -n "$title" ]; then
-                clean_title=$(echo "$title" | sed 's/"/\\"/g' | sed 's/^[ \t]*//;s/[ \t]*$//')
-                echo "    {\"title\": \"$clean_title\", \"section\": \"top-stories\"}," >> news.json
-              fi
-            done
+          # الگوی 1: div class="title" (تیترهای بزرگ صفحه اصلی)
+          echo "    // === TOP STORIES (div.title) === //," >> news.json
+          grep -oP '(?<=<div class="title"><span>)[^<]+' fox_news.html | head -20 | while read line; do
+            clean=$(echo "$line" | sed 's/"/\\"/g')
+            echo "    {\"title\": \"$clean\", \"type\": \"top-story\"}," >> news.json
+          done
           
-          # روش 2: استخراج از h3 class="title" (تیترهای بخش‌های مختلف)
-          grep -oP '(?<=<h3 class="title">)[^<]*' fox_news.html | \
-            sed 's/&amp;/\&/g; s/&lt;/</g; s/&gt;/>/g' | \
-            while IFS= read -r title; do
-              if [ -n "$title" ] && [ ${#title} -gt 20 ]; then
-                clean_title=$(echo "$title" | sed 's/"/\\"/g' | sed 's/^[ \t]*//;s/[ \t]*$//')
-                echo "    {\"title\": \"$clean_title\", \"section\": \"featured\"}," >> news.json
-              fi
-            done
+          # الگوی 2: h3 class="title" (تیترهای بخش‌های مختلف)
+          echo "    // === FEATURED (h3.title) === //," >> news.json
+          grep -oP '(?<=<h3 class="title">)[^<]*' fox_news.html | grep -v "^$" | head -20 | while read line; do
+            clean=$(echo "$line" | sed 's/"/\\"/g' | sed 's/^[ \t]*//;s/[ \t]*$//')
+            if [ ${#clean} -gt 15 ]; then
+              echo "    {\"title\": \"$clean\", \"type\": \"featured\"}," >> news.json
+            fi
+          done
           
-          # روش 3: استخراج از span داخل div class="title" (تیترهای بخش Features & Faces)
-          grep -oP '(?<=<div class="title"><span>)[^<]+' fox_news.html | \
-            sed 's/&amp;/\&/g; s/&lt;/</g; s/&gt;/>/g' | \
-            while IFS= read -r title; do
-              if [ -n "$title" ]; then
-                clean_title=$(echo "$title" | sed 's/"/\\"/g')
-                echo "    {\"title\": \"$clean_title\", \"section\": \"features\"}," >> news.json
-              fi
-            done
+          # الگوی 3: div class="title" (تیترهای بخش Features & Faces)
+          grep -oP '(?<=<div class="title"><span>)[^<]+' fox_news.html | head -20 | while read line; do
+            clean=$(echo "$line" | sed 's/"/\\"/g')
+            echo "    {\"title\": \"$clean\", \"type\": \"feature\"}," >> news.json
+          done
           
           # حذف ویرگول اضافی آخر و بستن JSON
           sed -i '$ s/,$//' news.json
-          echo '  ],' >> news.json
+          echo "  ]" >> news.json
+          echo "}" >> news.json
           
-          # افزودن تعداد تیترها
-          HEADLINE_COUNT=$(grep -c '"title"' news.json)
-          echo "  \"total_headlines\": $HEADLINE_COUNT" >> news.json
-          echo '}' >> news.json
-          
-          # ایجاد یک فایل ساده متنی از تیترها
-          echo "=== FOX NEWS HEADLINES ===" > headlines.txt
+          # ایجاد گزارش ساده از تیترها
+          echo "FOX NEWS HEADLINES" > headlines.txt
           echo "Generated: $(date)" >> headlines.txt
-          echo "Total: $HEADLINE_COUNT headlines" >> headlines.txt
+          echo "=====================================" >> headlines.txt
           echo "" >> headlines.txt
           
-          grep '"title"' news.json | sed 's/.*"title": "\(.*\)".*/\1/' | nl >> headlines.txt
+          echo "--- TOP STORIES ---" >> headlines.txt
+          grep -oP '(?<=<div class="title"><span>)[^<]+' fox_news.html | head -20 | nl >> headlines.txt
           
-          echo "✅ Extracted $HEADLINE_COUNT headlines"
+          echo "" >> headlines.txt
+          echo "--- FEATURED STORIES ---" >> headlines.txt
+          grep -oP '(?<=<h3 class="title">)[^<]*' fox_news.html | grep -v "^$" | head -20 | nl >> headlines.txt
+          
+          echo "✅ Extraction complete"
 
-      - name: 📊 Create Summary
-        run: |
-          cat > README.md << 'EOF'
-  # 🦊 Fox News Headlines Scraper
-  
-  آخرین بروزرسانی: **$(date)**
-  
-  ## آمار:
-  - تعداد تیترهای استخراج شده: **$(grep -c '"title"' news.json)**
-  
-  ## فایل‌ها:
-  - `news.json` - داده‌های کامل به صورت JSON
-  - `headlines.txt` - لیست ساده تیترها
-  - `fox_news.html` - صفحه کامل HTML
-  
-  ## مشاهده آنلاین:
-  - [مشاهده JSON خام](https://raw.githubusercontent.com/${{ github.repository }}/main/news.json)
-  EOF
-
-      - name: 💾 Commit and Push
+      - name: Commit and push results
         run: |
           git config user.name "Fox News Bot"
-          git config user.email "bot@foxnews-scraper.local"
-          git add fox_news.html news.json headlines.txt README.md
-          git commit -m "🦊 Fox News update - $(date -Iseconds)" || echo "No new headlines"
+          git config user.email "bot@foxnews.local"
+          git add fox_news.html news.json headlines.txt
+          git commit -m "Fox News update: $(date -Iseconds)" || echo "No new headlines to commit"
           git push
 
-      - name: 📢 Show Results
+      - name: Show summary
         run: |
-          echo "## 🎉 Scraping Completed!" >> $GITHUB_STEP_SUMMARY
+          echo "## ✅ Scraping Completed" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "**Time:** $(date)" >> $GITHUB_STEP_SUMMARY
           echo "**Headlines found:** $(grep -c '"title"' news.json)" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "### 📝 Sample Headlines:" >> $GITHUB_STEP_SUMMARY
-          grep '"title"' news.json | head -5 | sed 's/.*"title": "\(.*\)".*/ - \1/' >> $GITHUB_STEP_SUMMARY
+          echo "### Sample Headlines:" >> $GITHUB_STEP_SUMMARY
+          grep -oP '(?<=<div class="title"><span>)[^<]+' fox_news.html | head -5 | sed 's/^/- /' >> $GITHUB_STEP_SUMMARY
