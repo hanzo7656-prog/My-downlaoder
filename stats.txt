@@ -1,0 +1,7 @@
+=== STATISTICS ===
+Total file lines: 8983
+Total h2 tags: 52
+Total h3 tags: 199
+Total article tags: 208
+Total links: 974
+Internal links (foxnews.com): 1817

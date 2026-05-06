@@ -1,0 +1,27 @@
+HTTP/2 200 
+last-modified: Wed, 06 May 2026 09:55:07 GMT
+content-type: text/html; charset=UTF-8
+via: 1.1 varnish, 1.1 varnish
+etag: "ca81d5dbb45cdc94656ebc25475c2a94"
+x-amz-server-side-encryption: AES256
+x-debug-backend: prod_fn_hp_foxnews
+x-debug-url: /index.html
+cache-control: max-age=90, public
+accept-ranges: bytes
+date: Wed, 06 May 2026 09:57:17 GMT
+age: 41
+access-control-allow-origin: *
+access-control-allow-headers: *
+access-control-allow-credentials: false
+access-control-max-age: 86400
+access-control-allow-methods: GET,HEAD
+accept-ch: Sec-CH-UA-Mobile, Sec-CH-UA-Model, Sec-CH-UA-Platform, Sec-CH-UA-Platform, Sec-CH-UA-Platform-Version, Sec-CH-UA, Sec-CH-UA-Arch, Sec-CH-UA-Bitness
+permissions-policy: ch-ua-model=*,ch-ua-platform-version=*,ch-ua=*,ch-ua-mobile=*,ch-ua-platform=*,ch-ua-full-version-list=*,ch-ua-arch=*,ch-ua-bitness=*,ch-ua-model=*
+x-served-by: cache-iad-kiad7000104-IAD, cache-iad-kiad7000074-IAD
+x-cache: MISS, HIT
+x-cache-hits: 0, 2
+x-timer: S1778061437.459099,VS0,VE0
+vary: Accept-Encoding
+strict-transport-security: max-age=300
+content-length: 789490
+

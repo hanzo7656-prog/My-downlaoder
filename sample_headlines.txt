@@ -1,0 +1,21 @@
+=== SAMPLE HEADLINES ===
+
+Method 1 - h2 with class='title':
+Games Hub
+
+Method 2 - h3 with class='title':
+Fox Nation
+
+Method 3 - aria-label:
+Fox News - Go to homepage
+Watch Live - FOX News Shows
+Watch Live - News Clips
+Apps &amp; Products - FOX News Go
+Apps &amp; Products - FOX News Shop
+Apps &amp; Products - FOX News Radio
+Apps &amp; Products - FOX News Newsletters
+Apps &amp; Products - FOX News Podcasts
+Politics - Donald Trump
+Politics - Fox News Polls
+
+Method 4 - itemprop='headline':
