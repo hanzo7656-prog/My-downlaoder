@@ -1,66 +1,156 @@
 {
-  "source": "foxnews",
-  "timestamp": "2026-05-06T21:07:53+00:00",
+  "source": "",
+  "timestamp": "2026-05-06T21:10:56+00:00",
   "articles": [
     {
-      "title": "Digital Originals",
-      "link": "https://www.foxnews.com/www.foxnews.com/category/us/digital-originals"
+      "title": "Watch Fox News Live",
+      "link": "https://a57.foxnews.com/static.foxnews.com/foxnews.com/content/uploads/2025/04/192/108/donald-trump-young-kids.jpg?ve=1",
+      "type": "direct"
     },
     {
-      "title": "Fox News Flash",
-      "link": "https://www.foxnews.com/www.foxnews.com/category/media/fox-news-flash"
+      "title": "Watch Fox News Live",
+      "link": "https://a57.foxnews.com/static.foxnews.com/foxnews.com/content/uploads/2025/04/218/123/donald-trump-young-kids.jpg?ve=1",
+      "type": "direct"
     },
     {
-      "title": "Personal Freedoms",
-      "link": "https://www.foxnews.com/www.foxnews.com/category/us/personal-freedoms"
+      "title": "Watch Fox News Live",
+      "link": "https://a57.foxnews.com/static.foxnews.com/foxnews.com/content/uploads/2025/04/343/193/donald-trump-young-kids.jpg?ve=1",
+      "type": "direct"
     },
     {
-      "title": "America Together",
-      "link": "https://www.foxnews.com/www.foxnews.com/category/us/personal-freedoms/america-together"
+      "title": "Watch Fox News Live",
+      "link": "https://a57.foxnews.com/static.foxnews.com/foxnews.com/content/uploads/2025/04/384/216/donald-trump-young-kids.jpg?ve=1",
+      "type": "direct"
     },
     {
-      "title": "Entertainment",
-      "link": "https://www.foxnews.com/www.foxnews.com/entertainment"
+      "title": "Watch Fox News Live",
+      "link": "https://a57.foxnews.com/static.foxnews.com/foxnews.com/content/uploads/2025/04/436/246/donald-trump-young-kids.jpg?ve=1",
+      "type": "direct"
     },
     {
-      "title": "Personal Finance",
-      "link": "https://www.foxnews.com/www.foxbusiness.com/category/personal-finance"
+      "title": "Watch Fox News Live",
+      "link": "https://a57.foxnews.com/static.foxnews.com/foxnews.com/content/uploads/2025/04/686/386/donald-trump-young-kids.jpg?ve=1",
+      "type": "direct"
     },
     {
-      "title": "Faith & Values",
-      "link": "https://www.foxnews.com/www.foxnews.com/faith-values"
+      "title": "Terms of Use",
+      "link": "https://help.foxnews.com/hc/en-us",
+      "type": "direct"
     },
     {
-      "title": "Travel + Outdoors",
-      "link": "https://www.foxnews.com/www.foxnews.com/travel"
+      "title": "Apps & Products - FOX Nation",
+      "link": "https://nation.foxnews.com",
+      "type": "direct"
     },
     {
-      "title": "Food + Drink",
-      "link": "https://www.foxnews.com/www.foxnews.com/food-drink"
+      "title": "Apps & Products - FOX Noticias",
+      "link": "https://noticias.foxnews.com",
+      "type": "direct"
     },
     {
-      "title": "FOX Weather",
-      "link": "https://www.foxnews.com/www.foxweather.com/"
+      "title": "Apps & Products - FOX Noticias",
+      "link": "https://noticias.foxnews.com/",
+      "type": "direct"
     },
     {
-      "title": "Full Episodes",
-      "link": "https://www.foxnews.com/video/topics/latest-news-video"
+      "title": "Apps & Products - FOX Noticias",
+      "link": "https://noticias.foxnews.com/shows/fox-noticias",
+      "type": "direct"
     },
     {
-      "title": "Latest Wires",
-      "link": "https://www.foxnews.com/www.foxnews.com/category/topic/associated-press"
+      "title": "About - Media Relations",
+      "link": "https://press.foxnews.com",
+      "type": "direct"
     },
     {
-      "title": "Antisemitism Exposed",
-      "link": "https://www.foxnews.com/www.foxnews.com/category/topic/anti-semitism"
+      "title": "About - Media Relations",
+      "link": "https://press.foxnews.com/media-contacts",
+      "type": "direct"
     },
     {
-      "title": "Immigration",
-      "link": "https://www.foxnews.com/www.foxnews.com/category/us/immigration"
+      "title": "Terms of Use",
+      "link": "https://privacy.foxnews.com/main/web/main",
+      "type": "direct"
     },
     {
-      "title": "Fox News Podcasts",
-      "link": "https://radio.foxnews.com/podcast/"
+      "title": "Apps & Products - FOX News Radio",
+      "link": "https://radio.foxnews.com",
+      "type": "direct"
+    },
+    {
+      "title": "Apps & Products - FOX News Podcasts",
+      "link": "https://radio.foxnews.com/",
+      "type": "direct"
+    },
+    {
+      "title": "Apps & Products - FOX News Podcasts",
+      "link": "https://radio.foxnews.com/podcast/",
+      "type": "direct"
+    },
+    {
+      "title": "Apps & Products - FOX News Shop",
+      "link": "https://shop.foxnews.com",
+      "type": "direct"
+    },
+    {
+      "title": "Apps & Products - FOX News Shop",
+      "link": "https://shop.foxnews.com/",
+      "type": "direct"
+    },
+    {
+      "title": "Fox News - Go to homepage",
+      "link": "https://www.foxnews.com",
+      "type": "direct"
+    },
+    {
+      "title": "U.S. submenu",
+      "link": "https://www.foxnews.com/",
+      "type": "direct"
+    },
+    {
+      "title": "Apps & Products",
+      "link": "https://www.foxnews.com/apps-products",
+      "type": "direct"
+    },
+    {
+      "title": "Watch Fox News Live",
+      "link": "https://www.foxnews.com/category/tech/artificial-intelligence",
+      "type": "direct"
+    },
+    {
+      "title": "Terms of Use",
+      "link": "https://www.foxnews.com/closed-captioning",
+      "type": "direct"
+    },
+    {
+      "title": "Watch Fox News Live",
+      "link": "https://www.foxnews.com/deals/last-minute-mothers-day-gift",
+      "type": "direct"
+    },
+    {
+      "title": "Watch Fox News Live",
+      "link": "https://www.foxnews.com/deals/memorial-day-sales-guide-when-deals-start",
+      "type": "direct"
+    },
+    {
+      "title": "Entertainment submenu",
+      "link": "https://www.foxnews.com/entertainment",
+      "type": "direct"
+    },
+    {
+      "title": "Watch Fox News Live",
+      "link": "https://www.foxnews.com/entertainment/crocodile-dundee-star-paul-hogans-27-year-old-son-arrested-domestic-battery-charge",
+      "type": "direct"
+    },
+    {
+      "title": "Watch Fox News Live",
+      "link": "https://www.foxnews.com/entertainment/legendary-singer-bonnie-tyler-rushed-hospital-emergency-intestinal-surgery",
+      "type": "direct"
+    },
+    {
+      "title": "Watch Fox News Live",
+      "link": "https://www.foxnews.com/entertainment/michael-rapaport-blasts-ny-governor-over-anti-israel-synagogue-protest-resign-shame",
+      "type": "direct"
     }
   ]
 }
