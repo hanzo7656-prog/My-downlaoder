@@ -1,68 +1,38 @@
-name: Fox News Scraper with JSON Output
+name: Simple Fox News Downloader
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: '0 */6 * * *'
 
 jobs:
-  scrape:
+  download:
     runs-on: ubuntu-latest
     permissions:
       contents: write
 
     steps:
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Scrape Fox News
+      - name: Download and Save
         run: |
-          # دانلود صفحه اصلی
+          # فقط دانلود صفحه (ساده‌ترین کار)
           curl -L -H "User-Agent: Mozilla/5.0" https://www.foxnews.com/ > fox_news.html
           
-          # استخراج تیترها و لینک‌ها با grep ساده (بر اساس ساختار موجود)
-          echo '{"source":"foxnews","timestamp":"'$(date -Iseconds)'","articles":[' > news.json
+          # یک فایل متنی ساده بساز
+          echo "Download completed at: $(date)" > download_log.txt
           
-          # جستجوی الگوهای خبری در فایل HTML
-          # ابتدا همه لینک‌های اصلی را پیدا کن
-          grep -oP 'https?://www\.foxnews\.com/[^"\s]+' fox_news.html | sort -u > all_links.txt
+          # یک فایل JSON خالی ولی معتبر
+          echo '{"status":"success","time":"'$(date -Iseconds)'","message":"File downloaded"}' > status.json
           
-          # استخراج تیتر از تگ‌های مختلف
-          grep -oP '(?<=<h[23] class="title">)[^<]+' fox_news.html > titles_raw.txt
-          grep -oP '(?<=<h4 class="title">)[^<]+' fox_news.html >> titles_raw.txt
-          grep -oP '(?<=aria-label=")[^"]+' fox_news.html >> titles_raw.txt
-          
-          # تمیز کردن تیترها
-          sed -i 's/&amp;/\&/g; s/&lt;/</g; s/&gt;/>/g; s/&quot;/"/g' titles_raw.txt
-          
-          # ترکیب لینک‌ها و تیترها
-          paste all_links.txt titles_raw.txt 2>/dev/null | head -30 | while IFS=$'\t' read link title; do
-            if [[ -n "$title" && -n "$link" ]]; then
-              # حذف نقل قول از تیتر
-              title=$(echo "$title" | sed 's/"/\\"/g' | tr -d '\n\r')
-              echo '{"title":"'$title'","link":"'$link'"},' >> news.json
-            fi
-          done
-          
-          # حذف ویرگول آخر و بستن JSON (اگر آیتمی وجود داشته باشد)
-          if [ -s news.json ] && [ "$(wc -l < news.json)" -gt 2 ]; then
-            sed -i '$ s/,$//' news.json
-          fi
-          echo ']}' >> news.json
-          
-          # ایجاد فایل ساده تیترها
-          grep -o '"title":"[^"]*"' news.json | sed 's/"title":"//;s/"//' > headlines.txt
-          
-          echo "✅ Scraping completed at $(date)" >> info.txt
-          
-          # نمایش تعداد تیترهای پیدا شده
-          echo "Number of headlines found: $(wc -l < headlines.txt)"
-          cat news.json | head -10
-
+          # نمایش اطلاعات برای دیباگ
+          echo "✅ File size: $(wc -c < fox_news.html) bytes"
+          echo "✅ First 100 lines of HTML:"
+          head -5 fox_news.html
+      
       - name: Commit and Push
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add fox_news.html news.json headlines.txt info.txt
-          git commit -m "Auto-update news - $(date -Iseconds)" || echo "No changes to commit"
+          git add fox_news.html download_log.txt status.json
+          git commit -m "Update from action - $(date -Iseconds)" || echo "No changes to commit"
           git push
