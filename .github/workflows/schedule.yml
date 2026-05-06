@@ -1,44 +1,57 @@
-- name: Extract Headlines with Links
-  run: |
-    curl -L -H "User-Agent: Mozilla/5.0" https://www.foxnews.com/ > fox.html
-    
-    echo '{"source":"foxnews","timestamp":"'$(date -Iseconds)'","articles":[' > news.json
-    
-    # استخراج تیترها
-    grep -oP '(?<=<div class="title"><span>)[^<]+' fox.html | head -5 > titles.txt
-    
-    # استخراج لینک‌ها (از تگ‌های a در اطراف تیتر)
-    grep -oP '(?<=<a href=")[^"]+' fox.html | grep -E '^/|foxnews' | head -5 > links.txt
-    
-    # ترکیب تیتر و لینک
-    paste titles.txt links.txt 2>/dev/null | while IFS=$'\t' read title link; do
-      if [ -n "$title" ]; then
-        title=$(echo "$title" | sed 's/"/\\"/g')
-        if [[ $link != https* ]]; then
-          link="https://www.foxnews.com$link"
-        fi
-        echo "{\"title\":\"$title\",\"link\":\"$link\"}," >> news.json
-      fi
-    done
-    
-    sed -i '$ s/,$//' news.json
-    echo ']}' >> news.json
+name: Fox News Scheduler
 
-- name: Send to Bale
-  run: |
-    TEXT="🦊 آخرین اخبار فاکس نیوز\n\n"
-    
-    for i in 1 2 3 4 5; do
-      TITLE=$(grep -o '"title":"[^"]*"' news.json | sed -n "${i}p" | sed 's/"title":"//;s/"//')
-      LINK=$(grep -o '"link":"[^"]*"' news.json | sed -n "${i}p" | sed 's/"link":"//;s/"//')
-      
-      if [ -n "$TITLE" ]; then
-        TEXT="${TEXT}${i}. ${TITLE}\nلینک: ${LINK}\n\n"
-      fi
-    done
-    
-    TEXT="${TEXT}━━━━━━━━━━━━━━━━━━━━\n📅 $(date '+%Y-%m-%d %H:%M:%S')\n\n⚠️ لینک خبر مورد نظر را کپی کرده و برای ربات بفرستید."
-    
-    curl -s -X POST "https://tapi.bale.ai/bot${{ secrets.BALE_TOKEN }}/sendMessage" \
-      -H "Content-Type: application/json" \
-      -d "{\"chat_id\": \"${{ secrets.CHAT_ID }}\", \"text\": \"$TEXT\", \"parse_mode\": \"Markdown\"}"
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 */4 * * *'
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Extract Headlines
+        run: |
+          curl -L -H "User-Agent: Mozilla/5.0" https://www.foxnews.com/ > fox.html
+          echo '{"source":"foxnews","timestamp":"'$(date -Iseconds)'","articles":[' > news.json
+          grep -oP '(?<=<div class="title"><span>)[^<]+' fox.html | head -5 > titles.txt
+          grep -oP '(?<=<a href=")[^"]+' fox.html | grep -E '^/|foxnews' | head -5 > links.txt
+          paste titles.txt links.txt 2>/dev/null | while IFS=$'\t' read title link; do
+            if [ -n "$title" ]; then
+              title=$(echo "$title" | sed 's/"/\\"/g')
+              if [[ $link != https* ]]; then
+                link="https://www.foxnews.com$link"
+              fi
+              echo "{\"title\":\"$title\",\"link\":\"$link\"}," >> news.json
+            fi
+          done
+          sed -i '$ s/,$//' news.json
+          echo ']}' >> news.json
+
+      - name: Send to Bale
+        run: |
+          TEXT="🦊 آخرین اخبار فاکس نیوز\n\n"
+          for i in 1 2 3 4 5; do
+            TITLE=$(grep -o '"title":"[^"]*"' news.json | sed -n "${i}p" | sed 's/"title":"//;s/"//')
+            LINK=$(grep -o '"link":"[^"]*"' news.json | sed -n "${i}p" | sed 's/"link":"//;s/"//')
+            if [ -n "$TITLE" ]; then
+              TEXT="${TEXT}${i}. ${TITLE}\nلینک: ${LINK}\n\n"
+            fi
+          done
+          TEXT="${TEXT}━━━━━━━━━━━━━━━━━━━━\n📅 $(date '+%Y-%m-%d %H:%M:%S')\n\n⚠️ لینک خبر مورد نظر را کپی کرده و برای ربات بفرستید."
+          curl -s -X POST "https://tapi.bale.ai/bot${{ secrets.BALE_TOKEN }}/sendMessage" \
+            -H "Content-Type: application/json" \
+            -d "{\"chat_id\": \"${{ secrets.CHAT_ID }}\", \"text\": \"$TEXT\", \"parse_mode\": \"Markdown\"}"
+
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add news.json
+          git commit -m "Update news $(date)" || echo "No changes"
+          git push
