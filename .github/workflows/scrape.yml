@@ -1,4 +1,4 @@
-name: Fox News Professional Scraper
+name: Fox News to Bale
 
 on:
   workflow_dispatch:
@@ -12,79 +12,59 @@ jobs:
       contents: write
 
     steps:
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Download Fox News homepage
+      - name: Download Fox News
         run: |
-          echo "Downloading Fox News..."
-          curl -L -H "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36" \
-               https://www.foxnews.com/ > fox_news.html
-          echo "Downloaded: $(wc -c < fox_news.html) bytes"
+          curl -L -H "User-Agent: Mozilla/5.0" https://www.foxnews.com/ > fox_news.html
+          echo "Downloaded at $(date)"
 
-      - name: Extract ALL headlines using discovered patterns
+      - name: Extract Headlines
         run: |
           echo "{" > news.json
           echo "  \"source\": \"foxnews.com\"," >> news.json
           echo "  \"timestamp\": \"$(date -Iseconds)\"," >> news.json
           echo "  \"articles\": [" >> news.json
           
-          # الگوی 1: div class="title" (تیترهای بزرگ صفحه اصلی)
-          echo "    // === TOP STORIES (div.title) === //," >> news.json
-          grep -oP '(?<=<div class="title"><span>)[^<]+' fox_news.html | head -20 | while read line; do
+          grep -oP '(?<=<div class="title"><span>)[^<]+' fox_news.html | head -15 | while read line; do
             clean=$(echo "$line" | sed 's/"/\\"/g')
-            echo "    {\"title\": \"$clean\", \"type\": \"top-story\"}," >> news.json
+            echo "    \"$clean\"," >> news.json
           done
           
-          # الگوی 2: h3 class="title" (تیترهای بخش‌های مختلف)
-          echo "    // === FEATURED (h3.title) === //," >> news.json
-          grep -oP '(?<=<h3 class="title">)[^<]*' fox_news.html | grep -v "^$" | head -20 | while read line; do
-            clean=$(echo "$line" | sed 's/"/\\"/g' | sed 's/^[ \t]*//;s/[ \t]*$//')
-            if [ ${#clean} -gt 15 ]; then
-              echo "    {\"title\": \"$clean\", \"type\": \"featured\"}," >> news.json
-            fi
-          done
-          
-          # الگوی 3: div class="title" (تیترهای بخش Features & Faces)
-          grep -oP '(?<=<div class="title"><span>)[^<]+' fox_news.html | head -20 | while read line; do
-            clean=$(echo "$line" | sed 's/"/\\"/g')
-            echo "    {\"title\": \"$clean\", \"type\": \"feature\"}," >> news.json
-          done
-          
-          # حذف ویرگول اضافی آخر و بستن JSON
           sed -i '$ s/,$//' news.json
           echo "  ]" >> news.json
           echo "}" >> news.json
           
-          # ایجاد گزارش ساده از تیترها
-          echo "FOX NEWS HEADLINES" > headlines.txt
-          echo "Generated: $(date)" >> headlines.txt
-          echo "=====================================" >> headlines.txt
-          echo "" >> headlines.txt
-          
-          echo "--- TOP STORIES ---" >> headlines.txt
-          grep -oP '(?<=<div class="title"><span>)[^<]+' fox_news.html | head -20 | nl >> headlines.txt
-          
-          echo "" >> headlines.txt
-          echo "--- FEATURED STORIES ---" >> headlines.txt
-          grep -oP '(?<=<h3 class="title">)[^<]*' fox_news.html | grep -v "^$" | head -20 | nl >> headlines.txt
-          
-          echo "✅ Extraction complete"
+          # ذخیره تیترها در فایل جداگانه
+          grep -oP '(?<=<div class="title"><span>)[^<]+' fox_news.html | head -10 > headlines.txt
 
-      - name: Commit and push results
+      - name: Send to Bale
         run: |
-          git config user.name "Fox News Bot"
-          git config user.email "bot@foxnews.local"
+          # ساخت پیام خبری
+          MESSAGE="🦊 *اخبار لحظه‌ای فاکس نیوز*%0A%0A"
+          COUNT=1
+          
+          while IFS= read -r line; do
+            if [ -n "$line" ]; then
+              MESSAGE="$MESSAGE$COUNT. $line%0A%0A"
+              COUNT=$((COUNT+1))
+            fi
+          done < headlines.txt
+          
+          MESSAGE="$MESSAGE%0A📅 $(date '+%Y-%m-%d %H:%M:%S')%0A%0A🔗 [مشاهده همه اخبار](https://raw.githubusercontent.com/${{ github.repository }}/main/news.json)"
+          
+          # ارسال به بله
+          curl -s -X POST "https://api.bale.ai/v1/bot${{ secrets.BALE_TOKEN }}/sendMessage" \
+            -H "Content-Type: application/json" \
+            -d "{\"chat_id\":\"${{ secrets.BALE_CHAT_ID }}\",\"text\":\"$MESSAGE\",\"parse_mode\":\"Markdown\"}"
+          
+          echo "✅ Message sent to Bale"
+
+      - name: Commit and Push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
           git add fox_news.html news.json headlines.txt
-          git commit -m "Fox News update: $(date -Iseconds)" || echo "No new headlines to commit"
+          git commit -m "Fox News update $(date)" || echo "No changes"
           git push
-
-      - name: Show summary
-        run: |
-          echo "## ✅ Scraping Completed" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "**Time:** $(date)" >> $GITHUB_STEP_SUMMARY
-          echo "**Headlines found:** $(grep -c '"title"' news.json)" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "### Sample Headlines:" >> $GITHUB_STEP_SUMMARY
-          grep -oP '(?<=<div class="title"><span>)[^<]+' fox_news.html | head -5 | sed 's/^/- /' >> $GITHUB_STEP_SUMMARY
