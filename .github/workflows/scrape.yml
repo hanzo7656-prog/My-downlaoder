@@ -1,10 +1,10 @@
-name: Simple Fox News Downloader
+name: Fox News with Headlines
 
 on:
   workflow_dispatch:
 
 jobs:
-  download:
+  scrape:
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -13,26 +13,40 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Download and Save
+      - name: Download Fox News
         run: |
-          # فقط دانلود صفحه (ساده‌ترین کار)
           curl -L -H "User-Agent: Mozilla/5.0" https://www.foxnews.com/ > fox_news.html
           
-          # یک فایل متنی ساده بساز
-          echo "Download completed at: $(date)" > download_log.txt
+          # روش ساده برای استخراج تیتر: جستجوی خطوطی که شبیه تیتر هستند
+          grep -E '(class="title"|class="headline")' fox_news.html | \
+            sed 's/<[^>]*>//g' | \
+            sed 's/^[ \t]*//' | \
+            grep -v "^$" | \
+            head -30 > headlines.txt
           
-          # یک فایل JSON خالی ولی معتبر
-          echo '{"status":"success","time":"'$(date -Iseconds)'","message":"File downloaded"}' > status.json
+          # ساخت JSON ساده
+          echo '{
+  "source": "foxnews",
+  "timestamp": "'$(date -Iseconds)'",
+  "headlines": [' > news.json
           
-          # نمایش اطلاعات برای دیباگ
-          echo "✅ File size: $(wc -c < fox_news.html) bytes"
-          echo "✅ First 100 lines of HTML:"
-          head -5 fox_news.html
-      
+          while IFS= read -r line; do
+            # حذف نقل قول و کاراکترهای خاص
+            clean_line=$(echo "$line" | sed 's/"/\\"/g')
+            echo "  \"$clean_line\"," >> news.json
+          done < headlines.txt
+          
+          # حذف ویرگول آخر و بستن JSON
+          sed -i '$ s/,$//' news.json
+          echo '  ]' >> news.json
+          echo '}' >> news.json
+          
+          echo "✅ Found $(wc -l < headlines.txt) headlines"
+
       - name: Commit and Push
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add fox_news.html download_log.txt status.json
-          git commit -m "Update from action - $(date -Iseconds)" || echo "No changes to commit"
+          git add fox_news.html headlines.txt news.json
+          git commit -m "Update news - $(date -Iseconds)" || echo "No changes"
           git push
