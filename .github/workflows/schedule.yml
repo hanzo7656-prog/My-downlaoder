@@ -15,36 +15,69 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Download Fox News
+      - name: Extract Headlines and Links
         run: |
           curl -L -H "User-Agent: Mozilla/5.0" https://www.foxnews.com/ > fox.html
-          echo "Download completed"
+          
+          echo '{"source":"foxnews","timestamp":"'$(date -Iseconds)'","articles":[' > news.json
+          
+          # استخراج لینک‌ها و تیترها از h2.title و h3.title
+          grep -oP '<h[23] class="title"><a href="\K[^"]+' fox.html | while read link; do
+            full_link="https://www.foxnews.com$link"
+            
+            # پیدا کردن تیتر مرتبط با این لینک
+            title=$(grep -A1 "<a href=\"$link\"" fox.html | grep -oP '(?<=>)[^<]+' | head -1)
+            
+            if [ -n "$title" ] && [ ${#title} -gt 15 ]; then
+              title=$(echo "$title" | sed 's/"/\\"/g')
+              echo "{\"title\":\"$title\",\"link\":\"$full_link\"}," >> news.json
+            fi
+          done
+          
+          # اضافه کردن لینک‌های live-news
+          grep -oP 'https://www\.foxnews\.com/live-news/[^"\s]+' fox.html | head -5 | while read link; do
+            if ! grep -q "$link" news.json; then
+              title=$(grep -B2 "$link" fox.html | grep -oP '(?<=<h3 class="title">)[^<]+' | head -1)
+              if [ -n "$title" ]; then
+                title=$(echo "$title" | sed 's/"/\\"/g')
+                echo "{\"title\":\"$title\",\"link\":\"$link\"}," >> news.json
+              fi
+            fi
+          done
+          
+          # حذف لینک‌های تکراری
+          sed -i '$ s/,$//' news.json
+          echo ']}' >> news.json
+          
+          # حذف موارد خالی و تکراری
+          jq '.articles = [.articles[] | select(.title != null and .title != "")] | .articles = unique_by(.link)' news.json > temp.json && mv temp.json news.json
+          
+          echo "Extracted $(jq '.articles | length' news.json) articles"
 
-      - name: Debug - Show links and titles
+      - name: Send to Bale
         run: |
-          echo "=== ALL LINKS in page ==="
-          grep -oP 'https?://www\.foxnews\.com/[^"\s]+' fox.html | sort -u | head -30
+          TEXT="🦊 *آخرین اخبار فاکس نیوز*\n\n"
           
-          echo ""
-          echo "=== LINKS with date pattern (year/month/day) ==="
-          grep -oP 'https?://www\.foxnews\.com/[0-9]{4}/[0-9]{2}/[0-9]{2}/[^"\s]+' fox.html | head -10
+          # خواندن 10 خبر اول از news.json
+          for i in $(seq 0 9); do
+            TITLE=$(jq -r ".articles[$i].title" news.json)
+            LINK=$(jq -r ".articles[$i].link" news.json)
+            
+            if [ "$TITLE" != "null" ] && [ -n "$TITLE" ]; then
+              TEXT="${TEXT}• ${TITLE}\nلینک: ${LINK}\n\n"
+            fi
+          done
           
-          echo ""
-          echo "=== TITLES found ==="
-          grep -oP '(?<=<h[23] class="title">)[^<]+' fox.html | head -10
+          TEXT="${TEXT}━━━━━━━━━━━━━━━━━━━━\n📅 $(date '+%Y-%m-%d %H:%M:%S')\n\n⚠️ برای خواندن هر خبر، لینک آن را برای ربات بفرستید."
           
-          echo ""
-          echo "=== TITLES from div.title.span ==="
-          grep -oP '(?<=<div class="title"><span>)[^<]+' fox.html | head -10
-          
-          echo ""
-          echo "=== First 100 lines of HTML ==="
-          head -100 fox.html
+          curl -s -X POST "https://tapi.bale.ai/bot${{ secrets.BALE_TOKEN }}/sendMessage" \
+            -H "Content-Type: application/json" \
+            -d "{\"chat_id\": \"${{ secrets.CHAT_ID }}\", \"text\": \"$TEXT\", \"parse_mode\": \"Markdown\"}"
 
-      - name: Commit debug file
+      - name: Commit
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add fox.html
-          git commit -m "Debug fox news page" || echo "No changes"
-          git push
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add news.json fox.html
+          git diff --staged --quiet || git commit -m "Update news $(date)"
+          git push origin HEAD:main
