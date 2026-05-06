@@ -1,17 +1,16 @@
-name: Article Webhook
+name: Read Article
 
 on:
   workflow_dispatch:
     inputs:
       article_url:
-        description: 'URL'
+        description: 'لینک خبر'
         required: true
-      callback_id:
-        description: 'Callback ID'
-        required: true
+        default: ''
       chat_id:
-        description: 'Chat ID'
+        description: 'آیدی چت'
         required: true
+        default: ''
 
 jobs:
   fetch:
@@ -23,7 +22,7 @@ jobs:
           sudo apt-get install -y python3-pip
           pip3 install newspaper3k --break-system-packages || pip3 install newspaper3k
 
-      - name: Extract article
+      - name: Extract article content
         run: |
           python3 << EOF
           from newspaper import Article
@@ -53,14 +52,13 @@ jobs:
                   "url": url
               }
           
-          with open('result.json', 'w') as f:
-              json.dump(result, f)
+          with open('result.json', 'w', encoding='utf-8') as f:
+              json.dump(result, f, ensure_ascii=False, indent=2)
           EOF
 
       - name: Send to Bale
         run: |
           SUCCESS=$(jq -r '.success' result.json)
-          CALLBACK_ID="${{ github.event.inputs.callback_id }}"
           CHAT_ID="${{ github.event.inputs.chat_id }}"
           
           if [ "$SUCCESS" = "true" ]; then
@@ -68,7 +66,7 @@ jobs:
             TEXT=$(jq -r '.text' result.json)
             URL=$(jq -r '.url' result.json)
             
-            MESSAGE="📰 *${TITLE}*%0A%0A${TEXT}%0A%0A━━━━━━━━━━━━━━━━━━━━%0A🔗 [منبع](${URL})%0A🤖 Fox News Bot"
+            MESSAGE="📰 *${TITLE}*%0A%0A${TEXT}%0A%0A━━━━━━━━━━━━━━━━━━━━%0A🔗 [منبع خبر](${URL})%0A🤖 Fox News Bot"
             
             curl -s -X POST "https://tapi.bale.ai/bot${{ secrets.BALE_TOKEN }}/sendMessage" \
               -H "Content-Type: application/x-www-form-urlencoded" \
@@ -80,5 +78,5 @@ jobs:
             curl -s -X POST "https://tapi.bale.ai/bot${{ secrets.BALE_TOKEN }}/sendMessage" \
               -H "Content-Type: application/x-www-form-urlencoded" \
               --data-urlencode "chat_id=$CHAT_ID" \
-              --data-urlencode "text=❌ خطا: $ERROR"
+              --data-urlencode "text=❌ خطا در دریافت خبر:%0A%0A$ERROR%0A%0Aلینک: ${{ github.event.inputs.article_url }}"
           fi
