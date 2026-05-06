@@ -1,2 +1,6 @@
-Downloaded at Wed May  6 14:42:20 UTC 2026
-✅ Extracted 124 articles
+🟢 Using custom URL: https://www.foxnews.com/www.foxnews.com/category/topic/associated-press%0A%0A•
+📄 Downloaded at Wed May  6 14:44:10 UTC 2026
+✅ Extracted 30 links
+
+=== LINK TYPES FOUND ===
+     30 direct

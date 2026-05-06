@@ -1,66 +1,156 @@
 {
-  "source": "foxnews",
-  "timestamp": "2026-05-06T14:42:20+00:00",
+  "source": "",
+  "timestamp": "2026-05-06T14:44:10+00:00",
   "articles": [
     {
-      "title": "Digital Originals",
-      "link": "https://www.foxnews.com/www.foxnews.com/category/us/digital-originals"
+      "title": "Watch Live - FOX News Shows",
+      "link": "https://help.foxnews.com/hc/en-us",
+      "type": "direct"
     },
     {
-      "title": "Fox News Flash",
-      "link": "https://www.foxnews.com/www.foxnews.com/category/media/fox-news-flash"
+      "title": "network navigation",
+      "link": "https://nation.foxnews.com",
+      "type": "direct"
     },
     {
-      "title": "Personal Freedoms",
-      "link": "https://www.foxnews.com/www.foxnews.com/category/us/personal-freedoms"
+      "title": "network navigation",
+      "link": "https://nation.foxnews.com/",
+      "type": "direct"
     },
     {
-      "title": "America Together",
-      "link": "https://www.foxnews.com/www.foxnews.com/category/us/personal-freedoms/america-together"
+      "title": "network navigation",
+      "link": "https://noticias.foxnews.com/",
+      "type": "direct"
     },
     {
-      "title": "Entertainment",
-      "link": "https://www.foxnews.com/www.foxnews.com/entertainment"
+      "title": "Science & Tech - Air & Space",
+      "link": "https://noticias.foxnews.com/shows/fox-noticias",
+      "type": "direct"
     },
     {
-      "title": "Personal Finance",
-      "link": "https://www.foxnews.com/www.foxbusiness.com/category/personal-finance"
+      "title": "Games - Scattergories Daily",
+      "link": "https://press.foxnews.com",
+      "type": "direct"
     },
     {
-      "title": "Faith & Values",
-      "link": "https://www.foxnews.com/www.foxnews.com/faith-values"
+      "title": "Games - Scattergories Daily",
+      "link": "https://press.foxnews.com/media-contacts",
+      "type": "direct"
     },
     {
-      "title": "Travel + Outdoors",
-      "link": "https://www.foxnews.com/www.foxnews.com/travel"
+      "title": "Watch Live - FOX News Shows",
+      "link": "https://privacy.foxnews.com/main/web/main",
+      "type": "direct"
     },
     {
-      "title": "Food + Drink",
-      "link": "https://www.foxnews.com/www.foxnews.com/food-drink"
+      "title": "network navigation",
+      "link": "https://radio.foxnews.com",
+      "type": "direct"
     },
     {
-      "title": "FOX Weather",
-      "link": "https://www.foxnews.com/www.foxweather.com/"
+      "title": "network navigation",
+      "link": "https://radio.foxnews.com/",
+      "type": "direct"
     },
     {
-      "title": "Full Episodes",
-      "link": "https://www.foxnews.com/video/topics/latest-news-video"
+      "title": "Science & Tech - Air & Space",
+      "link": "https://radio.foxnews.com/podcast/",
+      "type": "direct"
     },
     {
-      "title": "Latest Wires",
-      "link": "https://www.foxnews.com/www.foxnews.com/category/topic/associated-press"
+      "title": "Science & Tech - Air & Space",
+      "link": "https://shop.foxnews.com",
+      "type": "direct"
     },
     {
-      "title": "Antisemitism Exposed",
-      "link": "https://www.foxnews.com/www.foxnews.com/category/topic/anti-semitism"
+      "title": "Science & Tech - Air & Space",
+      "link": "https://shop.foxnews.com/",
+      "type": "direct"
     },
     {
-      "title": "Immigration",
-      "link": "https://www.foxnews.com/www.foxnews.com/category/us/immigration"
+      "title": "404 | Fox News",
+      "link": "https://static.foxnews.com/static/strike/scripts/libs/prebid.js",
+      "type": "direct"
     },
     {
-      "title": "Fox News Podcasts",
-      "link": "https://radio.foxnews.com/podcast/"
+      "title": "network navigation",
+      "link": "https://www.foxnews.com",
+      "type": "direct"
+    },
+    {
+      "title": "network navigation",
+      "link": "https://www.foxnews.com/",
+      "type": "direct"
+    },
+    {
+      "title": "network navigation",
+      "link": "https://www.foxnews.com/books",
+      "type": "direct"
+    },
+    {
+      "title": "Search foxnews.com",
+      "link": "https://www.foxnews.com/category/health/healthy-living/longevity",
+      "type": "direct"
+    },
+    {
+      "title": "Search foxnews.com",
+      "link": "https://www.foxnews.com/category/person/blake-lively",
+      "type": "direct"
+    },
+    {
+      "title": "Mobile Menu",
+      "link": "https://www.foxnews.com/category/politics/defense/wars/war-with-iran",
+      "type": "direct"
+    },
+    {
+      "title": "Mobile Menu",
+      "link": "https://www.foxnews.com/category/tech/artificial-intelligence",
+      "type": "direct"
+    },
+    {
+      "title": "Mobile Menu",
+      "link": "https://www.foxnews.com/category/us/america-250",
+      "type": "direct"
+    },
+    {
+      "title": "Watch Live - FOX News Shows",
+      "link": "https://www.foxnews.com/closed-captioning",
+      "type": "direct"
+    },
+    {
+      "title": "Watch Live - FOX News Shows",
+      "link": "https://www.foxnews.com/html-sitemap",
+      "type": "direct"
+    },
+    {
+      "title": "Watch Live - FOX News Shows",
+      "link": "https://www.foxnews.com/html-video-sitemap",
+      "type": "direct"
+    },
+    {
+      "title": "Science & Tech - Air & Space",
+      "link": "https://www.foxnews.com/newsletters",
+      "type": "direct"
+    },
+    {
+      "title": "network navigation",
+      "link": "https://www.foxnews.com/outkick",
+      "type": "direct"
+    },
+    {
+      "title": "Watch Live - FOX News Shows",
+      "link": "https://www.foxnews.com/privacy-policy",
+      "type": "direct"
+    },
+    {
+      "title": "Science & Tech - Air & Space",
+      "link": "https://www.foxnews.com/story/foxnews-com-rss-feeds",
+      "type": "direct"
+    },
+    {
+      "title": "Watch Live - FOX News Shows",
+      "link": "https://www.foxnews.com/terms-of-use",
+      "type": "direct"
     }
   ]
 }
