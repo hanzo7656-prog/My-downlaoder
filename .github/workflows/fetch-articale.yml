@@ -1,0 +1,90 @@
+name: Fetch Article Content
+
+on:
+  workflow_dispatch:
+    inputs:
+      article_url:
+        description: 'لینک خبر'
+        required: true
+        default: ''
+      article_title:
+        description: 'عنوان خبر'
+        required: true
+        default: ''
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y python3-pip
+          pip3 install newspaper3k --break-system-packages || pip3 install newspaper3k
+
+      - name: Fetch and extract article
+        run: |
+          python3 << EOF
+          from newspaper import Article
+          import json
+          import sys
+          
+          url = "${{ github.event.inputs.article_url }}"
+          title = "${{ github.event.inputs.article_title }}"
+          
+          try:
+              article = Article(url)
+              article.download()
+              article.parse()
+              
+              # گرفتن متن (حداکثر 4000 کاراکتر برای بله)
+              text = article.text[:4000]
+              
+              result = {
+                  "success": True,
+                  "title": article.title or title,
+                  "text": text,
+                  "top_image": article.top_image or "",
+                  "url": url
+              }
+          except Exception as e:
+              result = {
+                  "success": False,
+                  "error": str(e),
+                  "url": url
+              }
+          
+          with open('result.json', 'w', encoding='utf-8') as f:
+              json.dump(result, f, ensure_ascii=False, indent=2)
+          EOF
+
+      - name: Send to Bale
+        run: |
+          # خواندن نتیجه
+          SUCCESS=$(jq -r '.success' result.json)
+          
+          if [ "$SUCCESS" = "true" ]; then
+            TITLE=$(jq -r '.title' result.json)
+            TEXT=$(jq -r '.text' result.json)
+            URL=$(jq -r '.url' result.json)
+            
+            # ساخت پیام
+            MESSAGE="📰 *${TITLE}*%0A%0A"
+            MESSAGE="${MESSAGE}${TEXT}%0A%0A"
+            MESSAGE="${MESSAGE}━━━━━━━━━━━━━━━━━━━━%0A"
+            MESSAGE="${MESSAGE}🔗 [منبع خبر](${URL})%0A"
+            MESSAGE="${MESSAGE}🤖 Fox News Bot"
+            
+            curl -s -X POST "https://tapi.bale.ai/bot${{ secrets.BALE_TOKEN }}/sendMessage" \
+              -H "Content-Type: application/x-www-form-urlencoded" \
+              --data-urlencode "chat_id=${{ secrets.CHAT_ID }}" \
+              --data-urlencode "text=$MESSAGE" \
+              --data-urlencode "parse_mode=Markdown"
+          else
+            ERROR=$(jq -r '.error' result.json)
+            curl -s -X POST "https://tapi.bale.ai/bot${{ secrets.BALE_TOKEN }}/sendMessage" \
+              -H "Content-Type: application/x-www-form-urlencoded" \
+              --data-urlencode "chat_id=${{ secrets.CHAT_ID }}" \
+              --data-urlencode "text=❌ خطا در دریافت خبر: $ERROR" \
+              --data-urlencode "parse_mode=Markdown"
+          fi
