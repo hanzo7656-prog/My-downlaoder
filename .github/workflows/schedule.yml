@@ -21,57 +21,55 @@ jobs:
           
           echo '{"source":"foxnews","timestamp":"'$(date -Iseconds)'","articles":[' > news.json
           
-          # روش 1: استخراج لینک از a مجاور div.title
-          grep -A2 -B2 '<div class="title"><span>' fox.html | grep -oP 'href="\K[^"]+' | grep -E '^/20[0-9]{2}|^/[a-z]' | head -10 > links.txt
+          # استخراج لینک‌های واقعی خبر (دارای الگوی تاریخ یا slug استاندارد)
+          grep -oP 'https?://www\.foxnews\.com/([a-z-]+/)?(20[0-9]{2}/[0-9]{2}/[0-9]{2}/|[a-z-]+-)[0-9]+' fox.html | sort -u | head -8 > real_links.txt
           
-          # استخراج تیترها
-          grep -oP '(?<=<div class="title"><span>)[^<]+' fox.html | head -10 > titles.txt
-          
-          # ترکیب و تمیز کردن
-          paste titles.txt links.txt 2>/dev/null | while IFS=$'\t' read title link; do
-            if [ -n "$title" ] && [ -n "$link" ] && [ ${#title} -gt 15 ]; then
-              title=$(echo "$title" | sed 's/"/\\"/g')
-              if [[ $link != https* ]]; then
-                link="https://www.foxnews.com$link"
-              fi
-              # حذف لینک‌های تکراری و نامعتبر
-              if [[ $link != *"nation.foxnews.com"* ]] && [[ $link != *"radio.foxnews.com"* ]] && [[ $link != *"noticias.foxnews.com"* ]] && [[ $link != *"/books"* ]]; then
-                echo "{\"title\":\"$title\",\"link\":\"$link\"}," >> news.json
-              fi
+          # استخراج تیترهای مجاور این لینک‌ها
+          while read link; do
+            title=$(grep -B10 -A10 "$link" fox.html | grep -oP '(?<=<h[23] class="title">)[^<]+' | head -1)
+            if [ -z "$title" ]; then
+              title=$(grep -B10 -A10 "$link" fox.html | grep -oP '(?<=<div class="title"><span>)[^<]+' | head -1)
             fi
-          done
+            
+            if [ -n "$title" ] && [ ${#title} -gt 10 ]; then
+              title=$(echo "$title" | sed 's/"/\\"/g')
+              echo "{\"title\":\"$title\",\"link\":\"$link\"}," >> news.json
+            fi
+          done < real_links.txt
           
-          # روش 2: اگر روش اول لینکی نداشت، از لینک‌های داخل article استفاده کن
-          if [ ! -s news.json ] || [ "$(grep -c '"link"' news.json)" -lt 3 ]; then
-            grep -oP 'https?://www\.foxnews\.com/[a-z/-]+/[0-9]+' fox.html | sort -u | head -5 > links2.txt
-            grep -oP '(?<=<h[23] class="title">)[^<]+' fox.html | head -5 > titles2.txt
-            paste titles2.txt links2.txt 2>/dev/null | while IFS=$'\t' read title link; do
-              if [ -n "$title" ] && [ -n "$link" ]; then
-                title=$(echo "$title" | sed 's/"/\\"/g')
-                echo "{\"title\":\"$title\",\"link\":\"$link\"}," >> news.json
-              fi
-            done
-          fi
+          # حذف لینک‌های تکراری و نامعتبر
+          sed -i '/"link":.*\/games\//d' news.json
+          sed -i '/"link":.*\/video\//d' news.json
+          sed -i '/"link":.*\/books/d' news.json
+          sed -i '/"link":.*\/radio/d' news.json
+          sed -i '/"link":.*\/nation/d' news.json
+          sed -i '/"link":.*\/noticias/d' news.json
           
-          # حذف لینک‌های تکراری و ویرگول آخر
           sed -i '$ s/,$//' news.json
           echo ']}' >> news.json
           
-          # حذف تیترهای تکراری
-          cat news.json | head -20
+          echo "=== Final news.json ==="
+          cat news.json
 
       - name: Send to Bale
         run: |
           TEXT="🦊 آخرین اخبار فاکس نیوز\n\n"
           
-          for i in 1 2 3 4 5; do
-            TITLE=$(grep -o '"title":"[^"]*"' news.json | sed -n "${i}p" | sed 's/"title":"//;s/"//')
-            LINK=$(grep -o '"link":"[^"]*"' news.json | sed -n "${i}p" | sed 's/"link":"//;s/"//')
+          # خواندن 5 خبر اول معتبر
+          COUNT=1
+          while IFS= read -r line; do
+            TITLE=$(echo "$line" | grep -o '"title":"[^"]*"' | sed 's/"title":"//;s/"//')
+            LINK=$(echo "$line" | grep -o '"link":"[^"]*"' | sed 's/"link":"//;s/"//')
             
-            if [ -n "$TITLE" ] && [ -n "$LINK" ]; then
-              TEXT="${TEXT}${i}. ${TITLE}\nلینک: ${LINK}\n\n"
+            if [ -n "$TITLE" ] && [ ${#TITLE} -gt 10 ] && [ $COUNT -le 5 ]; then
+              TEXT="${TEXT}${COUNT}. ${TITLE}\nلینک: ${LINK}\n\n"
+              COUNT=$((COUNT+1))
             fi
-          done
+          done < <(grep -v '^\]' news.json | grep -v '^\[' | grep -v 'source' | grep -v 'timestamp')
+          
+          if [ $COUNT -eq 1 ]; then
+            TEXT="🦊 آخرین اخبار فاکس نیوز\n\nدر حال حاضر خبری یافت نشد.\n\n━━━━━━━━━━━━━━━━━━━━\n📅 $(date '+%Y-%m-%d %H:%M:%S')"
+          fi
           
           TEXT="${TEXT}━━━━━━━━━━━━━━━━━━━━\n📅 $(date '+%Y-%m-%d %H:%M:%S')\n\n⚠️ لینک خبر مورد نظر را کپی کرده و برای ربات بفرستید."
           
