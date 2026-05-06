@@ -1,4 +1,4 @@
-name: Fox News to Bale
+name: Fox News to Bale (Final)
 
 on:
   workflow_dispatch:
@@ -25,25 +25,30 @@ jobs:
 
       - name: Send to Bale
         run: |
-          # ساخت متن پیام
-          TEXT="🦊 اخبار لحظه‌ای فاکس نیوز\n\n"
+          # ساخت فایل موقت با خطوط جدید واقعی
+          {
+            echo "🦊 اخبار لحظه‌ای فاکس نیوز"
+            echo ""
+            
+            COUNT=1
+            while read line; do
+              echo "$COUNT. $line"
+              echo ""
+              COUNT=$((COUNT+1))
+            done < headlines.txt
+            
+            echo "━━━━━━━━━━━━━━━━━━━━"
+            echo "📅 $(date '+%Y-%m-%d %H:%M:%S')"
+            echo "🔗 https://raw.githubusercontent.com/${{ github.repository }}/main/news.json"
+            echo ""
+            echo "🤖 Fox News Bot"
+          } > message.txt
           
-          COUNT=1
-          while read line; do
-            TEXT="$TEXT$COUNT. $line\n\n"
-            COUNT=$((COUNT+1))
-          done < headlines.txt
-          
-          TEXT="$TEXT━━━━━━━━━━━━━━━━━━━━\n"
-          TEXT="$TEXT📅 $(date '+%Y-%m-%d %H:%M:%S')\n"
-          TEXT="$TEXT🔗 https://raw.githubusercontent.com/${{ github.repository }}/main/news.json\n\n"
-          TEXT="$TEXT🤖 Fox News Bot"
-          
-          # ارسال بدون JSON دستی
+          # ارسال
           curl -s -X POST "https://tapi.bale.ai/bot${{ secrets.BALE_TOKEN }}/sendMessage" \
             -H "Content-Type: application/x-www-form-urlencoded" \
             --data-urlencode "chat_id=${{ secrets.BALE_CHAT_ID }}" \
-            --data-urlencode "text=$TEXT" \
+            --data-urlencode "text=$(cat message.txt)" \
             --data-urlencode "parse_mode=Markdown"
 
       - name: Save
