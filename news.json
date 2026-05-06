@@ -1,155 +1,155 @@
 {
   "source": "",
-  "timestamp": "2026-05-06T14:44:10+00:00",
+  "timestamp": "2026-05-06T17:29:09+00:00",
   "articles": [
     {
-      "title": "Watch Live - FOX News Shows",
+      "title": "Watch Fox News Live",
+      "link": "https://a57.foxnews.com/prod-hp.foxnews.com/images/2026/05/604/342/9aa35dcec762381bdb4768b7ede0a979.gif?tl=1",
+      "type": "direct"
+    },
+    {
+      "title": "Watch Fox News Live",
+      "link": "https://a57.foxnews.com/static.foxnews.com/foxnews.com/content/uploads/2025/04/192/108/donald-trump-young-kids.jpg?ve=1",
+      "type": "direct"
+    },
+    {
+      "title": "Watch Fox News Live",
+      "link": "https://a57.foxnews.com/static.foxnews.com/foxnews.com/content/uploads/2025/04/218/123/donald-trump-young-kids.jpg?ve=1",
+      "type": "direct"
+    },
+    {
+      "title": "Watch Fox News Live",
+      "link": "https://a57.foxnews.com/static.foxnews.com/foxnews.com/content/uploads/2025/04/343/193/donald-trump-young-kids.jpg?ve=1",
+      "type": "direct"
+    },
+    {
+      "title": "Watch Fox News Live",
+      "link": "https://a57.foxnews.com/static.foxnews.com/foxnews.com/content/uploads/2025/04/384/216/donald-trump-young-kids.jpg?ve=1",
+      "type": "direct"
+    },
+    {
+      "title": "Watch Fox News Live",
+      "link": "https://a57.foxnews.com/static.foxnews.com/foxnews.com/content/uploads/2025/04/436/246/donald-trump-young-kids.jpg?ve=1",
+      "type": "direct"
+    },
+    {
+      "title": "Watch Fox News Live",
+      "link": "https://a57.foxnews.com/static.foxnews.com/foxnews.com/content/uploads/2025/04/686/386/donald-trump-young-kids.jpg?ve=1",
+      "type": "direct"
+    },
+    {
+      "title": "Terms of Use",
       "link": "https://help.foxnews.com/hc/en-us",
       "type": "direct"
     },
     {
-      "title": "network navigation",
+      "title": "Apps & Products - FOX Nation",
       "link": "https://nation.foxnews.com",
       "type": "direct"
     },
     {
-      "title": "network navigation",
-      "link": "https://nation.foxnews.com/",
+      "title": "Apps & Products - FOX Noticias",
+      "link": "https://noticias.foxnews.com",
       "type": "direct"
     },
     {
-      "title": "network navigation",
+      "title": "Apps & Products - FOX Noticias",
       "link": "https://noticias.foxnews.com/",
       "type": "direct"
     },
     {
-      "title": "Science & Tech - Air & Space",
+      "title": "Apps & Products - FOX Noticias",
       "link": "https://noticias.foxnews.com/shows/fox-noticias",
       "type": "direct"
     },
     {
-      "title": "Games - Scattergories Daily",
+      "title": "About - Media Relations",
       "link": "https://press.foxnews.com",
       "type": "direct"
     },
     {
-      "title": "Games - Scattergories Daily",
+      "title": "About - Media Relations",
       "link": "https://press.foxnews.com/media-contacts",
       "type": "direct"
     },
     {
-      "title": "Watch Live - FOX News Shows",
+      "title": "Terms of Use",
       "link": "https://privacy.foxnews.com/main/web/main",
       "type": "direct"
     },
     {
-      "title": "network navigation",
+      "title": "Apps & Products - FOX News Radio",
       "link": "https://radio.foxnews.com",
       "type": "direct"
     },
     {
-      "title": "network navigation",
+      "title": "Apps & Products - FOX News Podcasts",
       "link": "https://radio.foxnews.com/",
       "type": "direct"
     },
     {
-      "title": "Science & Tech - Air & Space",
+      "title": "Apps & Products - FOX News Podcasts",
       "link": "https://radio.foxnews.com/podcast/",
       "type": "direct"
     },
     {
-      "title": "Science & Tech - Air & Space",
+      "title": "Apps & Products - FOX News Shop",
       "link": "https://shop.foxnews.com",
       "type": "direct"
     },
     {
-      "title": "Science & Tech - Air & Space",
+      "title": "Apps & Products - FOX News Shop",
       "link": "https://shop.foxnews.com/",
       "type": "direct"
     },
     {
-      "title": "404 | Fox News",
-      "link": "https://static.foxnews.com/static/strike/scripts/libs/prebid.js",
-      "type": "direct"
-    },
-    {
-      "title": "network navigation",
+      "title": "Fox News - Go to homepage",
       "link": "https://www.foxnews.com",
       "type": "direct"
     },
     {
-      "title": "network navigation",
+      "title": "U.S. submenu",
       "link": "https://www.foxnews.com/",
       "type": "direct"
     },
     {
-      "title": "network navigation",
-      "link": "https://www.foxnews.com/books",
+      "title": "Apps & Products",
+      "link": "https://www.foxnews.com/apps-products",
       "type": "direct"
     },
     {
-      "title": "Search foxnews.com",
-      "link": "https://www.foxnews.com/category/health/healthy-living/longevity",
-      "type": "direct"
-    },
-    {
-      "title": "Search foxnews.com",
-      "link": "https://www.foxnews.com/category/person/blake-lively",
-      "type": "direct"
-    },
-    {
-      "title": "Mobile Menu",
-      "link": "https://www.foxnews.com/category/politics/defense/wars/war-with-iran",
-      "type": "direct"
-    },
-    {
-      "title": "Mobile Menu",
+      "title": "Watch Fox News Live",
       "link": "https://www.foxnews.com/category/tech/artificial-intelligence",
       "type": "direct"
     },
     {
-      "title": "Mobile Menu",
-      "link": "https://www.foxnews.com/category/us/america-250",
-      "type": "direct"
-    },
-    {
-      "title": "Watch Live - FOX News Shows",
+      "title": "Terms of Use",
       "link": "https://www.foxnews.com/closed-captioning",
       "type": "direct"
     },
     {
-      "title": "Watch Live - FOX News Shows",
-      "link": "https://www.foxnews.com/html-sitemap",
+      "title": "Watch Fox News Live",
+      "link": "https://www.foxnews.com/deals/practical-mothers-day-gifts",
       "type": "direct"
     },
     {
-      "title": "Watch Live - FOX News Shows",
-      "link": "https://www.foxnews.com/html-video-sitemap",
+      "title": "Watch Fox News Live",
+      "link": "https://www.foxnews.com/deals/skechers-deals",
       "type": "direct"
     },
     {
-      "title": "Science & Tech - Air & Space",
-      "link": "https://www.foxnews.com/newsletters",
+      "title": "Entertainment submenu",
+      "link": "https://www.foxnews.com/entertainment",
       "type": "direct"
     },
     {
-      "title": "network navigation",
-      "link": "https://www.foxnews.com/outkick",
+      "title": "Watch Fox News Live",
+      "link": "https://www.foxnews.com/entertainment/alex-coopers-reported-marriage-woes-spotlight-trend-stars-sleeping-apart-from-bette-midler-kaley-cuoco",
       "type": "direct"
     },
     {
-      "title": "Watch Live - FOX News Shows",
-      "link": "https://www.foxnews.com/privacy-policy",
-      "type": "direct"
-    },
-    {
-      "title": "Science & Tech - Air & Space",
-      "link": "https://www.foxnews.com/story/foxnews-com-rss-feeds",
-      "type": "direct"
-    },
-    {
-      "title": "Watch Live - FOX News Shows",
-      "link": "https://www.foxnews.com/terms-of-use",
+      "title": "Watch Fox News Live",
+      "link": "https://www.foxnews.com/entertainment/demi-moore-corrects-fans-how-say-her-name-after-years-being-mispronounced",
       "type": "direct"
     }
   ]

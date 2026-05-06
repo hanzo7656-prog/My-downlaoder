@@ -1,5 +1,5 @@
-🟢 Using custom URL: https://www.foxnews.com/www.foxnews.com/category/topic/associated-press%0A%0A•
-📄 Downloaded at Wed May  6 14:44:10 UTC 2026
+🟢 Using default URL: Fox News
+📄 Downloaded at Wed May  6 17:29:09 UTC 2026
 ✅ Extracted 30 links
 
 === LINK TYPES FOUND ===
