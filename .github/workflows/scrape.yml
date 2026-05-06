@@ -1,37 +1,57 @@
-name: Simple Fox News Downloader
+name: Fox News Scraper with JSON Output
 
 on:
   workflow_dispatch:
+  schedule:
+    - cron: '0 */6 * * *' # هر 6 ساعت یکبار (برای مصرف کمتر)
 
 jobs:
-  download:
+  scrape:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-    
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-      
-      - name: Download Fox News
+
+      - name: Install htmlq (a powerful HTML parser)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y htmlq
+
+      - name: Scrape Fox News
         run: |
           # دانلود صفحه اصلی
           curl -L -H "User-Agent: Mozilla/5.0" https://www.foxnews.com/ > fox_news.html
           
-          # یک فایل متنی ساده بسازیم (مطمئن)
-          echo "This is a test file" > test.txt
-          echo "Download completed at: $(date)" >> test.txt
+          # استخراج تیترها و لینک‌ها با htmlq
+          echo '{"source":"foxnews","timestamp":"'$(date -Iseconds)'","articles":[' > news.json
           
-          # یک فایل JSON ساده
-          echo '{"status":"success","time":"'$(date)'"}' > result.json
+          # انتخاب المان‌های حاوی تیتر
+          # این الگو بر اساس ساختار فعلی فاکس نیوز است (عنوان در <h2> یا <h3> با کلاس "title")
+          htmlq --attribute href 'a' --text 'h2.title, h3.title' fox_news.html | head -60 | while read -r line; do
+            if [[ $line == https://www.foxnews.com/* ]]; then
+              current_link=$line
+            elif [[ -n $line && -n $current_link ]]; then
+              # پاک کردن کاراکترهای خاص از تیتر
+              title=$(echo "$line" | sed 's/"/\\"/g' | tr -d '\n')
+              echo '{"title":"'$title'","link":"'$current_link'"},' >> news.json
+              current_link=""
+            fi
+          done
           
-          # لیست فایل‌های ساخته شده
-          ls -la
-      
-      - name: Commit and push files
+          # حذف کامای آخر و بستن JSON
+          sed -i '$ s/,$//' news.json
+          echo ']}' >> news.json
+          
+          # ایجاد یک فایل ساده از تیترها برای مطالعه سریع
+          grep -E '"title"' news.json | sed 's/.*"title":"\(.*\)".*/\1/' > headlines.txt
+
+      - name: Commit and Push
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add fox_news.html test.txt result.json
-          git commit -m "Add downloaded files - $(date)" || echo "No new files to commit"
+          git add fox_news.html news.json headlines.txt
+          git commit -m "Auto-update news - $(date -Iseconds)" || echo "No changes to commit"
           git push
