@@ -39,8 +39,14 @@ jobs:
 
       - name: Send to Bale
         run: |
-          TITLES=$(jq -r '.articles[0:5][] | "• " + .title + "\nلینک: " + .link + "\n"' news.json)
-          MESSAGE="🦊 *آخرین اخبار فاکس نیوز*%0A%0A${TITLES}%0A━━━━━━━━━━━━━━━━━━━━%0A📅 $(date '+%Y-%m-%d %H:%M:%S')%0A%0A⚠️ برای خواندن هر خبر، لینک آن را برای ربات بفرستید."
+          # استخراج تیترها از news.json
+          TITLES=$(grep -o '"title":"[^"]*"' news.json | head -5 | sed 's/"title":"//;s/"//' | sed 's/^/• /' | paste -sd "%0A%0A")
+          
+          if [ -z "$TITLES" ]; then
+            MESSAGE="🦊 *آخرین اخبار فاکس نیوز*%0A%0Aدر حال حاضر خبری یافت نشد.%0A%0A━━━━━━━━━━━━━━━━━━━━%0A📅 $(date '+%Y-%m-%d %H:%M:%S')"
+          else
+            MESSAGE="🦊 *آخرین اخبار فاکس نیوز*%0A%0A${TITLES}%0A%0A━━━━━━━━━━━━━━━━━━━━%0A📅 $(date '+%Y-%m-%d %H:%M:%S')%0A%0A⚠️ برای خواندن هر خبر، لینک آن را برای ربات بفرستید."
+          fi
           
           curl -s -X POST "https://tapi.bale.ai/bot${{ secrets.BALE_TOKEN }}/sendMessage" \
             -H "Content-Type: application/x-www-form-urlencoded" \
