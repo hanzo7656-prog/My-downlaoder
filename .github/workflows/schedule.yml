@@ -21,30 +21,24 @@ jobs:
           
           echo '{"source":"foxnews","timestamp":"'$(date -Iseconds)'","articles":[' > news.json
           
-          # الگوی 1: تیترهای اصلی (div.title span)
-          grep -oP '(?<=<div class="title"><span>)[^<]+' fox.html | while read title; do
+          # استخراج تیترهای اصلی (div.title span)
+          grep -oP '(?<=<div class="title"><span>)[^<]+' fox.html | head -10 | while read title; do
+            title=$(echo "$title" | sed 's/"/\\"/g')
             echo "{\"title\":\"$title\",\"type\":\"main\"}," >> news.json
           done
           
-          # الگوی 2: تیترهای بخش‌ها (h3.title a)
-          grep -oP '(?<=<h3 class="title"><a href=")[^"]+' fox.html | while read link; do
-            full_link="https://www.foxnews.com$link"
-            title=$(grep -A1 "href=\"$link\"" fox.html | grep -oP '(?<=>)[^<]+' | head -1)
-            if [ -n "$title" ] && [ ${#title} -gt 10 ]; then
-              echo "{\"title\":\"$title\",\"link\":\"$full_link\",\"type\":\"section\"}," >> news.json
-            fi
-          done
-          
+          # حذف ویرگول آخر
           sed -i '$ s/,$//' news.json
           echo ']}' >> news.json
           
-          # حذف تیترهای تکراری و کوتاه
-          jq '.articles = [.articles[] | select(.title | length > 15)] | .articles = unique_by(.title)' news.json > temp.json && mv temp.json news.json
+          # نمایش نتیجه برای دیباگ
+          echo "=== Extracted titles ==="
+          cat news.json | head -20
 
       - name: Send to Bale
         run: |
-          # استخراج 5 تیتر اصلی
-          TITLES=$(jq -r '.articles[] | select(.type=="main") | .title' news.json | head -5)
+          # استخراج تیترها با grep (بدون jq)
+          TITLES=$(grep -o '"title":"[^"]*"' news.json | head -5 | sed 's/"title":"//;s/"//')
           
           if [ -z "$TITLES" ]; then
             TEXT="🦊 آخرین اخبار فاکس نیوز\n\nدر حال حاضر خبری یافت نشد.\n\n━━━━━━━━━━━━━━━━━━━━\n📅 $(date '+%Y-%m-%d %H:%M:%S')"
@@ -60,7 +54,7 @@ jobs:
           
           curl -s -X POST "https://tapi.bale.ai/bot${{ secrets.BALE_TOKEN }}/sendMessage" \
             -H "Content-Type: application/json" \
-            -d "$(jq -n --arg chat "${{ secrets.CHAT_ID }}" --arg text "$TEXT" '{chat_id: $chat, text: $text, parse_mode: "Markdown"}')"
+            -d "$(echo '{}' | jq --arg chat "${{ secrets.CHAT_ID }}" --arg text "$TEXT" '.chat_id=$chat | .text=$text | .parse_mode="Markdown"')"
 
       - name: Commit
         run: |
