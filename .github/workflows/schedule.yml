@@ -1,65 +1,44 @@
-name: Fox News Scheduler
+- name: Extract Headlines with Links
+  run: |
+    curl -L -H "User-Agent: Mozilla/5.0" https://www.foxnews.com/ > fox.html
+    
+    echo '{"source":"foxnews","timestamp":"'$(date -Iseconds)'","articles":[' > news.json
+    
+    # استخراج تیترها
+    grep -oP '(?<=<div class="title"><span>)[^<]+' fox.html | head -5 > titles.txt
+    
+    # استخراج لینک‌ها (از تگ‌های a در اطراف تیتر)
+    grep -oP '(?<=<a href=")[^"]+' fox.html | grep -E '^/|foxnews' | head -5 > links.txt
+    
+    # ترکیب تیتر و لینک
+    paste titles.txt links.txt 2>/dev/null | while IFS=$'\t' read title link; do
+      if [ -n "$title" ]; then
+        title=$(echo "$title" | sed 's/"/\\"/g')
+        if [[ $link != https* ]]; then
+          link="https://www.foxnews.com$link"
+        fi
+        echo "{\"title\":\"$title\",\"link\":\"$link\"}," >> news.json
+      fi
+    done
+    
+    sed -i '$ s/,$//' news.json
+    echo ']}' >> news.json
 
-on:
-  workflow_dispatch:
-  schedule:
-    - cron: '0 */4 * * *'
-
-jobs:
-  scrape:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Extract Headlines
-        run: |
-          curl -L -H "User-Agent: Mozilla/5.0" https://www.foxnews.com/ > fox.html
-          
-          echo '{"source":"foxnews","timestamp":"'$(date -Iseconds)'","articles":[' > news.json
-          
-          # استخراج تیترهای اصلی (div.title span)
-          grep -oP '(?<=<div class="title"><span>)[^<]+' fox.html | head -10 | while read title; do
-            title=$(echo "$title" | sed 's/"/\\"/g')
-            echo "{\"title\":\"$title\",\"type\":\"main\"}," >> news.json
-          done
-          
-          # حذف ویرگول آخر
-          sed -i '$ s/,$//' news.json
-          echo ']}' >> news.json
-          
-          # نمایش نتیجه برای دیباگ
-          echo "=== Extracted titles ==="
-          cat news.json | head -20
-
-      - name: Send to Bale
-        run: |
-          # استخراج تیترها با grep (بدون jq)
-          TITLES=$(grep -o '"title":"[^"]*"' news.json | head -5 | sed 's/"title":"//;s/"//')
-          
-          if [ -z "$TITLES" ]; then
-            TEXT="🦊 آخرین اخبار فاکس نیوز\n\nدر حال حاضر خبری یافت نشد.\n\n━━━━━━━━━━━━━━━━━━━━\n📅 $(date '+%Y-%m-%d %H:%M:%S')"
-          else
-            TEXT="🦊 آخرین اخبار فاکس نیوز\n\n"
-            COUNT=1
-            while IFS= read -r line; do
-              TEXT="${TEXT}${COUNT}. ${line}\n\n"
-              COUNT=$((COUNT+1))
-            done <<< "$TITLES"
-            TEXT="${TEXT}━━━━━━━━━━━━━━━━━━━━\n📅 $(date '+%Y-%m-%d %H:%M:%S')\n\n⚠️ لینک خبر مورد نظر را کپی کرده و برای ربات بفرستید."
-          fi
-          
-          curl -s -X POST "https://tapi.bale.ai/bot${{ secrets.BALE_TOKEN }}/sendMessage" \
-            -H "Content-Type: application/json" \
-            -d "$(echo '{}' | jq --arg chat "${{ secrets.CHAT_ID }}" --arg text "$TEXT" '.chat_id=$chat | .text=$text | .parse_mode="Markdown"')"
-
-      - name: Commit
-        run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add news.json
-          git diff --staged --quiet || git commit -m "Update news $(date)"
-          git push origin HEAD:main
+- name: Send to Bale
+  run: |
+    TEXT="🦊 آخرین اخبار فاکس نیوز\n\n"
+    
+    for i in 1 2 3 4 5; do
+      TITLE=$(grep -o '"title":"[^"]*"' news.json | sed -n "${i}p" | sed 's/"title":"//;s/"//')
+      LINK=$(grep -o '"link":"[^"]*"' news.json | sed -n "${i}p" | sed 's/"link":"//;s/"//')
+      
+      if [ -n "$TITLE" ]; then
+        TEXT="${TEXT}${i}. ${TITLE}\nلینک: ${LINK}\n\n"
+      fi
+    done
+    
+    TEXT="${TEXT}━━━━━━━━━━━━━━━━━━━━\n📅 $(date '+%Y-%m-%d %H:%M:%S')\n\n⚠️ لینک خبر مورد نظر را کپی کرده و برای ربات بفرستید."
+    
+    curl -s -X POST "https://tapi.bale.ai/bot${{ secrets.BALE_TOKEN }}/sendMessage" \
+      -H "Content-Type: application/json" \
+      -d "{\"chat_id\": \"${{ secrets.CHAT_ID }}\", \"text\": \"$TEXT\", \"parse_mode\": \"Markdown\"}"
