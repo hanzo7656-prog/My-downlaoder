@@ -15,72 +15,36 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Extract Headlines
+      - name: Download Fox News
         run: |
           curl -L -H "User-Agent: Mozilla/5.0" https://www.foxnews.com/ > fox.html
-          
-          echo '{"source":"foxnews","timestamp":"'$(date -Iseconds)'","articles":[' > news.json
-          
-          # استخراج لینک‌های واقعی خبر (دارای الگوی تاریخ یا slug استاندارد)
-          grep -oP 'https?://www\.foxnews\.com/([a-z-]+/)?(20[0-9]{2}/[0-9]{2}/[0-9]{2}/|[a-z-]+-)[0-9]+' fox.html | sort -u | head -8 > real_links.txt
-          
-          # استخراج تیترهای مجاور این لینک‌ها
-          while read link; do
-            title=$(grep -B10 -A10 "$link" fox.html | grep -oP '(?<=<h[23] class="title">)[^<]+' | head -1)
-            if [ -z "$title" ]; then
-              title=$(grep -B10 -A10 "$link" fox.html | grep -oP '(?<=<div class="title"><span>)[^<]+' | head -1)
-            fi
-            
-            if [ -n "$title" ] && [ ${#title} -gt 10 ]; then
-              title=$(echo "$title" | sed 's/"/\\"/g')
-              echo "{\"title\":\"$title\",\"link\":\"$link\"}," >> news.json
-            fi
-          done < real_links.txt
-          
-          # حذف لینک‌های تکراری و نامعتبر
-          sed -i '/"link":.*\/games\//d' news.json
-          sed -i '/"link":.*\/video\//d' news.json
-          sed -i '/"link":.*\/books/d' news.json
-          sed -i '/"link":.*\/radio/d' news.json
-          sed -i '/"link":.*\/nation/d' news.json
-          sed -i '/"link":.*\/noticias/d' news.json
-          
-          sed -i '$ s/,$//' news.json
-          echo ']}' >> news.json
-          
-          echo "=== Final news.json ==="
-          cat news.json
+          echo "Download completed"
 
-      - name: Send to Bale
+      - name: Debug - Show links and titles
         run: |
-          TEXT="🦊 آخرین اخبار فاکس نیوز\n\n"
+          echo "=== ALL LINKS in page ==="
+          grep -oP 'https?://www\.foxnews\.com/[^"\s]+' fox.html | sort -u | head -30
           
-          # خواندن 5 خبر اول معتبر
-          COUNT=1
-          while IFS= read -r line; do
-            TITLE=$(echo "$line" | grep -o '"title":"[^"]*"' | sed 's/"title":"//;s/"//')
-            LINK=$(echo "$line" | grep -o '"link":"[^"]*"' | sed 's/"link":"//;s/"//')
-            
-            if [ -n "$TITLE" ] && [ ${#TITLE} -gt 10 ] && [ $COUNT -le 5 ]; then
-              TEXT="${TEXT}${COUNT}. ${TITLE}\nلینک: ${LINK}\n\n"
-              COUNT=$((COUNT+1))
-            fi
-          done < <(grep -v '^\]' news.json | grep -v '^\[' | grep -v 'source' | grep -v 'timestamp')
+          echo ""
+          echo "=== LINKS with date pattern (year/month/day) ==="
+          grep -oP 'https?://www\.foxnews\.com/[0-9]{4}/[0-9]{2}/[0-9]{2}/[^"\s]+' fox.html | head -10
           
-          if [ $COUNT -eq 1 ]; then
-            TEXT="🦊 آخرین اخبار فاکس نیوز\n\nدر حال حاضر خبری یافت نشد.\n\n━━━━━━━━━━━━━━━━━━━━\n📅 $(date '+%Y-%m-%d %H:%M:%S')"
-          fi
+          echo ""
+          echo "=== TITLES found ==="
+          grep -oP '(?<=<h[23] class="title">)[^<]+' fox.html | head -10
           
-          TEXT="${TEXT}━━━━━━━━━━━━━━━━━━━━\n📅 $(date '+%Y-%m-%d %H:%M:%S')\n\n⚠️ لینک خبر مورد نظر را کپی کرده و برای ربات بفرستید."
+          echo ""
+          echo "=== TITLES from div.title.span ==="
+          grep -oP '(?<=<div class="title"><span>)[^<]+' fox.html | head -10
           
-          curl -s -X POST "https://tapi.bale.ai/bot${{ secrets.BALE_TOKEN }}/sendMessage" \
-            -H "Content-Type: application/json" \
-            -d "{\"chat_id\": \"${{ secrets.CHAT_ID }}\", \"text\": \"$TEXT\", \"parse_mode\": \"Markdown\"}"
+          echo ""
+          echo "=== First 100 lines of HTML ==="
+          head -100 fox.html
 
-      - name: Commit
+      - name: Commit debug file
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add news.json
-          git commit -m "Update news $(date)" || echo "No changes"
+          git add fox.html
+          git commit -m "Debug fox news page" || echo "No changes"
           git push
