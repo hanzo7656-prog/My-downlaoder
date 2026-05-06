@@ -1,0 +1,54 @@
+name: Fox News Scheduler
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 */4 * * *'
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Extract Headlines with Links
+        run: |
+          curl -L -H "User-Agent: Mozilla/5.0" https://www.foxnews.com/ > fox.html
+          
+          # استخراج تیتر و لینک
+          echo '{"source":"foxnews","timestamp":"'$(date -Iseconds)'","articles":[' > news.json
+          
+          # پیدا کردن لینک‌ها و تیترهای مرتبط
+          grep -oP 'href="\K[^"]+' fox.html | grep -E '^/|[a-z]' | while read link; do
+            # تبدیل لینک نسبی به مطلق
+            if [[ $link != http* ]]; then
+              link="https://www.foxnews.com$link"
+            fi
+            
+            # پیدا کردن تیتر مرتبط با این لینک
+            title=$(grep -A2 -B2 "$link" fox.html | grep -oP '(?<=<h[23] class="title">)[^<]+' | head -1)
+            
+            if [ -n "$title" ] && [ ${#title} -gt 10 ]; then
+              title=$(echo "$title" | sed 's/"/\\"/g')
+              echo "{\"title\":\"$title\",\"link\":\"$link\"}," >> news.json
+            fi
+          done
+          
+          # حذف ویرگول آخر و بستن JSON
+          sed -i '$ s/,$//' news.json
+          echo ']}' >> news.json
+          
+          # فقط 10 تیتر مهم را نگه دار
+          head -20 news.json > news_temp.json && mv news_temp.json news.json
+
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add news.json
+          git commit -m "Update headlines $(date)" || echo "No changes"
+          git push
