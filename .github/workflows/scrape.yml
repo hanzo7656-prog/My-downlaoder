@@ -1,28 +1,55 @@
-      - name: Send to Bale (Pure Bash)
+name: Fox News to Bale
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 */4 * * *'
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download Fox News
         run: |
-          # ساخت فایل موقت برای متن
-          cat > message.txt << 'EOF'
-🦊 اخبار لحظه‌ای فاکس نیوز
+          curl -L -H "User-Agent: Mozilla/5.0" https://www.foxnews.com/ > fox_news.html
 
+      - name: Extract Headlines
+        run: |
+          grep -oP '(?<=<div class="title"><span>)[^<]+' fox_news.html | head -7 > headlines.txt
 
-EOF
+      - name: Send to Bale
+        run: |
+          # ساخت متن پیام
+          TEXT="🦊 اخبار لحظه‌ای فاکس نیوز\n\n"
           
           COUNT=1
-          while IFS= read -r line; do
-            echo "${COUNT}. ${line}" >> message.txt
-            echo "" >> message.txt
+          while read line; do
+            TEXT="$TEXT$COUNT. $line\n\n"
             COUNT=$((COUNT+1))
           done < headlines.txt
           
-          echo "━━━━━━━━━━━━━━━━━━━━" >> message.txt
-          echo "📅 $(date '+%Y-%m-%d %H:%M:%S')" >> message.txt
-          echo "🔗 مشاهده همه اخبار: https://raw.githubusercontent.com/${{ github.repository }}/main/news.json" >> message.txt
-          echo "" >> message.txt
-          echo "🤖 Fox News Bot" >> message.txt
+          TEXT="$TEXT━━━━━━━━━━━━━━━━━━━━\n"
+          TEXT="$TEXT📅 $(date '+%Y-%m-%d %H:%M:%S')\n"
+          TEXT="$TEXT🔗 https://raw.githubusercontent.com/${{ github.repository }}/main/news.json\n\n"
+          TEXT="$TEXT🤖 Fox News Bot"
           
-          # خواندن متن و تبدیل به JSON
-          TEXT=$(cat message.txt | sed 's/"/\\"/g')
-          
+          # ارسال بدون JSON دستی
           curl -s -X POST "https://tapi.bale.ai/bot${{ secrets.BALE_TOKEN }}/sendMessage" \
-            -H "Content-Type: application/json" \
-            -d "{\"chat_id\": \"${{ secrets.BALE_CHAT_ID }}\", \"text\": \"$TEXT\", \"parse_mode\": \"Markdown\"}"
+            -H "Content-Type: application/x-www-form-urlencoded" \
+            --data-urlencode "chat_id=${{ secrets.BALE_CHAT_ID }}" \
+            --data-urlencode "text=$TEXT" \
+            --data-urlencode "parse_mode=Markdown"
+
+      - name: Save
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add fox_news.html headlines.txt
+          git commit -m "Update $(date)" || echo "No changes"
+          git push
