@@ -1,22 +1,13 @@
 {
   "source": "foxnews.com",
-  "timestamp": "2026-05-06T10:05:46+00:00",
+  "timestamp": "2026-05-06T10:31:00+00:00",
   "articles": [
-    // === TOP STORIES (div.title) === //,
-    {"title": "Copperhead snake BITES mayor’s wife", "type": "top-story"},
-    {"title": "Sting says no FORTUNE for kids", "type": "top-story"},
-    {"title": "Martha Stewart's GORGEOUS party trick", "type": "top-story"},
-    {"title": "Exploring the 'OZEMPIC breath' side effect", "type": "top-story"},
-    {"title": "'Mormon Wives' star OPENS UP on affair", "type": "top-story"},
-    {"title": "Massive 2,000-lb. sea lion SHOCKS tourists", "type": "top-story"},
-    {"title": "White House honey SWEETENS royal visit", "type": "top-story"},
-    // === FEATURED (h3.title) === //,
-    {"title": "Copperhead snake BITES mayor’s wife", "type": "feature"},
-    {"title": "Sting says no FORTUNE for kids", "type": "feature"},
-    {"title": "Martha Stewart's GORGEOUS party trick", "type": "feature"},
-    {"title": "Exploring the 'OZEMPIC breath' side effect", "type": "feature"},
-    {"title": "'Mormon Wives' star OPENS UP on affair", "type": "feature"},
-    {"title": "Massive 2,000-lb. sea lion SHOCKS tourists", "type": "feature"},
-    {"title": "White House honey SWEETENS royal visit", "type": "feature"}
+    "Copperhead snake BITES mayor’s wife",
+    "Sting says no FORTUNE for kids",
+    "Martha Stewart's GORGEOUS party trick",
+    "Exploring the 'OZEMPIC breath' side effect",
+    "'Mormon Wives' star OPENS UP on affair",
+    "Massive 2,000-lb. sea lion SHOCKS tourists",
+    "White House honey SWEETENS royal visit"
   ]
 }
