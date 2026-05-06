@@ -21,38 +21,46 @@ jobs:
           
           echo '{"source":"foxnews","timestamp":"'$(date -Iseconds)'","articles":[' > news.json
           
-          grep -oP 'href="\K[^"]+' fox.html | grep -E '^/[a-z]|https://www.foxnews.com/[a-z]' | while read link; do
-            if [[ $link != http* ]]; then
-              link="https://www.foxnews.com$link"
-            fi
-            
-            title=$(grep -B5 -A5 "$link" fox.html | grep -oP '(?<=<h[23] class="title">)[^<]+' | head -1)
-            
-            if [ -n "$title" ] && [ ${#title} -gt 15 ]; then
-              title=$(echo "$title" | sed 's/"/\\"/g')
-              echo "{\"title\":\"$title\",\"link\":\"$link\"}," >> news.json
+          # الگوی 1: تیترهای اصلی (div.title span)
+          grep -oP '(?<=<div class="title"><span>)[^<]+' fox.html | while read title; do
+            echo "{\"title\":\"$title\",\"type\":\"main\"}," >> news.json
+          done
+          
+          # الگوی 2: تیترهای بخش‌ها (h3.title a)
+          grep -oP '(?<=<h3 class="title"><a href=")[^"]+' fox.html | while read link; do
+            full_link="https://www.foxnews.com$link"
+            title=$(grep -A1 "href=\"$link\"" fox.html | grep -oP '(?<=>)[^<]+' | head -1)
+            if [ -n "$title" ] && [ ${#title} -gt 10 ]; then
+              echo "{\"title\":\"$title\",\"link\":\"$full_link\",\"type\":\"section\"}," >> news.json
             fi
           done
           
           sed -i '$ s/,$//' news.json
           echo ']}' >> news.json
+          
+          # حذف تیترهای تکراری و کوتاه
+          jq '.articles = [.articles[] | select(.title | length > 15)] | .articles = unique_by(.title)' news.json > temp.json && mv temp.json news.json
 
       - name: Send to Bale
         run: |
-          # استخراج تیترها از news.json
-          TITLES=$(grep -o '"title":"[^"]*"' news.json | head -5 | sed 's/"title":"//;s/"//' | sed 's/^/• /' | paste -sd "%0A%0A")
+          # استخراج 5 تیتر اصلی
+          TITLES=$(jq -r '.articles[] | select(.type=="main") | .title' news.json | head -5)
           
           if [ -z "$TITLES" ]; then
-            MESSAGE="🦊 *آخرین اخبار فاکس نیوز*%0A%0Aدر حال حاضر خبری یافت نشد.%0A%0A━━━━━━━━━━━━━━━━━━━━%0A📅 $(date '+%Y-%m-%d %H:%M:%S')"
+            TEXT="🦊 آخرین اخبار فاکس نیوز\n\nدر حال حاضر خبری یافت نشد.\n\n━━━━━━━━━━━━━━━━━━━━\n📅 $(date '+%Y-%m-%d %H:%M:%S')"
           else
-            MESSAGE="🦊 *آخرین اخبار فاکس نیوز*%0A%0A${TITLES}%0A%0A━━━━━━━━━━━━━━━━━━━━%0A📅 $(date '+%Y-%m-%d %H:%M:%S')%0A%0A⚠️ برای خواندن هر خبر، لینک آن را برای ربات بفرستید."
+            TEXT="🦊 آخرین اخبار فاکس نیوز\n\n"
+            COUNT=1
+            while IFS= read -r line; do
+              TEXT="${TEXT}${COUNT}. ${line}\n\n"
+              COUNT=$((COUNT+1))
+            done <<< "$TITLES"
+            TEXT="${TEXT}━━━━━━━━━━━━━━━━━━━━\n📅 $(date '+%Y-%m-%d %H:%M:%S')\n\n⚠️ لینک خبر مورد نظر را کپی کرده و برای ربات بفرستید."
           fi
           
           curl -s -X POST "https://tapi.bale.ai/bot${{ secrets.BALE_TOKEN }}/sendMessage" \
-            -H "Content-Type: application/x-www-form-urlencoded" \
-            --data-urlencode "chat_id=${{ secrets.CHAT_ID }}" \
-            --data-urlencode "text=$MESSAGE" \
-            --data-urlencode "parse_mode=Markdown"
+            -H "Content-Type: application/json" \
+            -d "$(jq -n --arg chat "${{ secrets.CHAT_ID }}" --arg text "$TEXT" '{chat_id: $chat, text: $text, parse_mode: "Markdown"}')"
 
       - name: Commit
         run: |
