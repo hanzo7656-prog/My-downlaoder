@@ -1,4 +1,4 @@
-name: Fox News to Bale (Final)
+name: Fox News to Bale (Clean)
 
 on:
   workflow_dispatch:
@@ -25,25 +25,30 @@ jobs:
           grep -oP '(?<=<div class="title"><span>)[^<]+' fox_news.html | head -10 > headlines.txt
           echo "✅ Extracted $(wc -l < headlines.txt) headlines"
 
-      - name: Send to Bale
+      - name: Send to Bale (Clean Format)
         run: |
-          # ساخت پیام
-          MESSAGE="🦊 *اخبار لحظه‌ای فاکس نیوز*%0A%0A"
-          COUNT=1
+          # شروع پیام
+          TEXT="🦊 *اخبار لحظه‌ای فاکس نیوز*"
+          TEXT="$TEXT%0A%0A"
           
+          COUNT=1
           while IFS= read -r line; do
             if [ -n "$line" ]; then
-              MESSAGE="$MESSAGE$COUNT. $line%0A%0A"
+              TEXT="$TEXT$COUNT. $line%0A%0A"
               COUNT=$((COUNT+1))
             fi
           done < headlines.txt
           
-          MESSAGE="$MESSAGE%0A📅 $(date '+%Y-%m-%d %H:%M:%S')%0A%0A🔗 [مشاهده همه اخبار](https://raw.githubusercontent.com/${{ github.repository }}/main/news.json)"
+          # خط جداکننده
+          TEXT="$TEXT━━━━━━━━━━━━━━━━━━━━%0A"
+          TEXT="$TEXT📅 $(date '+%Y-%m-%d %H:%M:%S')%0A"
+          TEXT="$TEXT🔗 [مشاهده همه اخبار](https://raw.githubusercontent.com/${{ github.repository }}/main/news.json)%0A%0A"
+          TEXT="$TEXT🤖 Fox News Bot"
           
-          # ارسال به بله با آدرس درست
+          # ارسال به بله
           RESPONSE=$(curl -s -X POST "https://tapi.bale.ai/bot${{ secrets.BALE_TOKEN }}/sendMessage" \
             -H "Content-Type: application/json" \
-            -d "{\"chat_id\":\"${{ secrets.BALE_CHAT_ID }}\",\"text\":\"$MESSAGE\",\"parse_mode\":\"Markdown\"}")
+            -d "{\"chat_id\": \"${{ secrets.BALE_CHAT_ID }}\", \"text\": \"$TEXT\", \"parse_mode\": \"Markdown\"}")
           
           echo "Response: $RESPONSE"
           
