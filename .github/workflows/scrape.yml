@@ -1,10 +1,12 @@
-name: 🔍 Fox News Structure Analyzer
+name: 🦊 Fox News Professional Scraper
 
 on:
   workflow_dispatch:
+  schedule:
+    - cron: '0 */4 * * *'  # هر ۴ ساعت
 
 jobs:
-  analyze:
+  scrape:
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -15,113 +17,101 @@ jobs:
 
       - name: 🌐 Download Fox News
         run: |
-          echo "=== DOWNLOAD STARTED ==="
-          curl -L -H "User-Agent: Mozilla/5.0" https://www.foxnews.com/ > fox_news.html
-          echo "✅ Download completed"
-          echo "📏 File size: $(wc -c < fox_news.html) bytes"
-          echo "📅 Download time: $(date)"
-          
-          # ذخیره هدرهای HTTP برای دیباگ
-          curl -L -I -H "User-Agent: Mozilla/5.0" https://www.foxnews.com/ > headers.txt
-          
-      - name: 🔎 Analyze HTML Structure
+          echo "📡 Downloading Fox News homepage..."
+          curl -L -H "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36" \
+               https://www.foxnews.com/ > fox_news.html
+          echo "✅ Downloaded: $(wc -c < fox_news.html) bytes"
+
+      - name: 🔍 Extract Headlines
         run: |
-          echo "=== HTML STRUCTURE ANALYSIS ===" > analysis_report.txt
-          echo "Report generated at: $(date)" >> analysis_report.txt
-          echo "" >> analysis_report.txt
+          echo '{
+  "source": "foxnews.com",
+  "timestamp": "'$(date -Iseconds)'",
+  "total_headlines": 0,
+  "articles": [' > news.json
           
-          # 1. پیدا کردن تمام تگ‌های h2, h3, h4 همراه با کلاس‌هایشان
-          echo "--- HEADER TAGS WITH CLASSES ---" >> analysis_report.txt
-          grep -E '<h[234][^>]*>' fox_news.html | head -30 >> analysis_report.txt
+          # روش 1: استخراج از div class="title" (تیترهای اصلی صفحه اول)
+          grep -oP '(?<=<div class="title">)[^<]+' fox_news.html | \
+            sed 's/&amp;/\&/g; s/&lt;/</g; s/&gt;/>/g; s/&quot;/"/g' | \
+            while IFS= read -r title; do
+              if [ -n "$title" ]; then
+                clean_title=$(echo "$title" | sed 's/"/\\"/g' | sed 's/^[ \t]*//;s/[ \t]*$//')
+                echo "    {\"title\": \"$clean_title\", \"section\": \"top-stories\"}," >> news.json
+              fi
+            done
           
-          echo "" >> analysis_report.txt
-          echo "--- TITLE ATTRIBUTES ---" >> analysis_report.txt
-          grep -oP '(?<=title=")[^"]*' fox_news.html | head -30 >> analysis_report.txt
+          # روش 2: استخراج از h3 class="title" (تیترهای بخش‌های مختلف)
+          grep -oP '(?<=<h3 class="title">)[^<]*' fox_news.html | \
+            sed 's/&amp;/\&/g; s/&lt;/</g; s/&gt;/>/g' | \
+            while IFS= read -r title; do
+              if [ -n "$title" ] && [ ${#title} -gt 20 ]; then
+                clean_title=$(echo "$title" | sed 's/"/\\"/g' | sed 's/^[ \t]*//;s/[ \t]*$//')
+                echo "    {\"title\": \"$clean_title\", \"section\": \"featured\"}," >> news.json
+              fi
+            done
           
-          echo "" >> analysis_report.txt
-          echo "--- ARIA-LABEL ATTRIBUTES (usually contain titles) ---" >> analysis_report.txt
-          grep -oP '(?<=aria-label=")[^"]*' fox_news.html | head -30 >> analysis_report.txt
+          # روش 3: استخراج از span داخل div class="title" (تیترهای بخش Features & Faces)
+          grep -oP '(?<=<div class="title"><span>)[^<]+' fox_news.html | \
+            sed 's/&amp;/\&/g; s/&lt;/</g; s/&gt;/>/g' | \
+            while IFS= read -r title; do
+              if [ -n "$title" ]; then
+                clean_title=$(echo "$title" | sed 's/"/\\"/g')
+                echo "    {\"title\": \"$clean_title\", \"section\": \"features\"}," >> news.json
+              fi
+            done
           
-          echo "" >> analysis_report.txt
-          echo "--- ALL LINKS ---" >> analysis_report.txt
-          grep -oP '(?<=href=")[^"]*' fox_news.html | grep -E '^/|^https://www\.foxnews\.com' | head -50 >> analysis_report.txt
+          # حذف ویرگول اضافی آخر و بستن JSON
+          sed -i '$ s/,$//' news.json
+          echo '  ],' >> news.json
           
-          echo "" >> analysis_report.txt
-          echo "--- POSSIBLE HEADLINE PATTERNS ---" >> analysis_report.txt
-          grep -E '(class="title"|class="headline"|class="heading"|itemprop="headline")' fox_news.html | head -30 >> analysis_report.txt
+          # افزودن تعداد تیترها
+          HEADLINE_COUNT=$(grep -c '"title"' news.json)
+          echo "  \"total_headlines\": $HEADLINE_COUNT" >> news.json
+          echo '}' >> news.json
           
-          echo "" >> analysis_report.txt
-          echo "--- TEXT INSIDE H2 TAGS ---" >> analysis_report.txt
-          grep -oP '(?<=<h2[^>]*>)[^<]+' fox_news.html | head -20 >> analysis_report.txt
+          # ایجاد یک فایل ساده متنی از تیترها
+          echo "=== FOX NEWS HEADLINES ===" > headlines.txt
+          echo "Generated: $(date)" >> headlines.txt
+          echo "Total: $HEADLINE_COUNT headlines" >> headlines.txt
+          echo "" >> headlines.txt
           
-          echo "" >> analysis_report.txt
-          echo "--- TEXT INSIDE H3 TAGS ---" >> analysis_report.txt
-          grep -oP '(?<=<h3[^>]*>)[^<]+' fox_news.html | head -20 >> analysis_report.txt
+          grep '"title"' news.json | sed 's/.*"title": "\(.*\)".*/\1/' | nl >> headlines.txt
           
-          echo "" >> analysis_report.txt
-          echo "--- TEXT INSIDE H4 TAGS ---" >> analysis_report.txt
-          grep -oP '(?<=<h4[^>]*>)[^<]+' fox_news.html | head -20 >> analysis_report.txt
-          
-      - name: 📊 Extract Sample Headlines
+          echo "✅ Extracted $HEADLINE_COUNT headlines"
+
+      - name: 📊 Create Summary
         run: |
-          echo "=== SAMPLE HEADLINES ===" > sample_headlines.txt
-          echo "" >> sample_headlines.txt
-          
-          # روش 1: جستجوی الگوهای مختلف
-          echo "Method 1 - h2 with class='title':" >> sample_headlines.txt
-          grep -oP '(?<=<h2 class="title">)[^<]+' fox_news.html | head -10 >> sample_headlines.txt
-          
-          echo "" >> sample_headlines.txt
-          echo "Method 2 - h3 with class='title':" >> sample_headlines.txt
-          grep -oP '(?<=<h3 class="title">)[^<]+' fox_news.html | head -10 >> sample_headlines.txt
-          
-          echo "" >> sample_headlines.txt
-          echo "Method 3 - aria-label:" >> sample_headlines.txt
-          grep -oP '(?<=aria-label=")[^"]*' fox_news.html | grep -E '(News|Trump|Biden|America)' | head -10 >> sample_headlines.txt
-          
-          echo "" >> sample_headlines.txt
-          echo "Method 4 - itemprop='headline':" >> sample_headlines.txt
-          grep -oP '(?<=itemprop="headline">)[^<]+' fox_news.html | head -10 >> sample_headlines.txt
-          
-      - name: 📈 Create Statistics
+          cat > README.md << 'EOF'
+  # 🦊 Fox News Headlines Scraper
+  
+  آخرین بروزرسانی: **$(date)**
+  
+  ## آمار:
+  - تعداد تیترهای استخراج شده: **$(grep -c '"title"' news.json)**
+  
+  ## فایل‌ها:
+  - `news.json` - داده‌های کامل به صورت JSON
+  - `headlines.txt` - لیست ساده تیترها
+  - `fox_news.html` - صفحه کامل HTML
+  
+  ## مشاهده آنلاین:
+  - [مشاهده JSON خام](https://raw.githubusercontent.com/${{ github.repository }}/main/news.json)
+  EOF
+
+      - name: 💾 Commit and Push
         run: |
-          echo "=== STATISTICS ===" > stats.txt
-          echo "Total file lines: $(wc -l < fox_news.html)" >> stats.txt
-          echo "Total h2 tags: $(grep -c '<h2' fox_news.html)" >> stats.txt
-          echo "Total h3 tags: $(grep -c '<h3' fox_news.html)" >> stats.txt
-          echo "Total article tags: $(grep -c '<article' fox_news.html)" >> stats.txt
-          echo "Total links: $(grep -c 'href=' fox_news.html)" >> stats.txt
-          echo "Internal links (foxnews.com): $(grep -c 'foxnews.com' fox_news.html)" >> stats.txt
-          
-      - name: 💾 Save All Analysis Files
-        run: |
-          # ایجاد یک فایل خلاصه
-          echo "🔍 Fox News Analysis Completed" > summary.md
-          echo "============================" >> summary.md
-          echo "" >> summary.md
-          echo "**Date:** $(date)" >> summary.md
-          echo "**File Size:** $(wc -c < fox_news.html) bytes" >> summary.md
-          echo "**Total Headers Found:** $(grep -c '<h[234]' fox_news.html)" >> summary.md
-          echo "" >> summary.md
-          echo "### Next Steps:" >> summary.md
-          echo "1. Check \`analysis_report.txt\` for HTML structure" >> summary.md
-          echo "2. Check \`sample_headlines.txt\` for extracted headlines" >> summary.md
-          echo "3. Check \`stats.txt\` for statistics" >> summary.md
-          
-      - name: 🚀 Commit and Push All Logs
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add fox_news.html headers.txt analysis_report.txt sample_headlines.txt stats.txt summary.md
-          git commit -m "🔍 Debug: Fox News structure analysis - $(date -Iseconds)" || echo "No changes to commit"
+          git config user.name "Fox News Bot"
+          git config user.email "bot@foxnews-scraper.local"
+          git add fox_news.html news.json headlines.txt README.md
+          git commit -m "🦊 Fox News update - $(date -Iseconds)" || echo "No new headlines"
           git push
-          
-      - name: ✅ Completion Message
+
+      - name: 📢 Show Results
         run: |
-          echo "🎉 Analysis completed successfully!" >> $GITHUB_STEP_SUMMARY
+          echo "## 🎉 Scraping Completed!" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "📁 Files saved in repository:" >> $GITHUB_STEP_SUMMARY
-          echo "- \`analysis_report.txt\` - Complete HTML structure" >> $GITHUB_STEP_SUMMARY
-          echo "- \`sample_headlines.txt\` - Extracted headlines samples" >> $GITHUB_STEP_SUMMARY
-          echo "- \`stats.txt\` - Statistics about the page" >> $GITHUB_STEP_SUMMARY
-          echo "- \`summary.md\` - Quick overview" >> $GITHUB_STEP_SUMMARY
+          echo "**Time:** $(date)" >> $GITHUB_STEP_SUMMARY
+          echo "**Headlines found:** $(grep -c '"title"' news.json)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 📝 Sample Headlines:" >> $GITHUB_STEP_SUMMARY
+          grep '"title"' news.json | head -5 | sed 's/.*"title": "\(.*\)".*/ - \1/' >> $GITHUB_STEP_SUMMARY
