@@ -1,63 +1,25 @@
-name: Fox News to Bale (Final Fix)
-
-on:
-  workflow_dispatch:
-  schedule:
-    - cron: '0 */4 * * *'
-
-jobs:
-  scrape:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Download Fox News
-        run: |
-          curl -L -H "User-Agent: Mozilla/5.0" https://www.foxnews.com/ > fox_news.html
-          echo "Downloaded at $(date)"
-
-      - name: Extract Headlines
-        run: |
-          grep -oP '(?<=<div class="title"><span>)[^<]+' fox_news.html | head -10 > headlines.txt
-          echo "✅ Extracted $(wc -l < headlines.txt) headlines"
-
-      - name: Send to Bale (Fixed)
-        run: |
-          # ساخت پیام با خط جدید واقعی (بدون %0A)
-          TEXT=$(printf "🦊 *اخبار لحظه‌ای فاکس نیوز*\n\n")
-          
-          COUNT=1
-          while IFS= read -r line; do
-            if [ -n "$line" ]; then
-              TEXT="${TEXT}$(printf "%d. %s\n\n" "$COUNT" "$line")"
-              COUNT=$((COUNT+1))
-            fi
-          done < headlines.txt
-          
-          TEXT="${TEXT}$(printf "━━━━━━━━━━━━━━━━━━━━\n")"
-          TEXT="${TEXT}$(printf "📅 %s\n" "$(date '+%Y-%m-%d %H:%M:%S')")"
-          TEXT="${TEXT}$(printf "🔗 [مشاهده همه اخبار](https://raw.githubusercontent.com/%s/main/news.json)\n\n" "${{ github.repository }}")"
-          TEXT="${TEXT}$(printf "🤖 Fox News Bot")"
-          
-          # ارسال با استفاده از literal string
-          curl -s -X POST "https://tapi.bale.ai/bot${{ secrets.BALE_TOKEN }}/sendMessage" \
-            -H "Content-Type: application/json" \
-            --data-binary @- << EOF
-{
-  "chat_id": "${{ secrets.BALE_CHAT_ID }}",
-  "text": $(echo "$TEXT" | jq -Rs .),
-  "parse_mode": "Markdown"
-}
-EOF
-
-      - name: Save and Commit
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add fox_news.html headlines.txt
-          git commit -m "Fox News update $(date)" || echo "No changes"
-          git push
+- name: Send to Bale (No jq)
+  run: |
+    # ساختن فایل JSON موقت
+    echo "{" > payload.json
+    echo "  \"chat_id\": \"${{ secrets.BALE_CHAT_ID }}\"," >> payload.json
+    echo "  \"text\": \"🦊 *اخبار لحظه‌ای فاکس نیوز*\n\n" >> payload.json
+    
+    COUNT=1
+    while IFS= read -r line; do
+      if [ -n "$line" ]; then
+        echo "  \"$COUNT. $line\n\n\"" >> payload.json
+        COUNT=$((COUNT+1))
+      fi
+    done < headlines.txt
+    
+    echo "  \"━━━━━━━━━━━━━━━━━━━━\n" >> payload.json
+    echo "  \"📅 $(date '+%Y-%m-%d %H:%M:%S')\n" >> payload.json
+    echo "  \"🔗 [مشاهده همه اخبار](https://raw.githubusercontent.com/${{ github.repository }}/main/news.json)\n\n" >> payload.json
+    echo "  \"🤖 Fox News Bot\"," >> payload.json
+    echo "  \"parse_mode\": \"Markdown\"" >> payload.json
+    echo "}" >> payload.json
+    
+    curl -s -X POST "https://tapi.bale.ai/bot${{ secrets.BALE_TOKEN }}/sendMessage" \
+      -H "Content-Type: application/json" \
+      -d @payload.json
