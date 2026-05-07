@@ -1,156 +1,66 @@
 {
-  "source": "",
-  "timestamp": "2026-05-07T17:47:43+00:00",
+  "source": "foxnews",
+  "timestamp": "2026-05-07T21:01:51+00:00",
   "articles": [
     {
-      "title": "Watch Fox News Live",
-      "link": "https://a57.foxnews.com/prod-hp.foxnews.com/images/2026/05/854/477/0bc2311a820cb4c80524a6aae66ef0c1.gif?tl=1",
-      "type": "direct"
+      "title": "Digital Originals",
+      "link": "https://www.foxnews.com/www.foxnews.com/category/us/digital-originals"
     },
     {
-      "title": "Watch Fox News Live",
-      "link": "https://a57.foxnews.com/prod-hp.foxnews.com/images/2026/05/854/477/cec491d1789096059664705a9f3a7e58.gif?tl=1",
-      "type": "direct"
+      "title": "Fox News Flash",
+      "link": "https://www.foxnews.com/www.foxnews.com/category/media/fox-news-flash"
     },
     {
-      "title": "Terms of Use",
-      "link": "https://help.foxnews.com/hc/en-us",
-      "type": "direct"
+      "title": "Personal Freedoms",
+      "link": "https://www.foxnews.com/www.foxnews.com/category/us/personal-freedoms"
     },
     {
-      "title": "Apps & Products - FOX Nation",
-      "link": "https://nation.foxnews.com",
-      "type": "direct"
+      "title": "America Together",
+      "link": "https://www.foxnews.com/www.foxnews.com/category/us/personal-freedoms/america-together"
     },
     {
-      "title": "Apps & Products - FOX Noticias",
-      "link": "https://noticias.foxnews.com",
-      "type": "direct"
+      "title": "Entertainment",
+      "link": "https://www.foxnews.com/www.foxnews.com/entertainment"
     },
     {
-      "title": "Apps & Products - FOX Noticias",
-      "link": "https://noticias.foxnews.com/",
-      "type": "direct"
+      "title": "Personal Finance",
+      "link": "https://www.foxnews.com/www.foxbusiness.com/category/personal-finance"
     },
     {
-      "title": "Apps & Products - FOX Noticias",
-      "link": "https://noticias.foxnews.com/shows/fox-noticias",
-      "type": "direct"
+      "title": "Faith & Values",
+      "link": "https://www.foxnews.com/www.foxnews.com/faith-values"
     },
     {
-      "title": "About - Media Relations",
-      "link": "https://press.foxnews.com",
-      "type": "direct"
+      "title": "Travel + Outdoors",
+      "link": "https://www.foxnews.com/www.foxnews.com/travel"
     },
     {
-      "title": "About - Media Relations",
-      "link": "https://press.foxnews.com/media-contacts",
-      "type": "direct"
+      "title": "Food + Drink",
+      "link": "https://www.foxnews.com/www.foxnews.com/food-drink"
     },
     {
-      "title": "Terms of Use",
-      "link": "https://privacy.foxnews.com/main/web/main",
-      "type": "direct"
+      "title": "FOX Weather",
+      "link": "https://www.foxnews.com/www.foxweather.com/"
     },
     {
-      "title": "Apps & Products - FOX News Radio",
-      "link": "https://radio.foxnews.com",
-      "type": "direct"
+      "title": "Full Episodes",
+      "link": "https://www.foxnews.com/video/topics/latest-news-video"
     },
     {
-      "title": "Apps & Products - FOX News Podcasts",
-      "link": "https://radio.foxnews.com/",
-      "type": "direct"
+      "title": "Latest Wires",
+      "link": "https://www.foxnews.com/www.foxnews.com/category/topic/associated-press"
     },
     {
-      "title": "Apps & Products - FOX News Podcasts",
-      "link": "https://radio.foxnews.com/podcast/",
-      "type": "direct"
+      "title": "Antisemitism Exposed",
+      "link": "https://www.foxnews.com/www.foxnews.com/category/topic/anti-semitism"
     },
     {
-      "title": "Apps & Products - FOX News Shop",
-      "link": "https://shop.foxnews.com",
-      "type": "direct"
+      "title": "Immigration",
+      "link": "https://www.foxnews.com/www.foxnews.com/category/us/immigration"
     },
     {
-      "title": "Apps & Products - FOX News Shop",
-      "link": "https://shop.foxnews.com/",
-      "type": "direct"
-    },
-    {
-      "title": "Fox News - Go to homepage",
-      "link": "https://www.foxnews.com",
-      "type": "direct"
-    },
-    {
-      "title": "U.S. submenu",
-      "link": "https://www.foxnews.com/",
-      "type": "direct"
-    },
-    {
-      "title": "Apps & Products",
-      "link": "https://www.foxnews.com/apps-products",
-      "type": "direct"
-    },
-    {
-      "title": "Watch Fox News Live",
-      "link": "https://www.foxnews.com/category/tech/artificial-intelligence",
-      "type": "direct"
-    },
-    {
-      "title": "Terms of Use",
-      "link": "https://www.foxnews.com/closed-captioning",
-      "type": "direct"
-    },
-    {
-      "title": "Watch Fox News Live",
-      "link": "https://www.foxnews.com/deals/mothers-day-little-luxuries",
-      "type": "direct"
-    },
-    {
-      "title": "Watch Fox News Live",
-      "link": "https://www.foxnews.com/deals/small-amazon-items-big-difference",
-      "type": "direct"
-    },
-    {
-      "title": "Entertainment submenu",
-      "link": "https://www.foxnews.com/entertainment",
-      "type": "direct"
-    },
-    {
-      "title": "Watch Fox News Live",
-      "link": "https://www.foxnews.com/entertainment/brandi-glanville-slams-leann-rimes-over-real-housewives-casting-rumors-she-got-everything-else-mine",
-      "type": "direct"
-    },
-    {
-      "title": "Watch Fox News Live",
-      "link": "https://www.foxnews.com/entertainment/jana-kramer-sizzles-barely-denim-look-wild-western-getaway",
-      "type": "direct"
-    },
-    {
-      "title": "Watch Fox News Live",
-      "link": "https://www.foxnews.com/entertainment/julianne-hough-rocks-leopard-print-snakeskin-bikinis-tropical-getaway-fiji-",
-      "type": "direct"
-    },
-    {
-      "title": "Watch Fox News Live",
-      "link": "https://www.foxnews.com/food-drink",
-      "type": "direct"
-    },
-    {
-      "title": "Watch Fox News Live",
-      "link": "https://www.foxnews.com/food-drink/one-widely-loved-type-fish-should-stay-off-grill-chef-says-heres-why",
-      "type": "direct"
-    },
-    {
-      "title": "Health submenu",
-      "link": "https://www.foxnews.com/health",
-      "type": "direct"
-    },
-    {
-      "title": "Your Privacy Choices",
-      "link": "https://www.foxnews.com/html-sitemap",
-      "type": "direct"
+      "title": "Fox News Podcasts",
+      "link": "https://radio.foxnews.com/podcast/"
     }
   ]
 }
