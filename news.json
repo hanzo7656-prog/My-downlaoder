@@ -1,156 +1,66 @@
 {
-  "source": "",
-  "timestamp": "2026-05-07T02:48:10+00:00",
+  "source": "foxnews",
+  "timestamp": "2026-05-07T06:32:21+00:00",
   "articles": [
     {
-      "title": "Terms of Use",
-      "link": "https://help.foxnews.com/hc/en-us",
-      "type": "direct"
+      "title": "Digital Originals",
+      "link": "https://www.foxnews.com/www.foxnews.com/category/us/digital-originals"
     },
     {
-      "title": "Apps & Products - FOX Nation",
-      "link": "https://nation.foxnews.com",
-      "type": "direct"
+      "title": "Fox News Flash",
+      "link": "https://www.foxnews.com/www.foxnews.com/category/media/fox-news-flash"
     },
     {
-      "title": "Apps & Products - FOX Noticias",
-      "link": "https://noticias.foxnews.com",
-      "type": "direct"
+      "title": "Personal Freedoms",
+      "link": "https://www.foxnews.com/www.foxnews.com/category/us/personal-freedoms"
     },
     {
-      "title": "Apps & Products - FOX Noticias",
-      "link": "https://noticias.foxnews.com/",
-      "type": "direct"
+      "title": "America Together",
+      "link": "https://www.foxnews.com/www.foxnews.com/category/us/personal-freedoms/america-together"
     },
     {
-      "title": "Apps & Products - FOX Noticias",
-      "link": "https://noticias.foxnews.com/shows/fox-noticias",
-      "type": "direct"
+      "title": "Entertainment",
+      "link": "https://www.foxnews.com/www.foxnews.com/entertainment"
     },
     {
-      "title": "About - Media Relations",
-      "link": "https://press.foxnews.com",
-      "type": "direct"
+      "title": "Personal Finance",
+      "link": "https://www.foxnews.com/www.foxbusiness.com/category/personal-finance"
     },
     {
-      "title": "About - Media Relations",
-      "link": "https://press.foxnews.com/media-contacts",
-      "type": "direct"
+      "title": "Faith & Values",
+      "link": "https://www.foxnews.com/www.foxnews.com/faith-values"
     },
     {
-      "title": "Terms of Use",
-      "link": "https://privacy.foxnews.com/main/web/main",
-      "type": "direct"
+      "title": "Travel + Outdoors",
+      "link": "https://www.foxnews.com/www.foxnews.com/travel"
     },
     {
-      "title": "Apps & Products - FOX News Radio",
-      "link": "https://radio.foxnews.com",
-      "type": "direct"
+      "title": "Food + Drink",
+      "link": "https://www.foxnews.com/www.foxnews.com/food-drink"
     },
     {
-      "title": "Apps & Products - FOX News Podcasts",
-      "link": "https://radio.foxnews.com/",
-      "type": "direct"
+      "title": "FOX Weather",
+      "link": "https://www.foxnews.com/www.foxweather.com/"
     },
     {
-      "title": "Apps & Products - FOX News Podcasts",
-      "link": "https://radio.foxnews.com/podcast/",
-      "type": "direct"
+      "title": "Full Episodes",
+      "link": "https://www.foxnews.com/video/topics/latest-news-video"
     },
     {
-      "title": "Apps & Products - FOX News Shop",
-      "link": "https://shop.foxnews.com",
-      "type": "direct"
+      "title": "Latest Wires",
+      "link": "https://www.foxnews.com/www.foxnews.com/category/topic/associated-press"
     },
     {
-      "title": "Apps & Products - FOX News Shop",
-      "link": "https://shop.foxnews.com/",
-      "type": "direct"
+      "title": "Antisemitism Exposed",
+      "link": "https://www.foxnews.com/www.foxnews.com/category/topic/anti-semitism"
     },
     {
-      "title": "Fox News - Go to homepage",
-      "link": "https://www.foxnews.com",
-      "type": "direct"
+      "title": "Immigration",
+      "link": "https://www.foxnews.com/www.foxnews.com/category/us/immigration"
     },
     {
-      "title": "U.S. submenu",
-      "link": "https://www.foxnews.com/",
-      "type": "direct"
-    },
-    {
-      "title": "Apps & Products",
-      "link": "https://www.foxnews.com/apps-products",
-      "type": "direct"
-    },
-    {
-      "title": "Watch Fox News Live",
-      "link": "https://www.foxnews.com/category/tech/artificial-intelligence",
-      "type": "direct"
-    },
-    {
-      "title": "Terms of Use",
-      "link": "https://www.foxnews.com/closed-captioning",
-      "type": "direct"
-    },
-    {
-      "title": "Watch Fox News Live",
-      "link": "https://www.foxnews.com/deals/last-minute-mothers-day-gift",
-      "type": "direct"
-    },
-    {
-      "title": "Watch Fox News Live",
-      "link": "https://www.foxnews.com/deals/memorial-day-sales-guide-when-deals-start",
-      "type": "direct"
-    },
-    {
-      "title": "Entertainment submenu",
-      "link": "https://www.foxnews.com/entertainment",
-      "type": "direct"
-    },
-    {
-      "title": "Watch Fox News Live",
-      "link": "https://www.foxnews.com/entertainment/gwyneth-paltrow-called-out-criticizing-super-rich-white-dudes-reported-200-million-net-worth",
-      "type": "direct"
-    },
-    {
-      "title": "Watch Fox News Live",
-      "link": "https://www.foxnews.com/entertainment/josh-duggar-unloads-mom-michelle-bombshell-prison-texts-accuses-choosing-pr-son",
-      "type": "direct"
-    },
-    {
-      "title": "Watch Fox News Live",
-      "link": "https://www.foxnews.com/entertainment/julianne-hough-rocks-leopard-print-snakeskin-bikinis-tropical-getaway-fiji-",
-      "type": "direct"
-    },
-    {
-      "title": "Watch Fox News Live",
-      "link": "https://www.foxnews.com/entertainment/legendary-singer-bonnie-tyler-rushed-hospital-emergency-intestinal-surgery",
-      "type": "direct"
-    },
-    {
-      "title": "Watch Fox News Live",
-      "link": "https://www.foxnews.com/entertainment/michael-rapaport-blasts-ny-governor-over-anti-israel-synagogue-protest-resign-shame",
-      "type": "direct"
-    },
-    {
-      "title": "Watch Fox News Live",
-      "link": "https://www.foxnews.com/entertainment/rita-wilson-reveals-intimate-bathroom-routine-keeps-her-marriage-tom-hanks-strong",
-      "type": "direct"
-    },
-    {
-      "title": "Watch Fox News Live",
-      "link": "https://www.foxnews.com/food-drink",
-      "type": "direct"
-    },
-    {
-      "title": "Watch Fox News Live",
-      "link": "https://www.foxnews.com/food-drink/mcdonalds-2-50-mcdouble-sparks-backlash-americans-say-fast-food-no-longer-cheap",
-      "type": "direct"
-    },
-    {
-      "title": "Health submenu",
-      "link": "https://www.foxnews.com/health",
-      "type": "direct"
+      "title": "Fox News Podcasts",
+      "link": "https://radio.foxnews.com/podcast/"
     }
   ]
 }
