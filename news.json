@@ -1,66 +1,156 @@
 {
-  "source": "foxnews",
-  "timestamp": "2026-05-08T20:56:18+00:00",
+  "source": "",
+  "timestamp": "2026-05-08T20:59:42+00:00",
   "articles": [
     {
-      "title": "Digital Originals",
-      "link": "https://www.foxnews.com/www.foxnews.com/category/us/digital-originals"
+      "title": "Terms of Use",
+      "link": "https://help.foxnews.com/hc/en-us",
+      "type": "direct"
     },
     {
-      "title": "Fox News Flash",
-      "link": "https://www.foxnews.com/www.foxnews.com/category/media/fox-news-flash"
+      "title": "Apps & Products - FOX Nation",
+      "link": "https://nation.foxnews.com",
+      "type": "direct"
     },
     {
-      "title": "Personal Freedoms",
-      "link": "https://www.foxnews.com/www.foxnews.com/category/us/personal-freedoms"
+      "title": "Apps & Products - FOX Noticias",
+      "link": "https://noticias.foxnews.com",
+      "type": "direct"
     },
     {
-      "title": "America Together",
-      "link": "https://www.foxnews.com/www.foxnews.com/category/us/personal-freedoms/america-together"
+      "title": "Apps & Products - FOX Noticias",
+      "link": "https://noticias.foxnews.com/",
+      "type": "direct"
     },
     {
-      "title": "Entertainment",
-      "link": "https://www.foxnews.com/www.foxnews.com/entertainment"
+      "title": "Apps & Products - FOX Noticias",
+      "link": "https://noticias.foxnews.com/shows/fox-noticias",
+      "type": "direct"
     },
     {
-      "title": "Personal Finance",
-      "link": "https://www.foxnews.com/www.foxbusiness.com/category/personal-finance"
+      "title": "About - Media Relations",
+      "link": "https://press.foxnews.com",
+      "type": "direct"
     },
     {
-      "title": "Faith & Values",
-      "link": "https://www.foxnews.com/www.foxnews.com/faith-values"
+      "title": "About - Media Relations",
+      "link": "https://press.foxnews.com/media-contacts",
+      "type": "direct"
     },
     {
-      "title": "Travel + Outdoors",
-      "link": "https://www.foxnews.com/www.foxnews.com/travel"
+      "title": "Terms of Use",
+      "link": "https://privacy.foxnews.com/main/web/main",
+      "type": "direct"
     },
     {
-      "title": "Food + Drink",
-      "link": "https://www.foxnews.com/www.foxnews.com/food-drink"
+      "title": "Apps & Products - FOX News Radio",
+      "link": "https://radio.foxnews.com",
+      "type": "direct"
     },
     {
-      "title": "FOX Weather",
-      "link": "https://www.foxnews.com/www.foxweather.com/"
+      "title": "Apps & Products - FOX News Podcasts",
+      "link": "https://radio.foxnews.com/",
+      "type": "direct"
     },
     {
-      "title": "Full Episodes",
-      "link": "https://www.foxnews.com/video/topics/latest-news-video"
+      "title": "Apps & Products - FOX News Podcasts",
+      "link": "https://radio.foxnews.com/podcast/",
+      "type": "direct"
     },
     {
-      "title": "Latest Wires",
-      "link": "https://www.foxnews.com/www.foxnews.com/category/topic/associated-press"
+      "title": "Apps & Products - FOX News Shop",
+      "link": "https://shop.foxnews.com",
+      "type": "direct"
     },
     {
-      "title": "Antisemitism Exposed",
-      "link": "https://www.foxnews.com/www.foxnews.com/category/topic/anti-semitism"
+      "title": "Apps & Products - FOX News Shop",
+      "link": "https://shop.foxnews.com/",
+      "type": "direct"
     },
     {
-      "title": "Immigration",
-      "link": "https://www.foxnews.com/www.foxnews.com/category/us/immigration"
+      "title": "Fox News - Go to homepage",
+      "link": "https://www.foxnews.com",
+      "type": "direct"
     },
     {
-      "title": "Fox News Podcasts",
-      "link": "https://radio.foxnews.com/podcast/"
+      "title": "U.S. submenu",
+      "link": "https://www.foxnews.com/",
+      "type": "direct"
+    },
+    {
+      "title": "Apps & Products",
+      "link": "https://www.foxnews.com/apps-products",
+      "type": "direct"
+    },
+    {
+      "title": "Watch Fox News Live",
+      "link": "https://www.foxnews.com/category/tech/artificial-intelligence",
+      "type": "direct"
+    },
+    {
+      "title": "Terms of Use",
+      "link": "https://www.foxnews.com/closed-captioning",
+      "type": "direct"
+    },
+    {
+      "title": "Watch Fox News Live",
+      "link": "https://www.foxnews.com/deals/hexclad-mothers-day-sale",
+      "type": "direct"
+    },
+    {
+      "title": "Watch Fox News Live",
+      "link": "https://www.foxnews.com/deals/last-minute-mothers-day-gift",
+      "type": "direct"
+    },
+    {
+      "title": "Entertainment submenu",
+      "link": "https://www.foxnews.com/entertainment",
+      "type": "direct"
+    },
+    {
+      "title": "Watch Fox News Live",
+      "link": "https://www.foxnews.com/food-drink",
+      "type": "direct"
+    },
+    {
+      "title": "Watch Fox News Live",
+      "link": "https://www.foxnews.com/food-drink/your-morning-coffee-could-making-you-more-tired-experts-warn-like-roller-coaster",
+      "type": "direct"
+    },
+    {
+      "title": "Health submenu",
+      "link": "https://www.foxnews.com/health",
+      "type": "direct"
+    },
+    {
+      "title": "Watch Fox News Live",
+      "link": "https://www.foxnews.com/health/alzheimers-risk-slashed-eating-one-common-food-study-suggests",
+      "type": "direct"
+    },
+    {
+      "title": "Watch Fox News Live",
+      "link": "https://www.foxnews.com/health/hantavirus-outbreak-timeline-highlights-key-moments-deadly-cruise-crisis",
+      "type": "direct"
+    },
+    {
+      "title": "Your Privacy Choices",
+      "link": "https://www.foxnews.com/html-sitemap",
+      "type": "direct"
+    },
+    {
+      "title": "Closed Caption Policy",
+      "link": "https://www.foxnews.com/html-video-sitemap",
+      "type": "direct"
+    },
+    {
+      "title": "Watch Fox News Live",
+      "link": "https://www.foxnews.com/iq/guess-whats-next",
+      "type": "direct"
+    },
+    {
+      "title": "Lifestyle submenu",
+      "link": "https://www.foxnews.com/lifestyle",
+      "type": "direct"
     }
   ]
 }
