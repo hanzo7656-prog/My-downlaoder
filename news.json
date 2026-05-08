@@ -1,45 +1,10 @@
 {
   "source": "",
-  "timestamp": "2026-05-07T21:04:16+00:00",
+  "timestamp": "2026-05-08T02:51:45+00:00",
   "articles": [
     {
       "title": "Watch Fox News Live",
-      "link": "https://a57.foxnews.com/prod-hp.foxnews.com/images/2026/05/854/477/0bc2311a820cb4c80524a6aae66ef0c1.gif?tl=1",
-      "type": "direct"
-    },
-    {
-      "title": "Watch Fox News Live",
       "link": "https://a57.foxnews.com/prod-hp.foxnews.com/images/2026/05/854/477/9da046b5977ef8d3954ad8fbcc0d5104.gif?tl=1",
-      "type": "direct"
-    },
-    {
-      "title": "Watch Fox News Live",
-      "link": "https://a57.foxnews.com/static.foxnews.com/foxnews.com/content/uploads/2026/04/192/108/JEFFRIES-TRUMP-MSNOW.jpeg?ve=1",
-      "type": "direct"
-    },
-    {
-      "title": "Watch Fox News Live",
-      "link": "https://a57.foxnews.com/static.foxnews.com/foxnews.com/content/uploads/2026/04/218/123/JEFFRIES-TRUMP-MSNOW.jpeg?ve=1",
-      "type": "direct"
-    },
-    {
-      "title": "Watch Fox News Live",
-      "link": "https://a57.foxnews.com/static.foxnews.com/foxnews.com/content/uploads/2026/04/343/193/JEFFRIES-TRUMP-MSNOW.jpeg?ve=1",
-      "type": "direct"
-    },
-    {
-      "title": "Watch Fox News Live",
-      "link": "https://a57.foxnews.com/static.foxnews.com/foxnews.com/content/uploads/2026/04/384/216/JEFFRIES-TRUMP-MSNOW.jpeg?ve=1",
-      "type": "direct"
-    },
-    {
-      "title": "Watch Fox News Live",
-      "link": "https://a57.foxnews.com/static.foxnews.com/foxnews.com/content/uploads/2026/04/436/246/JEFFRIES-TRUMP-MSNOW.jpeg?ve=1",
-      "type": "direct"
-    },
-    {
-      "title": "Watch Fox News Live",
-      "link": "https://a57.foxnews.com/static.foxnews.com/foxnews.com/content/uploads/2026/04/686/386/JEFFRIES-TRUMP-MSNOW.jpeg?ve=1",
       "type": "direct"
     },
     {
@@ -134,12 +99,12 @@
     },
     {
       "title": "Watch Fox News Live",
-      "link": "https://www.foxnews.com/deals/mothers-day-little-luxuries",
+      "link": "https://www.foxnews.com/deals/last-minute-mothers-day-gift",
       "type": "direct"
     },
     {
       "title": "Watch Fox News Live",
-      "link": "https://www.foxnews.com/deals/small-amazon-items-big-difference",
+      "link": "https://www.foxnews.com/deals/wayfair-big-outdoor-sale",
       "type": "direct"
     },
     {
@@ -150,6 +115,41 @@
     {
       "title": "Watch Fox News Live",
       "link": "https://www.foxnews.com/entertainment/jana-kramer-sizzles-barely-denim-look-wild-western-getaway",
+      "type": "direct"
+    },
+    {
+      "title": "Watch Fox News Live",
+      "link": "https://www.foxnews.com/entertainment/justin-baldonis-team-claps-back-blake-lively-declaring-resounding-victory-settlement",
+      "type": "direct"
+    },
+    {
+      "title": "Watch Fox News Live",
+      "link": "https://www.foxnews.com/entertainment/summer-house-reality-tv-star-takes-michael-rapaport-profanity-laced-social-media-war",
+      "type": "direct"
+    },
+    {
+      "title": "Watch Fox News Live",
+      "link": "https://www.foxnews.com/food-drink",
+      "type": "direct"
+    },
+    {
+      "title": "Watch Fox News Live",
+      "link": "https://www.foxnews.com/food-drink/one-widely-loved-type-fish-should-stay-off-grill-chef-says-heres-why",
+      "type": "direct"
+    },
+    {
+      "title": "Health submenu",
+      "link": "https://www.foxnews.com/health",
+      "type": "direct"
+    },
+    {
+      "title": "Watch Fox News Live",
+      "link": "https://www.foxnews.com/health/hantavirus-us-rare-sometimes-deadly-disease-found",
+      "type": "direct"
+    },
+    {
+      "title": "Your Privacy Choices",
+      "link": "https://www.foxnews.com/html-sitemap",
       "type": "direct"
     }
   ]
