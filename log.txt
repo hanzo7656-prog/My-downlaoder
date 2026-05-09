@@ -1,6 +1,2 @@
-🟢 Using default URL: Fox News
-📄 Downloaded at Fri May  8 20:59:42 UTC 2026
-✅ Extracted 30 links
-
-=== LINK TYPES FOUND ===
-     30 direct
+Downloaded at Sat May  9 02:33:33 UTC 2026
+✅ Extracted 126 articles
