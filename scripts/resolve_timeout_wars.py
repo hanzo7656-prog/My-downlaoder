@@ -12,6 +12,11 @@
 - پیشنهاد صلح: 12 ساعت
 
 سرعت بازی روی این مهلت‌ها تأثیر می‌گذارد (get_adjusted_deadline)
+
+سیستم تجربه:
+- برنده نبرد: +1 ستاره (حداکثر 5)
+- بازنده نبرد: +0.5 ستاره (حداکثر 3)
+- مساوی: هر دو +0.5 ستاره
 """
 
 import json
@@ -41,7 +46,21 @@ DEADLINES = {
     "attack": 24,          # نوبت حمله (کل جنگ)
 }
 
-# ==================== توابع کمکی ====================
+# ==================== قدرت پایه تجهیزات (برای محاسبه تلفات) ====================
+
+UNIT_POWERS = {
+    "F22": 90, "رپتور": 90,
+    "F35": 75, "لایتنینگ": 75,
+    "SU57": 85, "فلون": 85,
+    "جی۲۰": 70, "J20": 70,
+    "تمپست": 95, "Tempest": 95,
+    "تایفون": 65, "Eurofighter Typhoon": 65,
+    "رافال": 65, "Rafale": 65,
+    "آر ماتا": 75, "T-14 Armata": 75,
+    "آبرامز": 72, "Abrams X": 72,
+    "لئوپارد": 70, "Leopard 2A7+": 70,
+}
+
 
 def load_game_state() -> Dict[str, Any]:
     """بارگذاری game_state.json از گیت‌هاب"""
@@ -136,12 +155,147 @@ def get_country_key_by_user(state: Dict[str, Any], user_id: str) -> str:
     return None
 
 
+# ==================== سیستم تجربه ====================
+
+def get_star_display(experience: int) -> str:
+    """تبدیل تجربه به نمایش ستاره"""
+    if experience >= 5:
+        return "⭐⭐⭐⭐⭐"
+    elif experience >= 4:
+        return "⭐⭐⭐⭐"
+    elif experience >= 3:
+        return "⭐⭐⭐"
+    elif experience >= 2:
+        return "⭐⭐"
+    elif experience >= 1:
+        return "⭐"
+    return "☆"
+
+
+def update_all_units_experience(state: Dict[str, Any], country_key: str, is_winner: bool):
+    """
+    افزایش تجربه همه یگان‌های یک کشور پس از نبرد
+    is_winner: True برای برنده (+1 ستاره، حداکثر 5)
+               False برای بازنده (+0.5 ستاره، حداکثر 3)
+    """
+    player = state["countries"].get(country_key)
+    if not player:
+        return
+    
+    units = player.get("units", {})
+    categories = ["air", "ground", "artillery", "destroyer", "submarine", "carrier", "air_defense"]
+    
+    total_updated = 0
+    
+    for category in categories:
+        for unit in units.get(category, []):
+            if unit.get("count", 0) > 0:
+                current = unit.get("experience", 0)
+                if is_winner:
+                    # برنده: +1 تجربه (حداکثر 5)
+                    new_exp = min(current + 1, 5)
+                else:
+                    # بازنده: +0.5 تجربه (حداکثر 3)
+                    new_exp = min(current + 0.5, 3)
+                
+                if new_exp != current:
+                    unit["experience"] = new_exp
+                    total_updated += 1
+    
+    if total_updated > 0:
+        print(f"Updated experience for {player.get('name_fa')}: {'winner' if is_winner else 'loser'} ({total_updated} units)")
+
+
+# ==================== محاسبه قدرت و تلفات ====================
+
+def calculate_unit_power(unit: Dict[str, Any]) -> int:
+    """محاسبه قدرت یک یگان با احتساب تجربه و سلامت"""
+    name_fa = unit.get("name_fa", "")
+    name_en = unit.get("name_en", "")
+    health = unit.get("health", 100)
+    experience = unit.get("experience", 0)
+    
+    base_power = UNIT_POWERS.get(name_fa, UNIT_POWERS.get(name_en, 50))
+    
+    health_mult = health / 100
+    exp_mult = 1 + (experience * 0.1)  # هر ستاره 10% قدرت بیشتر
+    
+    return int(base_power * health_mult * exp_mult)
+
+
+def calculate_total_power(player: Dict[str, Any]) -> int:
+    """محاسبه قدرت کل ارتش یک کشور"""
+    units = player.get("units", {})
+    total = 0
+    
+    for category in ["air", "ground", "artillery", "destroyer", "submarine", "carrier", "air_defense"]:
+        for unit in units.get(category, []):
+            count = unit.get("count", 0)
+            if count > 0:
+                power = calculate_unit_power(unit)
+                total += power * count
+    
+    return total
+
+
+def apply_damage_to_units(player: Dict[str, Any], damage_percent: float):
+    """
+    اعمال آسیب به یگان‌های یک کشور (بر اساس درصدی از قدرت کل)
+    یگان‌های ضعیف‌تر اول آسیب می‌بینند
+    """
+    units = player.get("units", {})
+    categories = ["air", "ground", "artillery", "destroyer", "submarine", "carrier", "air_defense"]
+    
+    # جمع‌آوری همه یگان‌ها با قدرت
+    all_units = []
+    for category in categories:
+        for unit in units.get(category, []):
+            count = unit.get("count", 0)
+            if count > 0:
+                power = calculate_unit_power(unit)
+                all_units.append({
+                    "category": category,
+                    "unit": unit,
+                    "count": count,
+                    "power": power
+                })
+    
+    # مرتب‌سازی بر اساس قدرت (ضعیف‌ترین اول)
+    all_units.sort(key=lambda x: x["power"])
+    
+    # محاسبه تعداد یگان‌هایی که باید آسیب ببینند
+    total_units = sum(u["count"] for u in all_units)
+    units_to_damage = max(1, int(total_units * damage_percent))
+    
+    damaged = 0
+    for unit_info in all_units:
+        if damaged >= units_to_damage:
+            break
+        
+        unit = unit_info["unit"]
+        count = unit_info["count"]
+        remaining = units_to_damage - damaged
+        
+        if count <= remaining:
+            # کل یگان نابود می‌شود
+            unit["count"] = 0
+            unit["health"] = 0
+            damaged += count
+        else:
+            # تعدادی از یگان‌ها آسیب می‌بینند
+            unit["count"] = count - remaining
+            # یگان‌های باقی‌مانده سلامت کمتری دارند
+            if "health" in unit:
+                unit["health"] = max(50, unit["health"] - 25)
+            damaged += remaining
+
+
 # ==================== منطق حل جنگ ====================
 
 def resolve_war(war: Dict[str, Any], attacker_key: str, defender_key: str, 
                 attacker_name: str, defender_name: str, state: Dict[str, Any]) -> Tuple[bool, str]:
     """
-    حل یک جنگ منفرد
+    حل یک جنگ منفرد با اعمال خسارت و به‌روزرسانی تجربه
     بازگشت: (آیا جنگی تمام شد، نتیجه)
     """
     now = datetime.now()
@@ -160,6 +314,9 @@ def resolve_war(war: Dict[str, Any], attacker_key: str, defender_key: str,
     if now - last < timedelta(hours=adjusted_deadline):
         return False, ""
     
+    attacker_player = state["countries"].get(attacker_key, {})
+    defender_player = state["countries"].get(defender_key, {})
+    
     # مهلت تمام شده - حل خودکار
     if phase == "declaration":
         # مدافع پاسخ نداد -> جنگ لغو می‌شود
@@ -169,50 +326,104 @@ def resolve_war(war: Dict[str, Any], attacker_key: str, defender_key: str,
         return True, result
     
     elif phase == "deploy":
-        # استقرار نیرو تمام شد -> مرحله بعد (حمله)
+        # استقرار نیرو تمام شد -> محاسبه خودکار قدرت
+        attacker_power = calculate_total_power(attacker_player)
+        defender_power = calculate_total_power(defender_player)
+        
+        war["attacker_power"] = attacker_power
+        war["defender_power"] = defender_power
         war["current_phase"] = "attack"
         war["last_move"] = now.isoformat()
-        result = f"⚔️ *مرحله استقرار پایان یافت*\n{attacker_name} vs {defender_name}\nوارد مرحله حمله شدید."
+        
+        result = f"⚔️ *مرحله استقرار پایان یافت*\n{attacker_name} vs {defender_name}\nقدرت مهاجم: {attacker_power} | قدرت مدافع: {defender_power}"
         return False, result
     
     elif phase == "attack":
-        # نوبت حمله تمام شد -> برنده مشخص می‌شود
+        # نوبت حمله تمام شد -> نبرد حل می‌شود
         attacker_power = war.get("attacker_power", 0)
         defender_power = war.get("defender_power", 0)
         
+        if attacker_power == 0 or defender_power == 0:
+            # یک طرف نیرویی ندارد
+            if attacker_power == 0 and defender_power == 0:
+                war["status"] = "ended"
+                result = f"🤝 *جنگ به بن‌بست خورد*\n{attacker_name} vs {defender_name}\nهر دو طرف نیرویی ندارند."
+                return True, result
+            elif attacker_power == 0:
+                # مدافع خودکار برنده می‌شود
+                update_all_units_experience(state, defender_key, True)
+                update_all_units_experience(state, attacker_key, False)
+                war["status"] = "ended"
+                war["winner"] = defender_key
+                result = f"🏆 *پیروزی خودکار*\n{defender_name} بدون جنگ پیروز شد (مهاجم نیرویی نداشت)."
+                return True, result
+            else:
+                # مهاجم خودکار برنده می‌شود
+                update_all_units_experience(state, attacker_key, True)
+                update_all_units_experience(state, defender_key, False)
+                war["status"] = "ended"
+                war["winner"] = attacker_key
+                result = f"🏆 *پیروزی خودکار*\n{attacker_name} بدون جنگ پیروز شد (مدافع نیرویی نداشت)."
+                return True, result
+        
+        # نبرد واقعی
         if attacker_power > defender_power:
-            winner = attacker_name
-            loser = defender_name
-            war["winner"] = attacker_key
-            # تصرف بخش
+            # مهاجم برنده شد
+            damage_percent = 0.15 if attacker_power > defender_power * 1.5 else 0.10
+            apply_damage_to_units(defender_player, damage_percent)
+            apply_damage_to_units(attacker_player, 0.05)
+            
+            update_all_units_experience(state, attacker_key, True)
+            update_all_units_experience(state, defender_key, False)
+            
             sector = war.get("current_sector", 1)
             war["captured_sectors"] = war.get("captured_sectors", []) + [sector]
             war["current_sector"] = sector + 1
             
-            result = f"⚔️ *بخش {sector} تصرف شد*\n{attacker_name} پیروز شد! {defender_name} بخش {sector} را از دست داد."
-            
-            # اگر همه بخش‌ها تصرف شد
             if war["current_sector"] > 3:
                 war["status"] = "ended"
-                war["ended_at"] = now.isoformat()
-                result = f"🏆 *پیروزی کامل*\n{attacker_name} {defender_name} را به طور کامل شکست داد و تصرف کرد!"
+                war["winner"] = attacker_key
+                result = f"🏆 *پیروزی کامل*\n{attacker_name} {defender_name} را به طور کامل شکست داد و تصرف کرد!\nتلفات سنگین به مدافع وارد شد."
                 return True, result
-        else:
-            winner = defender_name
-            loser = attacker_name
-            result = f"⚔️ *دفاع موفق*\n{defender_name} در برابر {attacker_name} مقاومت کرد و پیروز شد."
+            else:
+                war["last_move"] = now.isoformat()
+                result = f"⚔️ *بخش {sector} تصرف شد*\n{attacker_name} پیروز شد! {defender_name} بخش {sector} را از دست داد.\nمرحله بعد: بخش {war['current_sector']}"
+                return False, result
+        
+        elif defender_power > attacker_power:
+            # مدافع برنده شد
+            damage_percent = 0.15 if defender_power > attacker_power * 1.5 else 0.10
+            apply_damage_to_units(attacker_player, damage_percent)
+            apply_damage_to_units(defender_player, 0.05)
+            
+            update_all_units_experience(state, defender_key, True)
+            update_all_units_experience(state, attacker_key, False)
+            
             war["status"] = "ended"
-            war["ended_at"] = now.isoformat()
+            war["winner"] = defender_key
+            result = f"🛡️ *دفاع موفق*\n{defender_name} در برابر {attacker_name} مقاومت کرد و پیروز شد.\n{attacker_name} متحمل خسارت سنگین شد."
             return True, result
         
-        war["last_move"] = now.isoformat()
-        return False, result
+        else:
+            # مساوی
+            apply_damage_to_units(attacker_player, 0.10)
+            apply_damage_to_units(defender_player, 0.10)
+            
+            update_all_units_experience(state, attacker_key, False)
+            update_all_units_experience(state, defender_key, False)
+            
+            war["status"] = "ended"
+            result = f"🤝 *نبرد مساوی*\n{attacker_name} vs {defender_name}\nهر دو طرف متحمل خسارت شدند و جنگ به پایان رسید."
+            return True, result
     
     elif phase == "retreat":
-        # عقب‌نشینی تمام شد -> جنگ تمام می‌شود
+        # عقب‌نشینی تمام شد -> مهاجم عقب‌نشینی کرده
+        apply_damage_to_units(attacker_player, 0.20)  # جریمه عقب‌نشینی
+        update_all_units_experience(state, defender_key, True)
+        update_all_units_experience(state, attacker_key, False)
+        
         war["status"] = "ended"
-        war["ended_at"] = now.isoformat()
-        result = f"🕊️ *جنگ پایان یافت*\n{attacker_name} در مقابل {defender_name} عقب‌نشینی کرد."
+        result = f"🏃 *عقب‌نشینی*\n{attacker_name} از {defender_name} عقب‌نشینی کرد و جنگ تمام شد.\n{attacker_name} در حین عقب‌نشینی متحمل خسارت شد."
         return True, result
     
     elif phase == "peace":
@@ -282,6 +493,11 @@ def resolve_timeout_wars():
                 defender_key = country_key
                 defender_name = name
             
+            # اگر یکی از طرفین وجود نداشت، جنگ را حذف کن
+            if not attacker_key or not defender_key:
+                remove_war_from_player(state, country_key, war)
+                continue
+            
             # حل جنگ
             finished, result = resolve_war(war, attacker_key, defender_key, 
                                           attacker_name, defender_name, state)
@@ -315,8 +531,9 @@ def get_active_wars_summary(state: Dict[str, Any]) -> str:
     
     for country_key, player in players.items():
         for war in player.get("active_wars", []):
-            opponent = get_player_name(state, war.get("with"))
-            active_wars.append(f"{player.get('name_fa', country_key)} vs {opponent}")
+            if war.get("status") == "active":
+                opponent = get_player_name(state, war.get("with"))
+                active_wars.append(f"{player.get('name_fa', country_key)} vs {opponent}")
     
     if not active_wars:
         return "هیچ جنگ فعالی وجود ندارد."
