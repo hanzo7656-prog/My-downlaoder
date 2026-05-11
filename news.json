@@ -1,156 +1,66 @@
 {
-  "source": "",
-  "timestamp": "2026-05-11T03:28:18+00:00",
+  "source": "foxnews",
+  "timestamp": "2026-05-11T07:37:49+00:00",
   "articles": [
     {
-      "title": "Watch Fox News Live",
-      "link": "https://a57.foxnews.com/prod-hp.foxnews.com/images/2026/05/854/477/7eab82cf1cd9cb68051311ec9d7e22bc.gif?tl=1",
-      "type": "direct"
+      "title": "Digital Originals",
+      "link": "https://www.foxnews.com/www.foxnews.com/category/us/digital-originals"
     },
     {
-      "title": "Watch Fox News Live",
-      "link": "https://a57.foxnews.com/static.foxnews.com/foxnews.com/content/uploads/2025/12/192/108/costco-store.jpg?ve=1",
-      "type": "direct"
+      "title": "Fox News Flash",
+      "link": "https://www.foxnews.com/www.foxnews.com/category/media/fox-news-flash"
     },
     {
-      "title": "Watch Fox News Live",
-      "link": "https://a57.foxnews.com/static.foxnews.com/foxnews.com/content/uploads/2025/12/218/123/costco-store.jpg?ve=1",
-      "type": "direct"
+      "title": "Personal Freedoms",
+      "link": "https://www.foxnews.com/www.foxnews.com/category/us/personal-freedoms"
     },
     {
-      "title": "Watch Fox News Live",
-      "link": "https://a57.foxnews.com/static.foxnews.com/foxnews.com/content/uploads/2025/12/343/193/costco-store.jpg?ve=1",
-      "type": "direct"
+      "title": "America Together",
+      "link": "https://www.foxnews.com/www.foxnews.com/category/us/personal-freedoms/america-together"
     },
     {
-      "title": "Watch Fox News Live",
-      "link": "https://a57.foxnews.com/static.foxnews.com/foxnews.com/content/uploads/2025/12/384/216/costco-store.jpg?ve=1",
-      "type": "direct"
+      "title": "Entertainment",
+      "link": "https://www.foxnews.com/www.foxnews.com/entertainment"
     },
     {
-      "title": "Watch Fox News Live",
-      "link": "https://a57.foxnews.com/static.foxnews.com/foxnews.com/content/uploads/2025/12/436/246/costco-store.jpg?ve=1",
-      "type": "direct"
+      "title": "Personal Finance",
+      "link": "https://www.foxnews.com/www.foxbusiness.com/category/personal-finance"
     },
     {
-      "title": "Watch Fox News Live",
-      "link": "https://a57.foxnews.com/static.foxnews.com/foxnews.com/content/uploads/2025/12/686/386/costco-store.jpg?ve=1",
-      "type": "direct"
+      "title": "Faith & Values",
+      "link": "https://www.foxnews.com/www.foxnews.com/faith-values"
     },
     {
-      "title": "Watch Fox News Live",
-      "link": "https://a57.foxnews.com/static.foxnews.com/foxnews.com/content/uploads/2026/03/192/108/alexandra-ocasio-cortez-speaking.jpg?ve=1",
-      "type": "direct"
+      "title": "Travel + Outdoors",
+      "link": "https://www.foxnews.com/www.foxnews.com/travel"
     },
     {
-      "title": "Watch Fox News Live",
-      "link": "https://a57.foxnews.com/static.foxnews.com/foxnews.com/content/uploads/2026/03/218/123/alexandra-ocasio-cortez-speaking.jpg?ve=1",
-      "type": "direct"
+      "title": "Food + Drink",
+      "link": "https://www.foxnews.com/www.foxnews.com/food-drink"
     },
     {
-      "title": "Watch Fox News Live",
-      "link": "https://a57.foxnews.com/static.foxnews.com/foxnews.com/content/uploads/2026/03/343/193/alexandra-ocasio-cortez-speaking.jpg?ve=1",
-      "type": "direct"
+      "title": "FOX Weather",
+      "link": "https://www.foxnews.com/www.foxweather.com/"
     },
     {
-      "title": "Watch Fox News Live",
-      "link": "https://a57.foxnews.com/static.foxnews.com/foxnews.com/content/uploads/2026/03/384/216/alexandra-ocasio-cortez-speaking.jpg?ve=1",
-      "type": "direct"
+      "title": "Full Episodes",
+      "link": "https://www.foxnews.com/video/topics/latest-news-video"
     },
     {
-      "title": "Watch Fox News Live",
-      "link": "https://a57.foxnews.com/static.foxnews.com/foxnews.com/content/uploads/2026/03/436/246/alexandra-ocasio-cortez-speaking.jpg?ve=1",
-      "type": "direct"
+      "title": "Latest Wires",
+      "link": "https://www.foxnews.com/www.foxnews.com/category/topic/associated-press"
     },
     {
-      "title": "Watch Fox News Live",
-      "link": "https://a57.foxnews.com/static.foxnews.com/foxnews.com/content/uploads/2026/03/686/386/alexandra-ocasio-cortez-speaking.jpg?ve=1",
-      "type": "direct"
+      "title": "Antisemitism Exposed",
+      "link": "https://www.foxnews.com/www.foxnews.com/category/topic/anti-semitism"
     },
     {
-      "title": "Watch Fox News Live",
-      "link": "https://a57.foxnews.com/static.foxnews.com/foxnews.com/content/uploads/2026/05/192/108/robot-southwest-flight.jpg?ve=1",
-      "type": "direct"
+      "title": "Immigration",
+      "link": "https://www.foxnews.com/www.foxnews.com/category/us/immigration"
     },
     {
-      "title": "Watch Fox News Live",
-      "link": "https://a57.foxnews.com/static.foxnews.com/foxnews.com/content/uploads/2026/05/218/123/robot-southwest-flight.jpg?ve=1",
-      "type": "direct"
-    },
-    {
-      "title": "Watch Fox News Live",
-      "link": "https://a57.foxnews.com/static.foxnews.com/foxnews.com/content/uploads/2026/05/343/193/robot-southwest-flight.jpg?ve=1",
-      "type": "direct"
-    },
-    {
-      "title": "Watch Fox News Live",
-      "link": "https://a57.foxnews.com/static.foxnews.com/foxnews.com/content/uploads/2026/05/384/216/robot-southwest-flight.jpg?ve=1",
-      "type": "direct"
-    },
-    {
-      "title": "Watch Fox News Live",
-      "link": "https://a57.foxnews.com/static.foxnews.com/foxnews.com/content/uploads/2026/05/436/246/robot-southwest-flight.jpg?ve=1",
-      "type": "direct"
-    },
-    {
-      "title": "Watch Fox News Live",
-      "link": "https://a57.foxnews.com/static.foxnews.com/foxnews.com/content/uploads/2026/05/686/386/robot-southwest-flight.jpg?ve=1",
-      "type": "direct"
-    },
-    {
-      "title": "Terms of Use",
-      "link": "https://help.foxnews.com/hc/en-us",
-      "type": "direct"
-    },
-    {
-      "title": "Apps & Products - FOX Nation",
-      "link": "https://nation.foxnews.com",
-      "type": "direct"
-    },
-    {
-      "title": "Apps & Products - FOX Noticias",
-      "link": "https://noticias.foxnews.com",
-      "type": "direct"
-    },
-    {
-      "title": "Apps & Products - FOX Noticias",
-      "link": "https://noticias.foxnews.com/",
-      "type": "direct"
-    },
-    {
-      "title": "Apps & Products - FOX Noticias",
-      "link": "https://noticias.foxnews.com/shows/fox-noticias",
-      "type": "direct"
-    },
-    {
-      "title": "About - Media Relations",
-      "link": "https://press.foxnews.com",
-      "type": "direct"
-    },
-    {
-      "title": "About - Media Relations",
-      "link": "https://press.foxnews.com/media-contacts",
-      "type": "direct"
-    },
-    {
-      "title": "Terms of Use",
-      "link": "https://privacy.foxnews.com/main/web/main",
-      "type": "direct"
-    },
-    {
-      "title": "Apps & Products - FOX News Radio",
-      "link": "https://radio.foxnews.com",
-      "type": "direct"
-    },
-    {
-      "title": "Apps & Products - FOX News Podcasts",
-      "link": "https://radio.foxnews.com/",
-      "type": "direct"
-    },
-    {
-      "title": "Apps & Products - FOX News Podcasts",
-      "link": "https://radio.foxnews.com/podcast/",
-      "type": "direct"
+      "title": "Fox News Podcasts",
+      "link": "https://radio.foxnews.com/podcast/"
     }
   ]
 }
