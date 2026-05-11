@@ -18,7 +18,7 @@ from typing import Dict, Any, Optional, List, Tuple
 # ==================== تنظیمات اولیه ====================
 
 BALE_TOKEN = os.environ.get("BALE_TOKEN", "YOUR_BOT_TOKEN_HERE")
-GITHUB_TOKEN = os.environ.get("GITHUB_TOKEN", "")
+GITHUB_TOKEN = os.environ.get("GH_TOKEN", "")
 REPO_OWNER = os.environ.get("REPO_OWNER", "your-username")
 REPO_NAME = os.environ.get("REPO_NAME", "your-repo")
 GAME_STATE_PATH = "game_state.json"
