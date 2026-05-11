@@ -1,0 +1,152 @@
+name: Daily Game Tasks
+
+on:
+  schedule:
+    # ساعت 8 صبح تهران (UTC 4:30) - مأموریت رمزنگاری
+    - cron: '30 4 * * *'
+    # ساعت 12 ظهر تهران (UTC 8:30) - جدول پتانسیل و پاداش پرستیژ
+    - cron: '30 8 * * *'
+    # ساعت 12 نیمه‌شب تهران (UTC 20:30) - کسر هزینه نگهداری
+    - cron: '30 20 * * *'
+    # هر 4 ساعت یکبار - بررسی و حل جنگ‌های بی‌پاسخ
+    - cron: '0 */4 * * *'
+  
+  workflow_dispatch:  # اجازه اجرای دستی از تب Actions
+
+jobs:
+  # ========== مأموریت رمزنگاری (08:00 تهران) ==========
+  morning_mission:
+    if: github.event.schedule == '30 4 * * *' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: Install dependencies
+        run: pip install requests
+      
+      - name: Generate daily cipher mission
+        run: python scripts/generate_mission.py
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          REPO_OWNER: ${{ secrets.REPO_OWNER }}
+          REPO_NAME: ${{ secrets.REPO_NAME }}
+          BALE_TOKEN: ${{ secrets.BALE_TOKEN }}
+          GCC_CHAT_ID: ${{ secrets.GCC_CHAT_ID }}
+      
+      - name: Commit and push changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add game_state.json
+          git diff --staged --quiet || git commit -m "[auto] daily mission $(date +'%Y-%m-%d')"
+          git push
+
+  # ========== جدول رتبه‌بندی (12:00 تهران) ==========
+  noon_rankings:
+    if: github.event.schedule == '30 8 * * *' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: Install dependencies
+        run: pip install requests
+      
+      - name: Calculate and send rankings
+        run: python scripts/calculate_rankings.py
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          REPO_OWNER: ${{ secrets.REPO_OWNER }}
+          REPO_NAME: ${{ secrets.REPO_NAME }}
+          BALE_TOKEN: ${{ secrets.BALE_TOKEN }}
+          GCC_CHAT_ID: ${{ secrets.GCC_CHAT_ID }}
+      
+      - name: Commit and push changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add game_state.json
+          git diff --staged --quiet || git commit -m "[auto] daily rankings $(date +'%Y-%m-%d')"
+          git push
+
+  # ========== کسر هزینه نگهداری (00:00 تهران) ==========
+  midnight_maintenance:
+    if: github.event.schedule == '30 20 * * *' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: Install dependencies
+        run: pip install requests
+      
+      - name: Deduct maintenance costs
+        run: python scripts/deduct_maintenance.py
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          REPO_OWNER: ${{ secrets.REPO_OWNER }}
+          REPO_NAME: ${{ secrets.REPO_NAME }}
+          BALE_TOKEN: ${{ secrets.BALE_TOKEN }}
+          GCC_CHAT_ID: ${{ secrets.GCC_CHAT_ID }}
+      
+      - name: Check inactive players
+        run: python scripts/check_inactivity.py
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          REPO_OWNER: ${{ secrets.REPO_OWNER }}
+          REPO_NAME: ${{ secrets.REPO_NAME }}
+          BALE_TOKEN: ${{ secrets.BALE_TOKEN }}
+          GCC_CHAT_ID: ${{ secrets.GCC_CHAT_ID }}
+      
+      - name: Commit and push changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add game_state.json
+          git diff --staged --quiet || git commit -m "[auto] daily maintenance $(date +'%Y-%m-%d')"
+          git push
+
+  # ========== حل خودکار جنگ‌ها (هر 4 ساعت) ==========
+  auto_resolve_wars:
+    if: github.event.schedule == '0 */4 * * *' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: Install dependencies
+        run: pip install requests
+      
+      - name: Resolve timed out wars
+        run: python scripts/resolve_timeout_wars.py
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          REPO_OWNER: ${{ secrets.REPO_OWNER }}
+          REPO_NAME: ${{ secrets.REPO_NAME }}
+          BALE_TOKEN: ${{ secrets.BALE_TOKEN }}
+          GCC_CHAT_ID: ${{ secrets.GCC_CHAT_ID }}
+      
+      - name: Commit and push changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add game_state.json
+          git diff --staged --quiet || git commit -m "[auto] auto-resolve wars $(date +'%Y-%m-%d %H:%M')"
+          git push
