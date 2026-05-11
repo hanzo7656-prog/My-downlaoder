@@ -462,6 +462,8 @@ def get_inventory(state: Dict[str, Any], user_id: str) -> str:
                 name = item.get("name_fa", item.get("name_en", "نامشخص"))
                 health = item.get("health", 100)
                 health_status = "🟢" if health == 100 else "🟡" if health >= 50 else "🔴"
+                experience = item.get("experience", 0)
+                stars = "⭐" * experience if experience > 0 else "☆"
                 cat_items.append(f"  {health_status} {name}: {count} عدد (سلامت {health}%)")
         
         if cat_items:
@@ -486,6 +488,23 @@ def get_market_prices() -> Dict[str, int]:
         prices[name] = int(base * variation)
     return prices
 
+def update_unit_experience(state: Dict[str, Any], country_key: str, category: str, unit_name: str, amount: float):
+    """
+    افزایش تجربه یک یگان خاص
+    amount: مقدار تجربه اضافه شده (0.5 یا 1)
+    """
+    player = state["countries"].get(country_key)
+    if not player:
+        return
+    
+    units = player.get("units", {})
+    for unit in units.get(category, []):
+        if unit.get("name_fa") == unit_name or unit.get("name_en") == unit_name:
+            current = unit.get("experience", 0)
+            # حداکثر 5 ستاره
+            new_exp = min(current + amount, 5)
+            unit["experience"] = new_exp
+            return
 
 if __name__ == "__main__":
     print("Economy system module loaded")
