@@ -4,6 +4,9 @@
 """
 محاسبه جدول پتانسیل روزانه و توزیع پاداش پرستیژ
 هر روز ساعت 12 ظهر اجرا می‌شود (توسط GitHub Actions)
+
+پتانسیل = (صنعت × 3) + (تجارت × 2.5) + (قدرت نظامی × 2) + (دیپلماسی × 1) + (ثبات × 1)
+با اعمال اثرات سازه‌ها و زیرساخت‌ها
 """
 
 import json
@@ -24,228 +27,159 @@ GCC_CHAT_ID = os.environ.get("GCC_CHAT_ID", "")
 GITHUB_API_URL = f"https://api.github.com/repos/{REPO_OWNER}/{REPO_NAME}/contents/game_state.json"
 BALE_API_URL = f"https://tapi.bale.ai/bot{BALE_TOKEN}"
 
+# ==================== قدرت پایه تجهیزات ====================
+
+UNIT_POWERS = {
+    "F22": 90, "رپتور": 90, "F35": 75, "لایتنینگ": 75,
+    "SU57": 85, "فلون": 85, "جی۲۰": 70, "J20": 70,
+    "تمپست": 95, "Tempest": 95, "تایفون": 65, "رافال": 65,
+    "آر ماتا": 75, "T-14": 75, "آبرامز": 72, "Abrams X": 72,
+    "لئوپارد": 70, "چلنجر": 64, "یاسن": 70, "اوهایو": 75,
+    "فورد": 100, "نیمیتز": 85
+}
+
 # ==================== توابع کمکی ====================
 
 def load_game_state() -> Dict[str, Any]:
-    """بارگذاری game_state.json از گیت‌هاب"""
     try:
-        headers = {
-            "Authorization": f"token {GH_TOKEN}",
-            "Accept": "application/vnd.github.v3+json"
-        }
+        headers = {"Authorization": f"token {GH_TOKEN}", "Accept": "application/vnd.github.v3+json"}
         response = requests.get(GITHUB_API_URL, headers=headers)
         if response.status_code == 200:
             content = response.json()["content"]
             decoded = base64.b64decode(content).decode("utf-8")
             return json.loads(decoded)
-        else:
-            print(f"Error loading state: {response.status_code}")
-            return {}
-    except Exception as e:
-        print(f"Error loading: {e}")
+        return {}
+    except:
         return {}
 
 
 def save_game_state(state: Dict[str, Any]) -> bool:
-    """ذخیره game_state.json در گیت‌هاب"""
     try:
-        headers = {
-            "Authorization": f"token {GH_TOKEN}",
-            "Accept": "application/vnd.github.v3+json"
-        }
+        headers = {"Authorization": f"token {GH_TOKEN}", "Accept": "application/vnd.github.v3+json"}
         response = requests.get(GITHUB_API_URL, headers=headers)
         current_sha = response.json().get("sha", "")
         
         new_content = json.dumps(state, indent=2, ensure_ascii=False)
-        encoded_content = base64.b64encode(new_content.encode("utf-8")).decode("utf-8")
+        encoded = base64.b64encode(new_content.encode()).decode()
         
-        payload = {
-            "message": f"[auto] daily rankings {datetime.now().strftime('%Y-%m-%d')}",
-            "content": encoded_content,
-            "sha": current_sha
-        }
-        
+        payload = {"message": f"[rankings] {datetime.now().isoformat()}", "content": encoded, "sha": current_sha}
         response = requests.put(GITHUB_API_URL, headers=headers, json=payload)
         return response.status_code == 200
-    except Exception as e:
-        print(f"Error saving: {e}")
+    except:
         return False
 
 
 def send_to_gcc(message: str):
-    """ارسال پیام به کانال GCC"""
     if not BALE_TOKEN or not GCC_CHAT_ID:
-        print("BALE_TOKEN or GCC_CHAT_ID not set")
         return
-    
     url = f"{BALE_API_URL}/sendMessage"
-    payload = {
-        "chat_id": GCC_CHAT_ID,
-        "text": message,
-        "parse_mode": "Markdown"
-    }
+    payload = {"chat_id": GCC_CHAT_ID, "text": message, "parse_mode": "Markdown"}
     try:
-        response = requests.post(url, json=payload)
-        print(f"Send to GCC: {response.status_code}")
-    except Exception as e:
-        print(f"Error sending to GCC: {e}")
+        requests.post(url, json=payload)
+    except:
+        pass
 
 
 def get_speed_multiplier(state: Dict[str, Any]) -> int:
-    """دریافت ضریب سرعت بازی"""
     return state.get("admin", {}).get("game_speed", 1)
 
 
-# ==================== محاسبه قدرت نظامی ====================
+def get_structure_effects(state: Dict[str, Any], country_key: str) -> Dict[str, Any]:
+    """دریافت اثرات سازه‌های یک کشور"""
+    player = state["countries"].get(country_key, {})
+    structures = player.get("structures", [])
+    
+    effects = {
+        "air_capacity_bonus": 0,
+        "naval_capacity_bonus": 0,
+        "ground_capacity_bonus": 0,
+        "income_bonus": 0,
+        "research_discount": 0,
+        "missile_defense_chance": 0,
+        "industry_bonus": 0,
+        "trade_bonus": 0
+    }
+    
+    for structure in structures:
+        if structure.get("status") != "active":
+            continue
+        
+        struct_type = structure.get("type")
+        level = structure.get("level", 1)
+        
+        if struct_type == "trade_center":
+            effects["income_bonus"] = max(effects["income_bonus"], 0.30 * level)
+            effects["trade_bonus"] = max(effects["trade_bonus"], 0.10 * level)
+        elif struct_type == "laboratory":
+            effects["research_discount"] = max(effects["research_discount"], 0.20 * level)
+        elif struct_type == "airbase":
+            effects["air_capacity_bonus"] = max(effects["air_capacity_bonus"], 0.50 * level)
+        elif struct_type == "navalbase":
+            effects["naval_capacity_bonus"] = max(effects["naval_capacity_bonus"], 0.50 * level)
+        elif struct_type == "barracks":
+            effects["ground_capacity_bonus"] = max(effects["ground_capacity_bonus"], 0.30 * level)
+        elif struct_type == "shield":
+            effects["missile_defense_chance"] = max(effects["missile_defense_chance"], 0.50 * (level / 2))
+    
+    return effects
+
+
+def get_infrastructure_effects(state: Dict[str, Any], country_key: str) -> Dict[str, Any]:
+    """دریافت اثرات زیرساخت‌های یک کشور"""
+    player = state["countries"].get(country_key, {})
+    infra = player.get("infrastructure", {})
+    
+    effects = {
+        "ground_speed_bonus": infra.get("road", 0) * 0.10,
+        "naval_speed_bonus": infra.get("port", 0) * 0.10,
+        "air_speed_bonus": infra.get("airport", 0) * 0.10,
+        "maintenance_discount": infra.get("power", 0) * 0.05,
+        "mission_speed_bonus": infra.get("internet", 0) * 0.10
+    }
+    
+    return effects
+
 
 def calculate_military_power(player: Dict[str, Any]) -> int:
     """محاسبه قدرت نظامی بر اساس تجهیزات"""
     units = player.get("units", {})
     total_power = 0
     
-    # قدرت پایه تجهیزات (نام فارسی و انگلیسی)
-    unit_powers = {
-        # هواپیماها
-        "F22": 80, "رپتور": 80,
-        "F35": 70, "لایتنینگ": 70,
-        "SU57": 75, "فلون": 75,
-        "جی۲۰": 65, "J20": 65,
-        "تایفون": 58, "Eurofighter Typhoon": 58,
-        "رافال": 57, "Rafale": 57,
-        "تمپست": 85, "Tempest": 85,
-        "سوخو-۳۵": 55, "Su-35": 55,
-        "میگ-۲۹": 40, "MiG-29": 40,
-        "فانتوم": 30, "F-4": 30,
-        "سوپر هورنت": 50, "F/A-18": 50,
-        
-        # تانک‌ها
-        "آبرامز": 65, "Abrams X": 65,
-        "آر ماتا": 68, "T-14 Armata": 68,
-        "لئوپارد": 62, "Leopard 2A7+": 62,
-        "چلنجر": 58, "Challenger 2": 58,
-        "پلنگ سیاه": 60, "K2 Black Panther": 60,
-        "مِرکاوا": 59, "Merkava": 59,
-        "تایپ-۱۰": 56, "Type 10": 56,
-        "لکلر": 57, "Leclerc": 57,
-        "تایپ-۹۹": 54, "Type 99A": 54,
-        "تی-۸۴": 52, "T-84": 52,
-        "آبرامز ام۱": 38, "Abrams M1": 38,
-        "تی-۹۰": 37, "T-90": 37,
-        "لئوپارد ۲": 35, "Leopard 2": 35,
-        "لئوپارد-۱": 20, "Leopard 1": 20,
-        "تی-۵۵": 10, "T-55": 10,
-        
-        # توپخانه
-        "پی‌زدهاچ-۲۰۰۰": 42, "PzH 2000": 42,
-        "کوالیتسیا": 45, "Koalitsiya-SV": 45,
-        "ام-۱۰۹": 39, "M109A7": 39,
-        "کی-۹": 40, "K9 Thunder": 40,
-        "پی‌ال‌زد-۵۲": 38, "PLZ-52": 38,
-        
-        # ناوشکن‌ها
-        "آرلی بروک": 45, "Arleigh Burke": 45,
-        "زوموالت": 50, "Zumwalt": 50,
-        "تایپ-۵۵": 48, "Type 55": 48,
-        "مایا": 42, "Maya class": 42,
-        "هورایزن": 40, "Horizon class": 40,
-        "تایپ-۴۵": 43, "Type 45": 43,
-        "سجونگ کبیر": 46, "Sejong the Great": 46,
-        
-        # زیردریایی‌ها
-        "یاسن": 55, "Yasen class": 55,
-        "اوهایو": 60, "Ohio class": 60,
-        "تایپ-۰۹۳": 45, "Type 093": 45,
-        "ویرجینیا": 50, "Virginia class": 50,
-        
-        # ناو هواپیمابر
-        "نیمیتز": 70, "Nimitz": 70,
-        "فورد": 85, "Ford": 85,
-        "فوجیان": 65, "Fujian": 65,
-        "شاندونگ": 55, "Shandong": 55,
-        "لیائونینگ": 45, "Liaoning": 45,
-        "شارل دوگل": 58, "Charles de Gaulle": 58,
-        "ملکه الیزابت": 60, "Queen Elizabeth": 60,
-        
-        # پدافند
-        "اس-۴۰۰": 60, "S-400": 60,
-        "اس-۵۰۰": 85, "S-500": 85,
-        "پاتریوت": 50, "Patriot": 50,
-        "تاد": 55, "THAAD": 55,
-        "فلاخن داوود": 65, "David's Sling": 65,
-    }
-    
     for category in ["air", "ground", "naval", "destroyer", "submarine", "carrier", "artillery", "air_defense"]:
         for unit in units.get(category, []):
-            name_fa = unit.get("name_fa", "")
-            name_en = unit.get("name_en", "")
             count = unit.get("count", 0)
+            health = unit.get("health", 100)
+            experience = unit.get("experience", 0)
             
-            # جستجو در دیکشنری
-            power = unit_powers.get(name_fa, unit_powers.get(name_en, 30))
-            total_power += power * count * unit.get("health", 100) / 100  # ضریب سلامت
+            name = unit.get("name_fa", unit.get("name_en", ""))
+            base_power = UNIT_POWERS.get(name, 50)
+            
+            power = base_power * (health / 100) * (1 + experience * 0.1)
+            total_power += power * count
     
-    # حداکثر 200 امتیاز نظامی برای جلوگیری از بینیازی
-    return min(total_power // 10, 200)
+    return int(total_power)
 
 
-# ==================== محاسبه پتانسیل ====================
-
-def calculate_potential(player: Dict[str, Any]) -> int:
-    """محاسبه پتانسیل کلی کشور"""
+def calculate_potential(player: Dict[str, Any], structure_effects: Dict, country_key: str = None) -> int:
+    """محاسبه پتانسیل کامل یک کشور"""
     industry = player.get("industry", 0)
     trade = player.get("trade", 0)
     diplomacy = player.get("diplomacy", 0)
     stability = player.get("stability", 5)
-    military_power = calculate_military_power(player)
+    military_power = calculate_military_power(player) // 10
     
-    # فرمول: (صنعت × ۳) + (تجارت × ۲.۵) + (قدرت نظامی × ۲) + (دیپلماسی × ۱) + (ثبات × ۱)
-    potential = (industry * 3) + (int(trade * 2.5)) + (military_power * 2) + diplomacy + stability
+    # اعمال اثرات سازه‌ها
+    industry_bonus = 1 + structure_effects.get("industry_bonus", 0)
+    trade_bonus = 1 + structure_effects.get("trade_bonus", 0)
+    
+    # فرمول اصلی
+    potential = (industry * 3 * industry_bonus) + \
+                (int(trade * 2.5) * trade_bonus) + \
+                (military_power * 2) + \
+                (diplomacy * 1) + \
+                (stability * 1)
     
     return potential
-
-
-# ==================== آیکون‌های وضعیت ====================
-
-def get_status_icons(player: Dict[str, Any]) -> str:
-    """دریافت آیکون‌های وضعیت کشور"""
-    icons = []
-    
-    # در جنگ
-    if player.get("active_wars") and len(player.get("active_wars", [])) > 0:
-        icons.append("⚔️")
-    else:
-        icons.append("🕊️")
-    
-    # در اتحاد کامل
-    treaties = player.get("treaties", [])
-    for treaty in treaties:
-        if treaty.get("type") == "full_alliance":
-            icons.append("🤝")
-            break
-    
-    # تحریم شده
-    if player.get("sanctioned", False):
-        icons.append("💰")
-    
-    # بحران داخلی (ثبات کمتر از 3)
-    if player.get("stability", 5) < 3:
-        icons.append("⚠️")
-    
-    # استفاده از سلاح هسته‌ای
-    if player.get("used_nuclear", False):
-        icons.append("🔥")
-    
-    # غیرفعال (5 روز آنلاین نبوده)
-    last_login = player.get("last_login", "")
-    if last_login:
-        try:
-            last = datetime.fromisoformat(last_login)
-            if (datetime.now() - last).days >= 5:
-                icons.append("❌")
-        except:
-            pass
-    
-    return "".join(icons)
 
 
 def get_country_flag(country_key: str) -> str:
@@ -254,46 +188,66 @@ def get_country_flag(country_key: str) -> str:
         "usa": "🇺🇸", "russia": "🇷🇺", "china": "🇨🇳",
         "germany": "🇩🇪", "france": "🇫🇷", "uk": "🇬🇧",
         "japan": "🇯🇵", "south_korea": "🇰🇷", "india": "🇮🇳",
-        "turkey": "🇹🇷", "iran": "🇮🇷", "israel": "🇮🇱",
-        "pakistan": "🇵🇰", "poland": "🇵🇱", "ukraine": "🇺🇦",
-        "australia": "🇦🇺", "canada": "🇨🇦", "egypt": "🇪🇬",
-        "vietnam": "🇻🇳", "indonesia": "🇮🇩", "kazakhstan": "🇰🇿",
-        "brazil": "🇧🇷", "saudi": "🇸🇦", "south_africa": "🇿🇦",
-        "austria": "🇦🇹", "belgium": "🇧🇪", "netherlands": "🇳🇱"
+        "iran": "🇮🇷", "turkey": "🇹🇷", "israel": "🇮🇱",
+        "brazil": "🇧🇷", "canada": "🇨🇦", "australia": "🇦🇺"
     }
     return flags.get(country_key, "🏳️")
 
 
-# ==================== ساخت جدول ====================
+def get_status_icons(player: Dict[str, Any]) -> str:
+    """دریافت آیکون‌های وضعیت کشور"""
+    icons = []
+    
+    if player.get("active_wars") and len(player.get("active_wars", [])) > 0:
+        icons.append("⚔️")
+    else:
+        icons.append("🕊️")
+    
+    treaties = player.get("treaties", [])
+    for treaty in treaties:
+        if treaty.get("type") == "fa":
+            icons.append("🤝")
+            break
+    
+    if player.get("sanctioned", False):
+        icons.append("💰")
+    
+    if player.get("stability", 5) < 3:
+        icons.append("⚠️")
+    
+    if player.get("used_nuclear", False):
+        icons.append("🔥")
+    
+    return "".join(icons)
 
-def generate_rankings_table(rankings: List[Tuple], game_day: int) -> str:
-    """ساخت جدول رتبه‌بندی با نوار پیشرفت"""
+
+def generate_rankings_table(rankings: List[Tuple], game_day: int, speed: int) -> str:
+    """ساخت جدول رتبه‌بندی"""
     table = f"🏆 *جدول پتانسیل روزانه - روز {game_day}*\n"
     table += "═══════════════════════════════════════\n\n"
     
     for i, (country_key, name_fa, potential, icons) in enumerate(rankings[:24], 1):
-        # محاسبه نوار (هر ۵۰ امتیاز = ۱ بلوک، حداکثر ۲۰ بلوک)
         blocks = max(0, int((potential - 100) / 50))
         blocks = min(blocks, 20)
         bar = "█" * blocks + "░" * (20 - blocks)
         
         flag = get_country_flag(country_key)
-        # ردیف جدول
         line = f"*{i}. {flag} {name_fa}*" + " " * (18 - len(name_fa))
         line += f" {bar}  {potential}  {icons}\n"
         table += line
     
     table += "\n═══════════════════════════════════════\n"
     table += "📊 هر █ = ۵۰ امتیاز پتانسیل\n"
-    table += "⚔️ جنگ | 🕊️ صلح | 🤝 متحد | 💰 تحریم | ⚠️ بحران | 🔥 هسته‌ای | ❌ غیرفعال"
+    table += "⚔️ جنگ | 🕊️ صلح | 🤝 متحد | 💰 تحریم | ⚠️ بحران | 🔥 هسته‌ای"
+    
+    if speed > 1:
+        table += f"\n\n⚙️ سرعت بازی: {speed} برابر"
     
     return table
 
 
-# ==================== توزیع پاداش پرستیژ ====================
-
 def distribute_prestige_rewards(rankings: List[Tuple], state: Dict[str, Any]):
-    """توزیع پاداش پرستیژ به 3 کشور اول جدول"""
+    """توزیع پاداش پرستیژ به 3 کشور اول"""
     rewards = {1: 20, 2: 10, 3: 5}
     
     for i, (country_key, name_fa, potential, icons) in enumerate(rankings[:3], 1):
@@ -301,12 +255,8 @@ def distribute_prestige_rewards(rankings: List[Tuple], state: Dict[str, Any]):
         if reward > 0:
             player = state["countries"].get(country_key)
             if player:
-                # افزایش پرستیژ
-                if "resources" not in player:
-                    player["resources"] = {}
                 player["resources"]["prestige"] = player["resources"].get("prestige", 0) + reward
                 
-                # اضافه کردن لاگ
                 if "logs" not in state:
                     state["logs"] = []
                 state["logs"].append({
@@ -314,10 +264,7 @@ def distribute_prestige_rewards(rankings: List[Tuple], state: Dict[str, Any]):
                     "type": "prestige",
                     "message": f"{name_fa} به رتبه {i} جدول رسید و {reward} پرستیژ دریافت کرد."
                 })
-                print(f"Added {reward} prestige to {name_fa}")
 
-
-# ==================== تابع اصلی ====================
 
 def main():
     print(f"Calculating daily rankings at {datetime.now().isoformat()}")
@@ -330,10 +277,17 @@ def main():
     players = state.get("countries", {})
     rankings = []
     
-    # محاسبه پتانسیل هر کشور
     for country_key, player in players.items():
+        if player.get("user_id") is None:
+            continue
+        
         name_fa = player.get("name_fa", country_key)
-        potential = calculate_potential(player)
+        
+        # دریافت اثرات سازه‌ها
+        structure_effects = get_structure_effects(state, country_key)
+        
+        # محاسبه پتانسیل کامل
+        potential = calculate_potential(player, structure_effects, country_key)
         icons = get_status_icons(player)
         rankings.append((country_key, name_fa, potential, icons))
     
@@ -345,12 +299,8 @@ def main():
     
     # ساخت جدول
     game_day = state.get("game_day", 0)
-    rankings_table = generate_rankings_table(rankings, game_day)
-    
-    # نمایش سرعت بازی در صورت بیشتر از 1
     speed = get_speed_multiplier(state)
-    if speed > 1:
-        rankings_table += f"\n\n⚙️ *سرعت بازی:* {speed} برابر (مهلت‌ها کوتاه‌تر)"
+    rankings_table = generate_rankings_table(rankings, game_day, speed)
     
     # ارسال به GCC
     send_to_gcc(rankings_table)
