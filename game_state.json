@@ -1,0 +1,1198 @@
+{
+  "game_state": {
+    "version": "1.0",
+    "game_day": 1,
+    "start_date": "2026-05-11",
+    "last_update": "2026-05-11T00:00:00Z",
+    "status": "active"
+  },
+  "countries": {
+    "usa": {
+      "name_fa": "آمریکا",
+      "name_en": "USA",
+      "flag": "🇺🇸",
+      "industry": 4,
+      "trade": 5,
+      "diplomacy": 4,
+      "stability": 6,
+      "approval": 5,
+      "corruption": 3,
+      "resources": {
+        "influence": 500,
+        "tech_points": 100,
+        "ammo": 300,
+        "fuel": 800,
+        "prestige": 0
+      },
+      "units": {
+        "air": [
+          {"name_fa": "رپتور", "name_en": "F-22 Raptor", "count": 1, "health": 100, "experience": 0},
+          {"name_fa": "لایتنینگ", "name_en": "F-35 Lightning II", "count": 2, "health": 100, "experience": 0}
+        ],
+        "ground": [
+          {"name_fa": "آبرامز-ایکس", "name_en": "Abrams X", "count": 1, "health": 100, "experience": 0}
+        ],
+        "naval": [
+          {"name_fa": "آرلی بروک", "name_en": "Arleigh Burke", "count": 1, "health": 100, "experience": 0}
+        ],
+        "submarine": [],
+        "carrier": [],
+        "destroyer": [],
+        "artillery": [],
+        "air_defense": [],
+        "missile_ballistic": [],
+        "missile_icbm": []
+      },
+      "research": {
+        "military": 0,
+        "industrial": 0,
+        "economic": 0,
+        "diplomacy": 0,
+        "nuclear": 0
+      },
+      "structures": [],
+      "infrastructure": {
+        "road": 0,
+        "port": 0,
+        "airport": 0,
+        "power": 0,
+        "internet": 0
+      },
+      "treaties": [],
+      "active_wars": [],
+      "coordinates": {"x": "B", "y": 2},
+      "last_login": "2026-05-11T00:00:00Z",
+      "away_mode": null,
+      "is_active": true
+    },
+    "russia": {
+      "name_fa": "روسیه",
+      "name_en": "Russia",
+      "flag": "🇷🇺",
+      "industry": 3,
+      "trade": 2,
+      "diplomacy": 3,
+      "stability": 5,
+      "approval": 4,
+      "corruption": 4,
+      "resources": {
+        "influence": 400,
+        "tech_points": 80,
+        "ammo": 250,
+        "fuel": 700,
+        "prestige": 0
+      },
+      "units": {
+        "air": [
+          {"name_fa": "فلون", "name_en": "Su-57 Felon", "count": 1, "health": 100, "experience": 0},
+          {"name_fa": "سوخو-۳۵", "name_en": "Su-35", "count": 2, "health": 100, "experience": 0}
+        ],
+        "ground": [
+          {"name_fa": "آر ماتا", "name_en": "T-14 Armata", "count": 1, "health": 100, "experience": 0}
+        ],
+        "submarine": [
+          {"name_fa": "یاسن", "name_en": "Yasen class", "count": 1, "health": 100, "experience": 0}
+        ],
+        "carrier": [],
+        "destroyer": [],
+        "artillery": [],
+        "air_defense": [],
+        "missile_ballistic": [],
+        "missile_icbm": []
+      },
+      "research": {
+        "military": 0,
+        "industrial": 0,
+        "economic": 0,
+        "diplomacy": 0,
+        "nuclear": 0
+      },
+      "structures": [],
+      "infrastructure": {
+        "road": 0,
+        "port": 0,
+        "airport": 0,
+        "power": 0,
+        "internet": 0
+      },
+      "treaties": [],
+      "active_wars": [],
+      "coordinates": {"x": "E", "y": 4},
+      "last_login": "2026-05-11T00:00:00Z",
+      "away_mode": null,
+      "is_active": true
+    },
+    "china": {
+      "name_fa": "چین",
+      "name_en": "China",
+      "flag": "🇨🇳",
+      "industry": 4,
+      "trade": 4,
+      "diplomacy": 3,
+      "stability": 6,
+      "approval": 5,
+      "corruption": 4,
+      "resources": {
+        "influence": 450,
+        "tech_points": 90,
+        "ammo": 280,
+        "fuel": 750,
+        "prestige": 0
+      },
+      "units": {
+        "air": [
+          {"name_fa": "جی-۲۰", "name_en": "J-20", "count": 2, "health": 100, "experience": 0}
+        ],
+        "ground": [
+          {"name_fa": "تایپ-۹۹", "name_en": "Type 99A", "count": 1, "health": 100, "experience": 0}
+        ],
+        "destroyer": [
+          {"name_fa": "تایپ-۵۵", "name_en": "Type 55", "count": 1, "health": 100, "experience": 0}
+        ],
+        "submarine": [
+          {"name_fa": "تایپ-۰۹۳", "name_en": "Type 093", "count": 1, "health": 100, "experience": 0}
+        ],
+        "carrier": [],
+        "artillery": [],
+        "air_defense": [],
+        "missile_ballistic": [],
+        "missile_icbm": []
+      },
+      "research": {
+        "military": 0,
+        "industrial": 0,
+        "economic": 0,
+        "diplomacy": 0,
+        "nuclear": 0
+      },
+      "structures": [],
+      "infrastructure": {
+        "road": 0,
+        "port": 0,
+        "airport": 0,
+        "power": 0,
+        "internet": 0
+      },
+      "treaties": [],
+      "active_wars": [],
+      "coordinates": {"x": "G", "y": 5},
+      "last_login": "2026-05-11T00:00:00Z",
+      "away_mode": null,
+      "is_active": true
+    },
+    "germany": {
+      "name_fa": "آلمان",
+      "name_en": "Germany",
+      "flag": "🇩🇪",
+      "industry": 4,
+      "trade": 4,
+      "diplomacy": 4,
+      "stability": 7,
+      "approval": 6,
+      "corruption": 2,
+      "resources": {
+        "influence": 420,
+        "tech_points": 85,
+        "ammo": 220,
+        "fuel": 600,
+        "prestige": 0
+      },
+      "units": {
+        "air": [
+          {"name_fa": "تایفون", "name_en": "Eurofighter Typhoon", "count": 2, "health": 100, "experience": 0}
+        ],
+        "ground": [
+          {"name_fa": "لئوپارد ۲ای۷", "name_en": "Leopard 2A7+", "count": 2, "health": 100, "experience": 0}
+        ],
+        "artillery": [
+          {"name_fa": "پی‌زدهاچ-۲۰۰۰", "name_en": "PzH 2000", "count": 1, "health": 100, "experience": 0}
+        ],
+        "carrier": [],
+        "destroyer": [],
+        "submarine": [],
+        "air_defense": [],
+        "missile_ballistic": [],
+        "missile_icbm": []
+      },
+      "research": {
+        "military": 0,
+        "industrial": 0,
+        "economic": 0,
+        "diplomacy": 0,
+        "nuclear": 0
+      },
+      "structures": [],
+      "infrastructure": {
+        "road": 0,
+        "port": 0,
+        "airport": 0,
+        "power": 0,
+        "internet": 0
+      },
+      "treaties": [],
+      "active_wars": [],
+      "coordinates": {"x": "D", "y": 3},
+      "last_login": "2026-05-11T00:00:00Z",
+      "away_mode": null,
+      "is_active": true
+    },
+    "france": {
+      "name_fa": "فرانسه",
+      "name_en": "France",
+      "flag": "🇫🇷",
+      "industry": 3,
+      "trade": 3,
+      "diplomacy": 4,
+      "stability": 6,
+      "approval": 5,
+      "corruption": 3,
+      "resources": {
+        "influence": 380,
+        "tech_points": 80,
+        "ammo": 200,
+        "fuel": 550,
+        "prestige": 0
+      },
+      "units": {
+        "air": [
+          {"name_fa": "رافال اف-۵", "name_en": "Rafale F5", "count": 1, "health": 100, "experience": 0},
+          {"name_fa": "رافال اف-۴", "name_en": "Rafale F4", "count": 1, "health": 100, "experience": 0}
+        ],
+        "ground": [
+          {"name_fa": "لکلر", "name_en": "Leclerc XLR", "count": 1, "health": 100, "experience": 0}
+        ],
+        "carrier": [],
+        "destroyer": [],
+        "submarine": [],
+        "artillery": [],
+        "air_defense": [],
+        "missile_ballistic": [],
+        "missile_icbm": []
+      },
+      "research": {
+        "military": 0,
+        "industrial": 0,
+        "economic": 0,
+        "diplomacy": 0,
+        "nuclear": 0
+      },
+      "structures": [],
+      "infrastructure": {
+        "road": 0,
+        "port": 0,
+        "airport": 0,
+        "power": 0,
+        "internet": 0
+      },
+      "treaties": [],
+      "active_wars": [],
+      "coordinates": {"x": "C", "y": 3},
+      "last_login": "2026-05-11T00:00:00Z",
+      "away_mode": null,
+      "is_active": true
+    },
+    "uk": {
+      "name_fa": "انگلیس",
+      "name_en": "United Kingdom",
+      "flag": "🇬🇧",
+      "industry": 3,
+      "trade": 4,
+      "diplomacy": 4,
+      "stability": 6,
+      "approval": 5,
+      "corruption": 3,
+      "resources": {
+        "influence": 400,
+        "tech_points": 85,
+        "ammo": 210,
+        "fuel": 580,
+        "prestige": 0
+      },
+      "units": {
+        "air": [
+          {"name_fa": "تمپست", "name_en": "Tempest", "count": 1, "health": 100, "experience": 0},
+          {"name_fa": "تایفون", "name_en": "Eurofighter Typhoon", "count": 1, "health": 100, "experience": 0}
+        ],
+        "ground": [
+          {"name_fa": "چلنجر ۲", "name_en": "Challenger 2", "count": 1, "health": 100, "experience": 0}
+        ],
+        "carrier": [],
+        "destroyer": [],
+        "submarine": [],
+        "artillery": [],
+        "air_defense": [],
+        "missile_ballistic": [],
+        "missile_icbm": []
+      },
+      "research": {
+        "military": 0,
+        "industrial": 0,
+        "economic": 0,
+        "diplomacy": 0,
+        "nuclear": 0
+      },
+      "structures": [],
+      "infrastructure": {
+        "road": 0,
+        "port": 0,
+        "airport": 0,
+        "power": 0,
+        "internet": 0
+      },
+      "treaties": [],
+      "active_wars": [],
+      "coordinates": {"x": "C", "y": 2},
+      "last_login": "2026-05-11T00:00:00Z",
+      "away_mode": null,
+      "is_active": true
+    },
+    "japan": {
+      "name_fa": "ژاپن",
+      "name_en": "Japan",
+      "flag": "🇯🇵",
+      "industry": 3,
+      "trade": 4,
+      "diplomacy": 3,
+      "stability": 6,
+      "approval": 5,
+      "corruption": 2,
+      "resources": {
+        "influence": 360,
+        "tech_points": 80,
+        "ammo": 180,
+        "fuel": 500,
+        "prestige": 0
+      },
+      "units": {
+        "air": [
+          {"name_fa": "لایتنینگ", "name_en": "F-35 Lightning II", "count": 2, "health": 100, "experience": 0}
+        ],
+        "ground": [
+          {"name_fa": "تایپ-۱۰", "name_en": "Type 10", "count": 1, "health": 100, "experience": 0}
+        ],
+        "destroyer": [
+          {"name_fa": "مایا", "name_en": "Maya class", "count": 1, "health": 100, "experience": 0}
+        ],
+        "carrier": [],
+        "submarine": [],
+        "artillery": [],
+        "air_defense": [],
+        "missile_ballistic": [],
+        "missile_icbm": []
+      },
+      "research": {
+        "military": 0,
+        "industrial": 0,
+        "economic": 0,
+        "diplomacy": 0,
+        "nuclear": 0
+      },
+      "structures": [],
+      "infrastructure": {
+        "road": 0,
+        "port": 0,
+        "airport": 0,
+        "power": 0,
+        "internet": 0
+      },
+      "treaties": [],
+      "active_wars": [],
+      "coordinates": {"x": "H", "y": 5},
+      "last_login": "2026-05-11T00:00:00Z",
+      "away_mode": null,
+      "is_active": true
+    },
+    "south_korea": {
+      "name_fa": "کره جنوبی",
+      "name_en": "South Korea",
+      "flag": "🇰🇷",
+      "industry": 3,
+      "trade": 4,
+      "diplomacy": 3,
+      "stability": 6,
+      "approval": 5,
+      "corruption": 3,
+      "resources": {
+        "influence": 350,
+        "tech_points": 75,
+        "ammo": 170,
+        "fuel": 480,
+        "prestige": 0
+      },
+      "units": {
+        "air": [
+          {"name_fa": "لایتنینگ", "name_en": "F-35 Lightning II", "count": 1, "health": 100, "experience": 0}
+        ],
+        "ground": [
+          {"name_fa": "پلنگ سیاه", "name_en": "K2 Black Panther", "count": 1, "health": 100, "experience": 0}
+        ],
+        "destroyer": [
+          {"name_fa": "سجونگ کبیر", "name_en": "Sejong the Great", "count": 1, "health": 100, "experience": 0}
+        ],
+        "carrier": [],
+        "submarine": [],
+        "artillery": [],
+        "air_defense": [],
+        "missile_ballistic": [],
+        "missile_icbm": []
+      },
+      "research": {
+        "military": 0,
+        "industrial": 0,
+        "economic": 0,
+        "diplomacy": 0,
+        "nuclear": 0
+      },
+      "structures": [],
+      "infrastructure": {
+        "road": 0,
+        "port": 0,
+        "airport": 0,
+        "power": 0,
+        "internet": 0
+      },
+      "treaties": [],
+      "active_wars": [],
+      "coordinates": {"x": "H", "y": 6},
+      "last_login": "2026-05-11T00:00:00Z",
+      "away_mode": null,
+      "is_active": true
+    },
+    "india": {
+      "name_fa": "هند",
+      "name_en": "India",
+      "flag": "🇮🇳",
+      "industry": 2,
+      "trade": 3,
+      "diplomacy": 3,
+      "stability": 5,
+      "approval": 4,
+      "corruption": 4,
+      "resources": {
+        "influence": 300,
+        "tech_points": 70,
+        "ammo": 150,
+        "fuel": 450,
+        "prestige": 0
+      },
+      "units": {
+        "air": [
+          {"name_fa": "سوخو-۳۰", "name_en": "Su-30MKI", "count": 1, "health": 100, "experience": 0}
+        ],
+        "ground": [
+          {"name_fa": "تی-۹۰", "name_en": "T-90", "count": 1, "health": 100, "experience": 0}
+        ],
+        "destroyer": [
+          {"name_fa": "کلکته", "name_en": "Kolkata class", "count": 1, "health": 100, "experience": 0}
+        ],
+        "carrier": [],
+        "submarine": [],
+        "artillery": [],
+        "air_defense": [],
+        "missile_ballistic": [],
+        "missile_icbm": []
+      },
+      "research": {
+        "military": 0,
+        "industrial": 0,
+        "economic": 0,
+        "diplomacy": 0,
+        "nuclear": 0
+      },
+      "structures": [],
+      "infrastructure": {
+        "road": 0,
+        "port": 0,
+        "airport": 0,
+        "power": 0,
+        "internet": 0
+      },
+      "treaties": [],
+      "active_wars": [],
+      "coordinates": {"x": "F", "y": 6},
+      "last_login": "2026-05-11T00:00:00Z",
+      "away_mode": null,
+      "is_active": true
+    },
+    "turkey": {
+      "name_fa": "ترکیه",
+      "name_en": "Turkey",
+      "flag": "🇹🇷",
+      "industry": 2,
+      "trade": 3,
+      "diplomacy": 3,
+      "stability": 5,
+      "approval": 4,
+      "corruption": 4,
+      "resources": {
+        "influence": 280,
+        "tech_points": 60,
+        "ammo": 130,
+        "fuel": 420,
+        "prestige": 0
+      },
+      "units": {
+        "air": [
+          {"name_fa": "اف-۱۶", "name_en": "F-16 Fighting Falcon", "count": 1, "health": 100, "experience": 0}
+        ],
+        "ground": [
+          {"name_fa": "لئوپارد ۲", "name_en": "Leopard 2", "count": 1, "health": 100, "experience": 0}
+        ],
+        "carrier": [],
+        "destroyer": [],
+        "submarine": [],
+        "artillery": [],
+        "air_defense": [],
+        "missile_ballistic": [],
+        "missile_icbm": []
+      },
+      "research": {
+        "military": 0,
+        "industrial": 0,
+        "economic": 0,
+        "diplomacy": 0,
+        "nuclear": 0
+      },
+      "structures": [],
+      "infrastructure": {
+        "road": 0,
+        "port": 0,
+        "airport": 0,
+        "power": 0,
+        "internet": 0
+      },
+      "treaties": [],
+      "active_wars": [],
+      "coordinates": {"x": "D", "y": 5},
+      "last_login": "2026-05-11T00:00:00Z",
+      "away_mode": null,
+      "is_active": true
+    },
+    "iran": {
+      "name_fa": "ایران",
+      "name_en": "Iran",
+      "flag": "🇮🇷",
+      "industry": 2,
+      "trade": 1,
+      "diplomacy": 2,
+      "stability": 4,
+      "approval": 3,
+      "corruption": 5,
+      "resources": {
+        "influence": 220,
+        "tech_points": 40,
+        "ammo": 100,
+        "fuel": 350,
+        "prestige": 0
+      },
+      "units": {
+        "air": [
+          {"name_fa": "میگ-۲۹", "name_en": "MiG-29", "count": 1, "health": 100, "experience": 0}
+        ],
+        "carrier": [],
+        "destroyer": [],
+        "submarine": [],
+        "artillery": [],
+        "air_defense": [],
+        "missile_ballistic": [
+          {"name_fa": "فاتح-۱۱۰", "name_en": "Fateh-110", "count": 2, "health": 100, "experience": 0}
+        ],
+        "missile_icbm": []
+      },
+      "research": {
+        "military": 0,
+        "industrial": 0,
+        "economic": 0,
+        "diplomacy": 0,
+        "nuclear": 0
+      },
+      "structures": [],
+      "infrastructure": {
+        "road": 0,
+        "port": 0,
+        "airport": 0,
+        "power": 0,
+        "internet": 0
+      },
+      "treaties": [],
+      "active_wars": [],
+      "coordinates": {"x": "E", "y": 6},
+      "last_login": "2026-05-11T00:00:00Z",
+      "away_mode": null,
+      "is_active": true
+    },
+    "israel": {
+      "name_fa": "اسرائیل",
+      "name_en": "Israel",
+      "flag": "🇮🇱",
+      "industry": 3,
+      "trade": 3,
+      "diplomacy": 2,
+      "stability": 7,
+      "approval": 6,
+      "corruption": 2,
+      "resources": {
+        "influence": 320,
+        "tech_points": 80,
+        "ammo": 160,
+        "fuel": 400,
+        "prestige": 0
+      },
+      "units": {
+        "air": [
+          {"name_fa": "لایتنینگ", "name_en": "F-35 Lightning II", "count": 1, "health": 100, "experience": 0}
+        ],
+        "ground": [
+          {"name_fa": "مِرکاوا", "name_en": "Merkava Mk4", "count": 1, "health": 100, "experience": 0}
+        ],
+        "air_defense": [
+          {"name_fa": "فلاخن داوود", "name_en": "David's Sling", "count": 1, "health": 100, "experience": 0}
+        ],
+        "carrier": [],
+        "destroyer": [],
+        "submarine": [],
+        "artillery": [],
+        "missile_ballistic": [],
+        "missile_icbm": []
+      },
+      "research": {
+        "military": 0,
+        "industrial": 0,
+        "economic": 0,
+        "diplomacy": 0,
+        "nuclear": 0
+      },
+      "structures": [],
+      "infrastructure": {
+        "road": 0,
+        "port": 0,
+        "airport": 0,
+        "power": 0,
+        "internet": 0
+      },
+      "treaties": [],
+      "active_wars": [],
+      "coordinates": {"x": "E", "y": 7},
+      "last_login": "2026-05-11T00:00:00Z",
+      "away_mode": null,
+      "is_active": true
+    },
+    "pakistan": {
+      "name_fa": "پاکستان",
+      "name_en": "Pakistan",
+      "flag": "🇵🇰",
+      "industry": 2,
+      "trade": 2,
+      "diplomacy": 2,
+      "stability": 4,
+      "approval": 3,
+      "corruption": 5,
+      "resources": {
+        "influence": 240,
+        "tech_points": 50,
+        "ammo": 120,
+        "fuel": 350,
+        "prestige": 0
+      },
+      "units": {
+        "air": [
+          {"name_fa": "جی اف-۱۷", "name_en": "JF-17 Thunder", "count": 1, "health": 100, "experience": 0}
+        ],
+        "ground": [
+          {"name_fa": "تی-۸۰", "name_en": "T-80", "count": 1, "health": 100, "experience": 0}
+        ],
+        "carrier": [],
+        "destroyer": [],
+        "submarine": [],
+        "artillery": [],
+        "air_defense": [],
+        "missile_ballistic": [],
+        "missile_icbm": []
+      },
+      "research": {
+        "military": 0,
+        "industrial": 0,
+        "economic": 0,
+        "diplomacy": 0,
+        "nuclear": 0
+      },
+      "structures": [],
+      "infrastructure": {
+        "road": 0,
+        "port": 0,
+        "airport": 0,
+        "power": 0,
+        "internet": 0
+      },
+      "treaties": [],
+      "active_wars": [],
+      "coordinates": {"x": "F", "y": 7},
+      "last_login": "2026-05-11T00:00:00Z",
+      "away_mode": null,
+      "is_active": true
+    },
+    "poland": {
+      "name_fa": "لهستان",
+      "name_en": "Poland",
+      "flag": "🇵🇱",
+      "industry": 2,
+      "trade": 3,
+      "diplomacy": 3,
+      "stability": 6,
+      "approval": 5,
+      "corruption": 3,
+      "resources": {
+        "influence": 260,
+        "tech_points": 55,
+        "ammo": 140,
+        "fuel": 380,
+        "prestige": 0
+      },
+      "units": {
+        "air": [
+          {"name_fa": "اف-۱۶", "name_en": "F-16 Fighting Falcon", "count": 1, "health": 100, "experience": 0}
+        ],
+        "ground": [
+          {"name_fa": "لئوپارد ۲", "name_en": "Leopard 2", "count": 1, "health": 100, "experience": 0}
+        ],
+        "carrier": [],
+        "destroyer": [],
+        "submarine": [],
+        "artillery": [],
+        "air_defense": [
+          {"name_fa": "پاتریوت", "name_en": "Patriot PAC-2", "count": 1, "health": 100, "experience": 0}
+        ],
+        "missile_ballistic": [],
+        "missile_icbm": []
+      },
+      "research": {
+        "military": 0,
+        "industrial": 0,
+        "economic": 0,
+        "diplomacy": 0,
+        "nuclear": 0
+      },
+      "structures": [],
+      "infrastructure": {
+        "road": 0,
+        "port": 0,
+        "airport": 0,
+        "power": 0,
+        "internet": 0
+      },
+      "treaties": [],
+      "active_wars": [],
+      "coordinates": {"x": "D", "y": 2},
+      "last_login": "2026-05-11T00:00:00Z",
+      "away_mode": null,
+      "is_active": true
+    },
+    "ukraine": {
+      "name_fa": "اوکراین",
+      "name_en": "Ukraine",
+      "flag": "🇺🇦",
+      "industry": 2,
+      "trade": 2,
+      "diplomacy": 2,
+      "stability": 4,
+      "approval": 3,
+      "corruption": 5,
+      "resources": {
+        "influence": 250,
+        "tech_points": 45,
+        "ammo": 130,
+        "fuel": 360,
+        "prestige": 0
+      },
+      "units": {
+        "air": [
+          {"name_fa": "میگ-۲۹", "name_en": "MiG-29", "count": 1, "health": 100, "experience": 0}
+        ],
+        "ground": [
+          {"name_fa": "تی-۸۴", "name_en": "T-84 Oplot", "count": 1, "health": 100, "experience": 0}
+        ],
+        "carrier": [],
+        "destroyer": [],
+        "submarine": [],
+        "artillery": [],
+        "air_defense": [],
+        "missile_ballistic": [],
+        "missile_icbm": []
+      },
+      "research": {
+        "military": 0,
+        "industrial": 0,
+        "economic": 0,
+        "diplomacy": 0,
+        "nuclear": 0
+      },
+      "structures": [],
+      "infrastructure": {
+        "road": 0,
+        "port": 0,
+        "airport": 0,
+        "power": 0,
+        "internet": 0
+      },
+      "treaties": [],
+      "active_wars": [],
+      "coordinates": {"x": "E", "y": 3},
+      "last_login": "2026-05-11T00:00:00Z",
+      "away_mode": null,
+      "is_active": true
+    },
+    "australia": {
+      "name_fa": "استرالیا",
+      "name_en": "Australia",
+      "flag": "🇦🇺",
+      "industry": 2,
+      "trade": 3,
+      "diplomacy": 3,
+      "stability": 6,
+      "approval": 5,
+      "corruption": 2,
+      "resources": {
+        "influence": 280,
+        "tech_points": 60,
+        "ammo": 140,
+        "fuel": 390,
+        "prestige": 0
+      },
+      "units": {
+        "air": [
+          {"name_fa": "سوپر هورنت", "name_en": "F/A-18 Super Hornet", "count": 1, "health": 100, "experience": 0}
+        ],
+        "destroyer": [
+          {"name_fa": "هوبارت", "name_en": "Hobart class", "count": 1, "health": 100, "experience": 0}
+        ],
+        "carrier": [],
+        "submarine": [],
+        "artillery": [],
+        "air_defense": [],
+        "missile_ballistic": [],
+        "missile_icbm": []
+      },
+      "research": {
+        "military": 0,
+        "industrial": 0,
+        "economic": 0,
+        "diplomacy": 0,
+        "nuclear": 0
+      },
+      "structures": [],
+      "infrastructure": {
+        "road": 0,
+        "port": 0,
+        "airport": 0,
+        "power": 0,
+        "internet": 0
+      },
+      "treaties": [],
+      "active_wars": [],
+      "coordinates": {"x": "G", "y": 8},
+      "last_login": "2026-05-11T00:00:00Z",
+      "away_mode": null,
+      "is_active": true
+    },
+    "canada": {
+      "name_fa": "کانادا",
+      "name_en": "Canada",
+      "flag": "🇨🇦",
+      "industry": 3,
+      "trade": 3,
+      "diplomacy": 3,
+      "stability": 7,
+      "approval": 6,
+      "corruption": 2,
+      "resources": {
+        "influence": 300,
+        "tech_points": 65,
+        "ammo": 150,
+        "fuel": 420,
+        "prestige": 0
+      },
+      "units": {
+        "air": [
+          {"name_fa": "سوپر هورنت", "name_en": "F/A-18 Super Hornet", "count": 1, "health": 100, "experience": 0}
+        ],
+        "ground": [
+          {"name_fa": "لئوپارد ۲", "name_en": "Leopard 2", "count": 1, "health": 100, "experience": 0}
+        ],
+        "carrier": [],
+        "destroyer": [],
+        "submarine": [],
+        "artillery": [],
+        "air_defense": [],
+        "missile_ballistic": [],
+        "missile_icbm": []
+      },
+      "research": {
+        "military": 0,
+        "industrial": 0,
+        "economic": 0,
+        "diplomacy": 0,
+        "nuclear": 0
+      },
+      "structures": [],
+      "infrastructure": {
+        "road": 0,
+        "port": 0,
+        "airport": 0,
+        "power": 0,
+        "internet": 0
+      },
+      "treaties": [],
+      "active_wars": [],
+      "coordinates": {"x": "A", "y": 2},
+      "last_login": "2026-05-11T00:00:00Z",
+      "away_mode": null,
+      "is_active": true
+    },
+    "egypt": {
+      "name_fa": "مصر",
+      "name_en": "Egypt",
+      "flag": "🇪🇬",
+      "industry": 2,
+      "trade": 2,
+      "diplomacy": 3,
+      "stability": 4,
+      "approval": 3,
+      "corruption": 4,
+      "resources": {
+        "influence": 230,
+        "tech_points": 45,
+        "ammo": 100,
+        "fuel": 320,
+        "prestige": 0
+      },
+      "units": {
+        "air": [
+          {"name_fa": "اف-۱۶", "name_en": "F-16 Fighting Falcon", "count": 1, "health": 100, "experience": 0}
+        ],
+        "carrier": [],
+        "destroyer": [],
+        "submarine": [],
+        "artillery": [],
+        "air_defense": [],
+        "missile_ballistic": [],
+        "missile_icbm": []
+      },
+      "research": {
+        "military": 0,
+        "industrial": 0,
+        "economic": 0,
+        "diplomacy": 0,
+        "nuclear": 0
+      },
+      "structures": [],
+      "infrastructure": {
+        "road": 0,
+        "port": 0,
+        "airport": 0,
+        "power": 0,
+        "internet": 0
+      },
+      "treaties": [],
+      "active_wars": [],
+      "coordinates": {"x": "C", "y": 6},
+      "last_login": "2026-05-11T00:00:00Z",
+      "away_mode": null,
+      "is_active": true
+    },
+    "vietnam": {
+      "name_fa": "ویتنام",
+      "name_en": "Vietnam",
+      "flag": "🇻🇳",
+      "industry": 2,
+      "trade": 2,
+      "diplomacy": 2,
+      "stability": 4,
+      "approval": 4,
+      "corruption": 4,
+      "resources": {
+        "influence": 210,
+        "tech_points": 35,
+        "ammo": 90,
+        "fuel": 300,
+        "prestige": 0
+      },
+      "units": {
+        "ground": [
+          {"name_fa": "تی-۹۰", "name_en": "T-90", "count": 1, "health": 100, "experience": 0}
+        ],
+        "carrier": [],
+        "destroyer": [],
+        "submarine": [],
+        "artillery": [],
+        "air_defense": [],
+        "missile_ballistic": [],
+        "missile_icbm": []
+      },
+      "research": {
+        "military": 0,
+        "industrial": 0,
+        "economic": 0,
+        "diplomacy": 0,
+        "nuclear": 0
+      },
+      "structures": [],
+      "infrastructure": {
+        "road": 0,
+        "port": 0,
+        "airport": 0,
+        "power": 0,
+        "internet": 0
+      },
+      "treaties": [],
+      "active_wars": [],
+      "coordinates": {"x": "G", "y": 7},
+      "last_login": "2026-05-11T00:00:00Z",
+      "away_mode": null,
+      "is_active": true
+    },
+    "indonesia": {
+      "name_fa": "اندونزی",
+      "name_en": "Indonesia",
+      "flag": "🇮🇩",
+      "industry": 1,
+      "trade": 2,
+      "diplomacy": 2,
+      "stability": 5,
+      "approval": 4,
+      "corruption": 4,
+      "resources": {
+        "influence": 200,
+        "tech_points": 30,
+        "ammo": 80,
+        "fuel": 280,
+        "prestige": 0
+      },
+      "units": {
+        "air": [
+          {"name_fa": "اف-۱۶", "name_en": "F-16 Fighting Falcon", "count": 1, "health": 100, "experience": 0}
+        ],
+        "carrier": [],
+        "destroyer": [],
+        "submarine": [],
+        "artillery": [],
+        "air_defense": [],
+        "missile_ballistic": [],
+        "missile_icbm": []
+      },
+      "research": {
+        "military": 0,
+        "industrial": 0,
+        "economic": 0,
+        "diplomacy": 0,
+        "nuclear": 0
+      },
+      "structures": [],
+      "infrastructure": {
+        "road": 0,
+        "port": 0,
+        "airport": 0,
+        "power": 0,
+        "internet": 0
+      },
+      "treaties": [],
+      "active_wars": [],
+      "coordinates": {"x": "G", "y": 8},
+      "last_login": "2026-05-11T00:00:00Z",
+      "away_mode": null,
+      "is_active": true
+    },
+    "kazakhstan": {
+      "name_fa": "قزاقستان",
+      "name_en": "Kazakhstan",
+      "flag": "🇰🇿",
+      "industry": 1,
+      "trade": 1,
+      "diplomacy": 2,
+      "stability": 4,
+      "approval": 3,
+      "corruption": 5,
+      "resources": {
+        "influence": 180,
+        "tech_points": 30,
+        "ammo": 70,
+        "fuel": 250,
+        "prestige": 0
+      },
+      "units": {
+        "ground": [
+          {"name_fa": "تی-۷۲", "name_en": "T-72", "count": 1, "health": 100, "experience": 0}
+        ],
+        "carrier": [],
+        "destroyer": [],
+        "submarine": [],
+        "artillery": [],
+        "air_defense": [],
+        "missile_ballistic": [],
+        "missile_icbm": []
+      },
+      "research": {
+        "military": 0,
+        "industrial": 0,
+        "economic": 0,
+        "diplomacy": 0,
+        "nuclear": 0
+      },
+      "structures": [],
+      "infrastructure": {
+        "road": 0,
+        "port": 0,
+        "airport": 0,
+        "power": 0,
+        "internet": 0
+      },
+      "treaties": [],
+      "active_wars": [],
+      "coordinates": {"x": "E", "y": 4},
+      "last_login": "2026-05-11T00:00:00Z",
+      "away_mode": null,
+      "is_active": true
+    }
+  },
+  "daily_mission": {
+    "date": "2026-05-11",
+    "level": 1,
+    "cipher": "",
+    "answer": "",
+    "hint": "",
+    "solved_by": []
+  },
+  "market": {
+    "prices": {
+      "F-22 Raptor": {"name_fa": "رپتور", "base_price": 250, "current_price": 250, "trend": "stable"},
+      "F-35 Lightning II": {"name_fa": "لایتنینگ", "base_price": 200, "current_price": 200, "trend": "stable"},
+      "Su-57 Felon": {"name_fa": "فلون", "base_price": 230, "current_price": 230, "trend": "stable"},
+      "Su-35": {"name_fa": "سوخو-۳۵", "base_price": 140, "current_price": 140, "trend": "stable"},
+      "Eurofighter Typhoon": {"name_fa": "تایفون", "base_price": 150, "current_price": 150, "trend": "stable"},
+      "Rafale F4": {"name_fa": "رافال اف-۴", "base_price": 145, "current_price": 145, "trend": "stable"},
+      "Rafale F5": {"name_fa": "رافال اف-۵", "base_price": 170, "current_price": 170, "trend": "stable"},
+      "Tempest": {"name_fa": "تمپست", "base_price": 280, "current_price": 280, "trend": "stable"},
+      "J-20": {"name_fa": "جی-۲۰", "base_price": 180, "current_price": 180, "trend": "stable"},
+      "J-35 Gyrfalcon": {"name_fa": "جی-۳۵", "base_price": 190, "current_price": 190, "trend": "stable"},
+      "F/A-18 Super Hornet": {"name_fa": "سوپر هورنت", "base_price": 120, "current_price": 120, "trend": "stable"},
+      "F-4 Phantom": {"name_fa": "فانتوم", "base_price": 70, "current_price": 70, "trend": "stable"},
+      "MiG-29": {"name_fa": "میگ-۲۹", "base_price": 90, "current_price": 90, "trend": "stable"},
+      "Abrams X": {"name_fa": "آبرامز-ایکس", "base_price": 180, "current_price": 180, "trend": "stable"},
+      "Leopard 2A7+": {"name_fa": "لئوپارد ۲ای۷", "base_price": 170, "current_price": 170, "trend": "stable"},
+      "T-14 Armata": {"name_fa": "آر ماتا", "base_price": 200, "current_price": 200, "trend": "stable"},
+      "Arleigh Burke": {"name_fa": "آرلی بروک", "base_price": 250, "current_price": 250, "trend": "stable"},
+      "Type 55": {"name_fa": "تایپ-۵۵", "base_price": 280, "current_price": 280, "trend": "stable"},
+      "Yasen class": {"name_fa": "یاسن", "base_price": 350, "current_price": 350, "trend": "stable"},
+      "Ohio class": {"name_fa": "اوهایو", "base_price": 400, "current_price": 400, "trend": "stable"},
+      "S-400": {"name_fa": "اس-۴۰۰", "base_price": 150, "current_price": 150, "trend": "stable"},
+      "S-500": {"name_fa": "اس-۵۰۰", "base_price": 250, "current_price": 250, "trend": "stable"},
+      "THAAD": {"name_fa": "تاد", "base_price": 220, "current_price": 220, "trend": "stable"},
+      "Patriot PAC-2": {"name_fa": "پاتریوت", "base_price": 120, "current_price": 120, "trend": "stable"}
+    },
+    "trends": {},
+    "last_update": "2026-05-11T00:00:00Z"
+  },
+  "trade_blocs": [],
+  "un_resolutions": [],
+  "active_disasters": [],
+  "logs": []
+}
