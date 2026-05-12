@@ -4,6 +4,7 @@
 """
 سیستم کامل اتحادها و دیپلماسی
 انواع قراردادها: عدم تعرض، تجارت آزاد، اتحاد نظامی، اتحاد کامل
+با تمام پاداش‌ها و محدودیت‌ها
 """
 
 import json
@@ -27,25 +28,28 @@ BALE_API_URL = f"https://tapi.bale.ai/bot{BALE_TOKEN}"
 # ==================== تعریف انواع قراردادها ====================
 
 TREATY_TYPES = {
-    "nap": {  # Non-Aggression Pact - پیمان عدم تعرض
+    "nap": {
         "name_fa": "پیمان عدم تعرض",
         "name_en": "Non-Aggression Pact",
-        "duration": 30,  # روز
+        "duration": 30,
         "cost": 0,
         "min_diplomacy": 0,
         "benefits": {
             "share_tech_levels": [1, 2],
             "share_tech_per_week": 1,
-            "share_resources": False,
+            "share_tech_discount": 0,
             "auto_defense": False,
             "military_base": False,
             "veto_right": False,
             "stability_bonus": 0,
             "purchase_discount": 0,
-            "resource_sharing": False
+            "income_bonus": 0,
+            "extra_trade_deal": 0,
+            "lend_units": False,
+            "share_resources": False
         }
     },
-    "fta": {  # Free Trade Agreement - پیمان تجارت آزاد
+    "fta": {
         "name_fa": "پیمان تجارت آزاد",
         "name_en": "Free Trade Agreement",
         "duration": 30,
@@ -54,16 +58,19 @@ TREATY_TYPES = {
         "benefits": {
             "share_tech_levels": [1, 2, 3, 4],
             "share_tech_per_week": 2,
-            "share_resources": True,
+            "share_tech_discount": 0,
             "auto_defense": False,
             "military_base": False,
             "veto_right": False,
             "stability_bonus": 0,
-            "purchase_discount": 0.10,  # 10% تخفیف برای نسل 1-3
-            "resource_sharing": True
+            "purchase_discount": 0.10,
+            "income_bonus": 0.10,
+            "extra_trade_deal": 1,
+            "lend_units": False,
+            "share_resources": True
         }
     },
-    "ma": {  # Military Alliance - اتحاد نظامی
+    "ma": {
         "name_fa": "اتحاد نظامی",
         "name_en": "Military Alliance",
         "duration": 30,
@@ -72,34 +79,38 @@ TREATY_TYPES = {
         "benefits": {
             "share_tech_levels": [1, 2, 3, 4, 5, 6],
             "share_tech_per_week": 3,
-            "share_resources": True,
+            "share_tech_discount": 0,
             "auto_defense": True,
             "military_base": False,
             "veto_right": False,
             "stability_bonus": 0,
-            "purchase_discount": 0.20,  # 20% تخفیف برای نسل 1-4
-            "resource_sharing": True
+            "purchase_discount": 0.20,
+            "income_bonus": 0,
+            "extra_trade_deal": 0,
+            "lend_units": False,
+            "share_resources": True
         }
     },
-    "fa": {  # Full Alliance - اتحاد کامل
+    "fa": {
         "name_fa": "اتحاد کامل",
         "name_en": "Full Alliance",
-        "duration": 0,  # نامحدود
+        "duration": 0,
         "cost": 500,
         "min_diplomacy": 5,
         "requirements": "30 days acquaintance",
         "benefits": {
             "share_tech_levels": [1, 2, 3, 4, 5, 6],
             "share_tech_per_week": 5,
-            "share_tech_discount": 0.50,  # 50% تخفیف اشتراک فناوری
-            "share_resources": True,
+            "share_tech_discount": 0.50,
             "auto_defense": True,
             "military_base": True,
             "veto_right": True,
-            "stability_bonus": 2,  # +2 ثبات داخلی
-            "purchase_discount": 0.40,  # 40% تخفیف برای نسل 1-3، 30% نسل 4-5، 20% نسل 6
-            "resource_sharing": True,
-            "lend_units": True  # قرض دادن تجهیزات
+            "stability_bonus": 2,
+            "purchase_discount": 0.40,
+            "income_bonus": 0.15,
+            "extra_trade_deal": 2,
+            "lend_units": True,
+            "share_resources": True
         }
     }
 }
@@ -151,6 +162,20 @@ def send_to_gcc(text: str):
         send_message(GCC_CHAT_ID, text)
 
 
+def get_country_data(state: Dict[str, Any], user_id: str) -> Optional[Dict[str, Any]]:
+    for country_key, player in state.get("countries", {}).items():
+        if player.get("user_id") == user_id:
+            return player
+    return None
+
+
+def get_country_key_by_user(state: Dict[str, Any], user_id: str) -> Optional[str]:
+    for country_key, player in state.get("countries", {}).items():
+        if player.get("user_id") == user_id:
+            return country_key
+    return None
+
+
 def get_user_by_country(state: Dict[str, Any], country_name: str) -> Optional[str]:
     for country_key, player in state.get("countries", {}).items():
         if player.get("name_fa") == country_name or player.get("name_en") == country_name:
@@ -165,24 +190,9 @@ def get_country_name(state: Dict[str, Any], user_id: str) -> str:
     return "نامشخص"
 
 
-def get_country_key(state: Dict[str, Any], user_id: str) -> Optional[str]:
-    for country_key, player in state.get("countries", {}).items():
-        if player.get("user_id") == user_id:
-            return country_key
-    return None
-
-
-def get_country_data(state: Dict[str, Any], user_id: str) -> Optional[Dict[str, Any]]:
-    for country_key, player in state.get("countries", {}).items():
-        if player.get("user_id") == user_id:
-            return player
-    return None
-
-
 # ==================== مدیریت قراردادها ====================
 
 def get_active_treaties(state: Dict[str, Any], user_id: str) -> List[Dict[str, Any]]:
-    """دریافت لیست قراردادهای فعال یک کشور"""
     player = get_country_data(state, user_id)
     if not player:
         return []
@@ -190,7 +200,6 @@ def get_active_treaties(state: Dict[str, Any], user_id: str) -> List[Dict[str, A
 
 
 def get_treaty_with(state: Dict[str, Any], user_id: str, other_id: str) -> Optional[Dict[str, Any]]:
-    """دریافت قرارداد بین دو کشور"""
     treaties = get_active_treaties(state, user_id)
     for treaty in treaties:
         if treaty.get("with") == other_id:
@@ -198,25 +207,7 @@ def get_treaty_with(state: Dict[str, Any], user_id: str, other_id: str) -> Optio
     return None
 
 
-def is_treaty_active(state: Dict[str, Any], user_id: str, other_id: str, treaty_type: str = None) -> bool:
-    """بررسی وجود قرارداد فعال بین دو کشور"""
-    treaty = get_treaty_with(state, user_id, other_id)
-    if not treaty:
-        return False
-    if treaty_type and treaty.get("type") != treaty_type:
-        return False
-    if treaty.get("expires"):
-        try:
-            expires = datetime.fromisoformat(treaty["expires"])
-            if expires < datetime.now():
-                return False
-        except:
-            pass
-    return True
-
-
 def can_propose_treaty(state: Dict[str, Any], proposer_id: str, target_id: str, treaty_type: str) -> Tuple[bool, str]:
-    """بررسی امکان پیشنهاد قرارداد"""
     if proposer_id == target_id:
         return False, "❌ نمی‌توانید با خودتان قرارداد ببندید."
     
@@ -226,12 +217,10 @@ def can_propose_treaty(state: Dict[str, Any], proposer_id: str, target_id: str, 
     if not proposer or not target:
         return False, "❌ یکی از کشورها وجود ندارد."
     
-    # بررسی قرارداد موجود
     existing = get_treaty_with(state, proposer_id, target_id)
     if existing:
-        return False, f"❌ شما قبلاً با این کشور {TREATY_TYPES[existing['type']]['name_fa']} دارید."
+        return False, f"❌ شما قبلاً با این کشور قرارداد دارید."
     
-    # بررسی دیپلماسی
     treaty_info = TREATY_TYPES.get(treaty_type)
     if not treaty_info:
         return False, "❌ نوع قرارداد نامعتبر."
@@ -242,7 +231,6 @@ def can_propose_treaty(state: Dict[str, Any], proposer_id: str, target_id: str, 
     if target.get("diplomacy", 0) < treaty_info["min_diplomacy"]:
         return False, f"❌ دیپلماسی کشور هدف باید حداقل {treaty_info['min_diplomacy']} باشد."
     
-    # بررسی هزینه
     cost = treaty_info["cost"]
     influence = proposer.get("resources", {}).get("influence", 0)
     if influence < cost:
@@ -252,7 +240,6 @@ def can_propose_treaty(state: Dict[str, Any], proposer_id: str, target_id: str, 
 
 
 def propose_treaty(state: Dict[str, Any], proposer_id: str, target_name: str, treaty_type: str) -> Tuple[bool, str]:
-    """پیشنهاد قرارداد به کشور دیگر"""
     target_id = get_user_by_country(state, target_name)
     if not target_id:
         return False, f"❌ کشور '{target_name}' یافت نشد."
@@ -264,7 +251,6 @@ def propose_treaty(state: Dict[str, Any], proposer_id: str, target_name: str, tr
     proposer = get_country_data(state, proposer_id)
     target = get_country_data(state, target_id)
     
-    # ذخیره پیشنهاد
     if "pending_treaties" not in state:
         state["pending_treaties"] = []
     
@@ -281,17 +267,14 @@ def propose_treaty(state: Dict[str, Any], proposer_id: str, target_name: str, tr
     
     save_game_state(state)
     
-    # اعلان به طرف مقابل
     treaty_info = TREATY_TYPES[treaty_type]
     msg_target = f"🤝 *پیشنهاد {treaty_info['name_fa']}*\n{proposer.get('name_fa')} به شما پیشنهاد {treaty_info['name_fa']} داد.\n\nمهلت پاسخ: 48 ساعت\n\nبرای پذیرش: `/accept_treaty {proposer.get('name_fa')}`\nبرای رد: `/reject_treaty {proposer.get('name_fa')}`"
     send_message(target_id, msg_target)
     
-    return True, f"✅ پیشنهاد {treaty_info['name_fa']} به {target.get('name_fa')} ارسال شد. 48 ساعت مهلت پاسخ."
+    return True, f"✅ پیشنهاد {treaty_info['name_fa']} به {target.get('name_fa')} ارسال شد."
 
 
 def accept_treaty(state: Dict[str, Any], user_id: str, proposer_name: str) -> Tuple[bool, str]:
-    """پذیرش پیشنهاد قرارداد"""
-    # پیدا کردن پیشنهاد
     pending_treaties = state.get("pending_treaties", [])
     pending = None
     for p in pending_treaties:
@@ -305,23 +288,18 @@ def accept_treaty(state: Dict[str, Any], user_id: str, proposer_name: str) -> Tu
     treaty_type = pending["type"]
     proposer_id = pending["proposer_id"]
     
-    # بررسی مجدد شرایط
     success, msg = can_propose_treaty(state, proposer_id, user_id, treaty_type)
     if not success:
-        # حذف پیشنهاد منقضی
         state["pending_treaties"] = [p for p in pending_treaties if p != pending]
         save_game_state(state)
         return False, msg
     
-    # ایجاد قرارداد
     proposer = get_country_data(state, proposer_id)
     target = get_country_data(state, user_id)
     treaty_info = TREATY_TYPES[treaty_type]
     
-    # کسر هزینه از پیشنهاد‌دهنده
     proposer["resources"]["influence"] -= treaty_info["cost"]
     
-    # ایجاد قرارداد برای هر دو طرف
     now = datetime.now()
     expires = now + timedelta(days=treaty_info["duration"]) if treaty_info["duration"] > 0 else None
     
@@ -351,24 +329,20 @@ def accept_treaty(state: Dict[str, Any], user_id: str, proposer_name: str) -> Tu
     proposer["treaties"].append(treaty_data)
     target["treaties"].append(treaty_data_target)
     
-    # اعمال پاداش ثبات برای اتحاد کامل
     if treaty_type == "fa":
         proposer["stability"] = min(proposer.get("stability", 5) + 2, 10)
         target["stability"] = min(target.get("stability", 5) + 2, 10)
     
-    # حذف پیشنهاد
     state["pending_treaties"] = [p for p in pending_treaties if p != pending]
     
     save_game_state(state)
     
-    # اعلان به GCC
     send_to_gcc(f"🤝 *قرارداد جدید*\n{proposer.get('name_fa')} و {target.get('name_fa')} {treaty_info['name_fa']} امضا کردند.")
     
     return True, f"✅ شما {treaty_info['name_fa']} با {proposer.get('name_fa')} را پذیرفتید."
 
 
 def reject_treaty(state: Dict[str, Any], user_id: str, proposer_name: str) -> Tuple[bool, str]:
-    """رد پیشنهاد قرارداد"""
     pending_treaties = state.get("pending_treaties", [])
     pending = None
     for p in pending_treaties:
@@ -388,7 +362,6 @@ def reject_treaty(state: Dict[str, Any], user_id: str, proposer_name: str) -> Tu
 
 
 def break_treaty(state: Dict[str, Any], user_id: str, target_name: str, mutual: bool = False) -> Tuple[bool, str]:
-    """لغو قرارداد با کشور دیگر"""
     target_id = get_user_by_country(state, target_name)
     if not target_id:
         return False, f"❌ کشور '{target_name}' یافت نشد."
@@ -396,7 +369,6 @@ def break_treaty(state: Dict[str, Any], user_id: str, target_name: str, mutual: 
     player = get_country_data(state, user_id)
     target = get_country_data(state, target_id)
     
-    # پیدا کردن قرارداد
     treaty = None
     for t in player.get("treaties", []):
         if t.get("with") == target_id:
@@ -410,45 +382,35 @@ def break_treaty(state: Dict[str, Any], user_id: str, target_name: str, mutual: 
     treaty_info = TREATY_TYPES[treaty_type]
     
     if mutual:
-        # لغو دوطرفه
         player["treaties"] = [t for t in player.get("treaties", []) if t.get("with") != target_id]
         target["treaties"] = [t for t in target.get("treaties", []) if t.get("with") != user_id]
-        
         send_to_gcc(f"🤝 *لغو قرارداد*\n{player.get('name_fa')} و {target.get('name_fa')} {treaty_info['name_fa']} را با توافق دوطرفه لغو کردند.")
-        
         save_game_state(state)
         return True, f"✅ {treaty_info['name_fa']} با {target_name} با توافق دوطرفه لغو شد."
     else:
-        # لغو یکطرفه با جریمه
         player["diplomacy"] = max(0, player.get("diplomacy", 0) - 2)
-        
         penalty = treaty_info["cost"] // 2
         player["resources"]["influence"] = max(0, player.get("resources", {}).get("influence", 0) - penalty)
-        
-        # حذف قرارداد
         player["treaties"] = [t for t in player.get("treaties", []) if t.get("with") != target_id]
         target["treaties"] = [t for t in target.get("treaties", []) if t.get("with") != user_id]
         
-        # ممنوعیت قرارداد جدید به مدت 14 روز
         if "treaty_ban_until" not in player:
             player["treaty_ban_until"] = {}
         player["treaty_ban_until"][target_id] = (datetime.now() + timedelta(days=14)).isoformat()
         
         send_to_gcc(f"⚠️ *لغو یکطرفه قرارداد*\n{player.get('name_fa')} {treaty_info['name_fa']} با {target.get('name_fa')} را یکطرفه لغو کرد و جریمه شد.")
-        
         save_game_state(state)
         return True, f"⚠️ {treaty_info['name_fa']} با {target_name} یکطرفه لغو شد.\nجریمه: -{penalty} نفوذ، -2 دیپلماسی"
 
 
 def get_treaties_list(state: Dict[str, Any], user_id: str) -> str:
-    """دریافت لیست قراردادهای فعال به صورت متن"""
     player = get_country_data(state, user_id)
     if not player:
         return "❌ شما کشوری انتخاب نکرده‌اید."
     
     treaties = player.get("treaties", [])
     if not treaties:
-        return "📋 شما هیچ قرارداد فعالی ندارید.\nبرای پیشنهاد قرارداد: `/propose_treaty [کشور] [type]`\nانواع: nap, fta, ma, fa"
+        return "📋 شما هیچ قرارداد فعالی ندارید."
     
     msg = "📋 *قراردادهای فعال شما*\n\n"
     for treaty in treaties:
@@ -465,8 +427,6 @@ def get_treaties_list(state: Dict[str, Any], user_id: str) -> str:
             expires_text = " (نامحدود)"
         
         msg += f"• {treaty_info['name_fa']} با {treaty.get('with_name')}{expires_text}\n"
-        
-        # نمایش مزایا
         benefits = treaty_info["benefits"]
         if benefits.get("auto_defense"):
             msg += f"  🛡️ دفاع مشترک خودکار\n"
@@ -474,12 +434,14 @@ def get_treaties_list(state: Dict[str, Any], user_id: str) -> str:
             msg += f"  🔬 اشتراک فناوری (سطوح {benefits['share_tech_levels'][0]}-{benefits['share_tech_levels'][-1]})\n"
         if benefits.get("purchase_discount"):
             msg += f"  💰 تخفیف خرید: {int(benefits['purchase_discount']*100)}%\n"
+        if benefits.get("income_bonus"):
+            msg += f"  📈 افزایش درآمد: {int(benefits['income_bonus']*100)}%\n"
+        msg += "\n"
     
     return msg
 
 
 def get_pending_treaties(state: Dict[str, Any], user_id: str) -> str:
-    """دریافت لیست پیشنهادهای دریافتی"""
     pending_treaties = state.get("pending_treaties", [])
     pending = [p for p in pending_treaties if p.get("target_id") == user_id]
     
@@ -496,200 +458,177 @@ def get_pending_treaties(state: Dict[str, Any], user_id: str) -> str:
     return msg
 
 
-def share_technology(state: Dict[str, Any], user_id: str, target_name: str, branch: str, level: int) -> Tuple[bool, str]:
-    """اشتراک فناوری با یک متحد"""
-    target_id = get_user_by_country(state, target_name)
-    if not target_id:
-        return False, f"❌ کشور '{target_name}' یافت نشد."
+def get_alliance_benefits(state: Dict[str, Any], country_key: str) -> Dict[str, Any]:
+    player = state["countries"].get(country_key, {})
+    treaties = player.get("treaties", [])
     
-    # بررسی وجود قرارداد
-    treaty = get_treaty_with(state, user_id, target_id)
-    if not treaty:
-        return False, "❌ شما با این کشور قراردادی ندارید."
+    benefits = {
+        "share_tech_levels": [],
+        "share_tech_per_week": 0,
+        "share_tech_discount": 0,
+        "auto_defense": False,
+        "military_base": False,
+        "veto_right": False,
+        "stability_bonus": 0,
+        "purchase_discount": 0,
+        "income_bonus": 0,
+        "extra_trade_deal": 0,
+        "lend_units": False,
+        "share_resources": False
+    }
     
-    treaty_info = TREATY_TYPES[treaty["type"]]
-    allowed_levels = treaty_info["benefits"].get("share_tech_levels", [])
+    now = datetime.now()
     
+    for treaty in treaties:
+        expires = treaty.get("expires")
+        if expires:
+            try:
+                if datetime.fromisoformat(expires) <= now:
+                    continue
+            except:
+                pass
+        
+        treaty_type = treaty.get("type")
+        treaty_info = TREATY_TYPES.get(treaty_type, {})
+        treaty_benefits = treaty_info.get("benefits", {})
+        
+        if treaty_benefits.get("share_tech_levels"):
+            benefits["share_tech_levels"] = treaty_benefits["share_tech_levels"]
+        benefits["share_tech_per_week"] = max(benefits["share_tech_per_week"], treaty_benefits.get("share_tech_per_week", 0))
+        benefits["share_tech_discount"] = max(benefits["share_tech_discount"], treaty_benefits.get("share_tech_discount", 0))
+        benefits["auto_defense"] = benefits["auto_defense"] or treaty_benefits.get("auto_defense", False)
+        benefits["military_base"] = benefits["military_base"] or treaty_benefits.get("military_base", False)
+        benefits["veto_right"] = benefits["veto_right"] or treaty_benefits.get("veto_right", False)
+        benefits["stability_bonus"] += treaty_benefits.get("stability_bonus", 0)
+        benefits["purchase_discount"] = max(benefits["purchase_discount"], treaty_benefits.get("purchase_discount", 0))
+        benefits["income_bonus"] += treaty_benefits.get("income_bonus", 0)
+        benefits["extra_trade_deal"] += treaty_benefits.get("extra_trade_deal", 0)
+        benefits["lend_units"] = benefits["lend_units"] or treaty_benefits.get("lend_units", False)
+        benefits["share_resources"] = benefits["share_resources"] or treaty_benefits.get("share_resources", False)
+    
+    return benefits
+
+
+def get_all_allies(state: Dict[str, Any], country_key: str) -> List[str]:
+    player = state["countries"].get(country_key, {})
+    treaties = player.get("treaties", [])
+    allies = []
+    
+    for treaty in treaties:
+        if treaty.get("type") == "fa":
+            allies.append(treaty.get("with_name", ""))
+    
+    return allies
+
+
+def check_auto_defense(state: Dict[str, Any], attacker_key: str, defender_key: str) -> List[str]:
+    defender = state["countries"].get(defender_key, {})
+    treaties = defender.get("treaties", [])
+    
+    allies_joining = []
+    
+    for treaty in treaties:
+        if treaty.get("type") in ["ma", "fa"]:
+            benefits = treaty.get("benefits", {})
+            if benefits.get("auto_defense", False):
+                ally_id = treaty.get("with")
+                ally = state["countries"].get(ally_id, {})
+                if ally:
+                    allies_joining.append(ally.get("name_fa", "نامشخص"))
+    
+    return allies_joining
+
+
+def apply_stability_bonus(state: Dict[str, Any], country_key: str):
+    benefits = get_alliance_benefits(state, country_key)
+    bonus = benefits.get("stability_bonus", 0)
+    
+    if bonus > 0:
+        player = state["countries"].get(country_key, {})
+        current = player.get("stability", 5)
+        player["stability"] = min(10, current + bonus)
+
+
+def share_technology(state: Dict[str, Any], from_key: str, to_key: str, branch: str, level: int) -> Tuple[bool, str]:
+    from_player = state["countries"].get(from_key, {})
+    treaties = from_player.get("treaties", [])
+    
+    has_alliance = False
+    benefits = None
+    
+    for treaty in treaties:
+        if treaty.get("with") == to_key:
+            has_alliance = True
+            benefits = treaty.get("benefits", {})
+            break
+    
+    if not has_alliance:
+        return False, "❌ شما با این کشور متحد نیستید."
+    
+    allowed_levels = benefits.get("share_tech_levels", [])
     if level not in allowed_levels:
         return False, f"❌ قرارداد شما فقط اجازه اشتراک سطوح {allowed_levels} را می‌دهد."
     
-    # بررسی سابقه اشتراک در هفته
-    # (در implementation واقعی نیاز به شمارش دارد)
-    
-    # هزینه اشتراک (75% قیمت اصلی)
     tech_costs = [20, 40, 70, 110, 160, 220, 290, 370, 460]
     if level > len(tech_costs):
         return False, "❌ سطح نامعتبر."
     
-    cost = int(tech_costs[level - 1] * 0.75)
+    discount = benefits.get("share_tech_discount", 0)
+    cost = int(tech_costs[level - 1] * (1 - discount))
     
-    sender = get_country_data(state, user_id)
-    receiver = get_country_data(state, target_id)
-    
-    # بررسی فناوری فرستنده
-    sender_research = sender.get("research", {})
-    if sender_research.get(branch, 0) < level:
+    from_research = from_player.get("research", {})
+    if from_research.get(branch, 0) < level:
         return False, "❌ شما این سطح فناوری را ندارید."
     
-    # بررسی منابع گیرنده
-    receiver_tech = receiver.get("resources", {}).get("tech_points", 0)
-    if receiver_tech < cost:
+    to_player = state["countries"].get(to_key, {})
+    to_tech = to_player.get("resources", {}).get("tech_points", 0)
+    if to_tech < cost:
         return False, f"❌ کشور هدف فناوری کافی ندارد. نیاز: {cost}"
     
-    # اعمال اشتراک
-    if "research" not in receiver:
-        receiver["research"] = {}
-    receiver["research"][branch] = max(receiver["research"].get(branch, 0), level)
-    receiver["resources"]["tech_points"] -= cost
+    to_player["resources"]["tech_points"] = to_tech - cost
+    if "research" not in to_player:
+        to_player["research"] = {}
+    to_player["research"][branch] = max(to_player["research"].get(branch, 0), level)
     
     save_game_state(state)
     
-    send_to_gcc(f"🔬 *اشتراک فناوری*\n{sender.get('name_fa')} فناوری {branch} سطح {level} را با {receiver.get('name_fa')} به اشتراک گذاشت.")
+    send_to_gcc(f"🔬 *اشتراک فناوری*\n{from_player.get('name_fa')} فناوری {branch} سطح {level} را با {to_player.get('name_fa')} به اشتراک گذاشت.")
     
-    return True, f"✅ فناوری {branch} سطح {level} با {target_name} به اشتراک گذاشته شد. هزینه گیرنده: {cost} فناوری"
+    return True, f"✅ فناوری {branch} سطح {level} به اشتراک گذاشته شد. هزینه گیرنده: {cost} فناوری"
 
-
-# ==================== دستورات اتحاد ====================
-
-def handle_propose_treaty(state: Dict[str, Any], user_id: str, args: str) -> str:
-    """دستور /propose_treaty [کشور] [نوع]"""
-    parts = args.strip().split()
-    if len(parts) < 2:
-        return """❌ فرمت صحیح: `/propose_treaty [کشور] [نوع]`
-
-انواع قرارداد:
-• nap - پیمان عدم تعرض
-• fta - پیمان تجارت آزاد
-• ma - اتحاد نظامی
-• fa - اتحاد کامل
-
-مثال: `/propose_treaty آلمان ma`
-"""
-    
-    target_name = parts[0]
-    treaty_type = parts[1].lower()
-    
-    if treaty_type not in TREATY_TYPES:
-        return f"❌ نوع قرارداد نامعتبر. انتخاب‌ها: nap, fta, ma, fa"
-    
-    success, msg = propose_treaty(state, user_id, target_name, treaty_type)
-    if success:
-        save_game_state(state)
-    return msg
-
-
-def handle_accept_treaty(state: Dict[str, Any], user_id: str, args: str) -> str:
-    """دستور /accept_treaty [کشور]"""
-    if not args.strip():
-        return "❌ لطفاً نام کشور پیشنهاد‌دهنده را وارد کنید. مثال: `/accept_treaty آلمان`"
-    
-    success, msg = accept_treaty(state, user_id, args.strip())
-    if success:
-        save_game_state(state)
-    return msg
-
-
-def handle_reject_treaty(state: Dict[str, Any], user_id: str, args: str) -> str:
-    """دستور /reject_treaty [کشور]"""
-    if not args.strip():
-        return "❌ لطفاً نام کشور پیشنهاد‌دهنده را وارد کنید. مثال: `/reject_treaty آلمان`"
-    
-    success, msg = reject_treaty(state, user_id, args.strip())
-    if success:
-        save_game_state(state)
-    return msg
-
-
-def handle_break_treaty(state: Dict[str, Any], user_id: str, args: str) -> str:
-    """دستور /break_treaty [کشور] [mutual]"""
-    parts = args.strip().split()
-    if len(parts) < 1:
-        return "❌ لطفاً نام کشور را وارد کنید. مثال: `/break_treaty آلمان`\nبرای لغو دوطرفه: `/break_treaty آلمان mutual`"
-    
-    target_name = parts[0]
-    mutual = len(parts) > 1 and parts[1].lower() == "mutual"
-    
-    success, msg = break_treaty(state, user_id, target_name, mutual)
-    if success:
-        save_game_state(state)
-    return msg
-
-
-def handle_my_treaties(state: Dict[str, Any], user_id: str) -> str:
-    """دستور /my_treaties - نمایش قراردادهای فعال"""
-    return get_treaties_list(state, user_id)
-
-
-def handle_pending_treaties(state: Dict[str, Any], user_id: str) -> str:
-    """دستور /pending_treaties - نمایش پیشنهادهای دریافتی"""
-    return get_pending_treaties(state, user_id)
-
-
-def handle_share_tech(state: Dict[str, Any], user_id: str, args: str) -> str:
-    """دستور /share_tech [کشور] [شاخه] [سطح]"""
-    parts = args.strip().split()
-    if len(parts) < 3:
-        return "❌ فرمت صحیح: `/share_tech [کشور] [شاخه] [سطح]`\nشاخه‌ها: military, industrial, economic, diplomacy, nuclear\nمثال: `/share_tech آلمان military 3`"
-    
-    target_name = parts[0]
-    branch = parts[1].lower()
-    try:
-        level = int(parts[2])
-    except:
-        return "❌ سطح باید عدد باشد."
-    
-    valid_branches = ["military", "industrial", "economic", "diplomacy", "nuclear"]
-    if branch not in valid_branches:
-        return f"❌ شاخه نامعتبر. انتخاب‌ها: {', '.join(valid_branches)}"
-    
-    success, msg = share_technology(state, user_id, target_name, branch, level)
-    if success:
-        save_game_state(state)
-    return msg
-
-
-# ==================== توابع عمومی ====================
 
 def get_alliance_help() -> str:
-    """راهنمای سیستم اتحاد"""
     return """
 🤝 *سیستم اتحادها*
 
-انواع قراردادها:
+*انواع قراردادها:*
 
 1. *پیمان عدم تعرض (nap)*
-   - هزینه: رایگان
-   - نیاز دیپلماسی: 0
+   - هزینه: رایگان | نیاز دیپلماسی: 0
    - اشتراک فناوری سطوح 1-2 (1 بار در هفته)
 
 2. *پیمان تجارت آزاد (fta)*
-   - هزینه: 100 نفوذ
-   - نیاز دیپلماسی: 3
+   - هزینه: 100 نفوذ | نیاز دیپلماسی: 3
    - اشتراک فناوری سطوح 1-4 (2 بار در هفته)
-   - تخفیف خرید 10%
+   - تخفیف خرید 10% | افزایش درآمد 10%
 
 3. *اتحاد نظامی (ma)*
-   - هزینه: 200 نفوذ
-   - نیاز دیپلماسی: 4
+   - هزینه: 200 نفوذ | نیاز دیپلماسی: 4
    - اشتراک فناوری سطوح 1-6 (3 بار در هفته)
-   - دفاع مشترک خودکار
-   - تخفیف خرید 20%
+   - دفاع مشترک خودکار | تخفیف خرید 20%
 
 4. *اتحاد کامل (fa)*
-   - هزینه: 500 نفوذ
-   - نیاز دیپلماسی: 5 + 30 روز آشنایی
+   - هزینه: 500 نفوذ | نیاز دیپلماسی: 5
    - اشتراک فناوری سطوح 1-6 (5 بار در هفته، 50% تخفیف)
-   - دفاع مشترک خودکار
-   - پایگاه نظامی در خاک متحد
-   - حق وتو
-   - +2 ثبات داخلی
-   - تخفیف خرید 40%
+   - دفاع مشترک خودکار | پایگاه نظامی | حق وتو
+   - +2 ثبات داخلی | تخفیف خرید 40% | افزایش درآمد 15%
+   - قرض دادن تجهیزات | اشتراک منابع
 
-دستورات:
+*دستورات:*
 /propose_treaty [کشور] [نوع] - پیشنهاد قرارداد
 /accept_treaty [کشور] - پذیرش پیشنهاد
 /reject_treaty [کشور] - رد پیشنهاد
-/break_treaty [کشور] - لغو قرارداد
+/break_treaty [کشور] [mutual] - لغو قرارداد
 /my_treaties - مشاهده قراردادهای فعال
 /pending_treaties - مشاهده پیشنهادها
 /share_tech [کشور] [شاخه] [سطح] - اشتراک فناوری
@@ -697,4 +636,4 @@ def get_alliance_help() -> str:
 
 
 if __name__ == "__main__":
-    print("Alliance system module loaded")
+    print("Alliance system module loaded (complete)")
