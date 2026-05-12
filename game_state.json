@@ -1,8 +1,8 @@
 {
   "version": "1.0",
-  "game_day": 2,
+  "game_day": 1,
   "start_date": "2026-05-12",
-  "last_update": "2026-05-12T10:19:00.624316",
+  "last_update": "2026-05-12T10:19:09.841138",
   "status": "active",
   "admin": {
     "game_speed": 1,
@@ -20,12 +20,11 @@
     "auction": []
   },
   "daily_mission": {
-    "date": "2026-05-12",
-    "level": 1,
-    "cipher": "8-5-12-12-15",
-    "answer": "HELLO",
-    "hint": "🔢 عدد به حرف (A=1, B=2, ...)",
-    "method": "number_to_letter",
+    "date": null,
+    "level": null,
+    "cipher": null,
+    "answer": null,
+    "hint": null,
     "solved_by": []
   },
   "last_disaster_time": null,
