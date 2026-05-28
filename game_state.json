@@ -1,8 +1,8 @@
 {
   "version": "1.0",
-  "game_day": 16,
+  "game_day": 17,
   "start_date": "2026-05-12",
-  "last_update": "2026-05-27T22:17:41.019527",
+  "last_update": "2026-05-28T08:27:18.736307",
   "status": "active",
   "admin": {
     "game_speed": 1,
@@ -20,12 +20,12 @@
     "auction": []
   },
   "daily_mission": {
-    "date": "2026-05-27",
-    "level": 3,
-    "cipher": "OBWZ",
-    "answer": "NAVY",
-    "hint": "➕ هر حرف یک مرحله جلوتر است (A→B)",
-    "method": "caesar",
+    "date": "2026-05-28",
+    "level": 1,
+    "cipher": "13-9-19-19-9-12-5",
+    "answer": "MISSILE",
+    "hint": "🔢 عدد به حرف (A=1, B=2, ...)",
+    "method": "number_to_letter",
     "solved_by": []
   },
   "last_disaster_time": null,
