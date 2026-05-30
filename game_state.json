@@ -1,8 +1,8 @@
 {
   "version": "1.0",
-  "game_day": 18,
+  "game_day": 19,
   "start_date": "2026-05-12",
-  "last_update": "2026-05-29T22:12:54.607831",
+  "last_update": "2026-05-30T07:26:16.099070",
   "status": "active",
   "admin": {
     "game_speed": 1,
@@ -20,12 +20,12 @@
     "auction": []
   },
   "daily_mission": {
-    "date": "2026-05-29",
-    "level": 1,
-    "cipher": "1-18-13-25",
-    "answer": "ARMY",
-    "hint": "🔢 عدد به حرف (A=1, B=2, ...)",
-    "method": "number_to_letter",
+    "date": "2026-05-30",
+    "level": 2,
+    "cipher": "DNEFED",
+    "answer": "DEFEND",
+    "hint": "🔄 کلمه برعکس شده است",
+    "method": "reverse",
     "solved_by": []
   },
   "last_disaster_time": null,
