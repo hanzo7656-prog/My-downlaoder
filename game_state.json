@@ -1,8 +1,8 @@
 {
   "version": "1.0",
-  "game_day": 19,
+  "game_day": 20,
   "start_date": "2026-05-12",
-  "last_update": "2026-05-30T21:34:07.457392",
+  "last_update": "2026-05-31T07:57:20.232115",
   "status": "active",
   "admin": {
     "game_speed": 1,
@@ -20,10 +20,10 @@
     "auction": []
   },
   "daily_mission": {
-    "date": "2026-05-30",
+    "date": "2026-05-31",
     "level": 2,
-    "cipher": "DNEFED",
-    "answer": "DEFEND",
+    "cipher": "KСАТТА",
+    "answer": "ATTACK",
     "hint": "🔄 کلمه برعکس شده است",
     "method": "reverse",
     "solved_by": []
