@@ -1,8 +1,8 @@
 {
   "version": "1.0",
-  "game_day": 20,
+  "game_day": 21,
   "start_date": "2026-05-12",
-  "last_update": "2026-05-31T21:32:42.860891",
+  "last_update": "2026-06-01T09:42:04.889048",
   "status": "active",
   "admin": {
     "game_speed": 1,
@@ -20,12 +20,12 @@
     "auction": []
   },
   "daily_mission": {
-    "date": "2026-05-31",
-    "level": 2,
-    "cipher": "KСАТТА",
-    "answer": "ATTACK",
-    "hint": "🔄 کلمه برعکس شده است",
-    "method": "reverse",
+    "date": "2026-06-01",
+    "level": 3,
+    "cipher": "CPNCFS",
+    "answer": "BOMBER",
+    "hint": "➕ هر حرف یک مرحله جلوتر است (A→B)",
+    "method": "caesar",
     "solved_by": []
   },
   "last_disaster_time": null,
