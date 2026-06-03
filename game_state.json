@@ -1,8 +1,8 @@
 {
   "version": "1.0",
-  "game_day": 22,
+  "game_day": 23,
   "start_date": "2026-05-12",
-  "last_update": "2026-06-02T22:34:34.488872",
+  "last_update": "2026-06-03T09:14:20.630063",
   "status": "active",
   "admin": {
     "game_speed": 1,
@@ -20,12 +20,12 @@
     "auction": []
   },
   "daily_mission": {
-    "date": "2026-06-02",
-    "level": 1,
-    "cipher": "6-9-7-8-20-5-18",
-    "answer": "FIGHTER",
-    "hint": "🔢 عدد به حرف (A=1, B=2, ...)",
-    "method": "number_to_letter",
+    "date": "2026-06-03",
+    "level": 2,
+    "cipher": "KСАТТА",
+    "answer": "ATTACK",
+    "hint": "🔄 کلمه برعکس شده است",
+    "method": "reverse",
     "solved_by": []
   },
   "last_disaster_time": null,
