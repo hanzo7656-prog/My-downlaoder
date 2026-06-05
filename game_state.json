@@ -1,8 +1,8 @@
 {
   "version": "1.0",
-  "game_day": 24,
+  "game_day": 25,
   "start_date": "2026-05-12",
-  "last_update": "2026-06-04T22:05:12.595295",
+  "last_update": "2026-06-05T08:30:10.254473",
   "status": "active",
   "admin": {
     "game_speed": 1,
@@ -20,12 +20,12 @@
     "auction": []
   },
   "daily_mission": {
-    "date": "2026-06-04",
-    "level": 2,
-    "cipher": "YMRA",
+    "date": "2026-06-05",
+    "level": 1,
+    "cipher": "1-18-13-25",
     "answer": "ARMY",
-    "hint": "🔄 کلمه برعکس شده است",
-    "method": "reverse",
+    "hint": "🔢 عدد به حرف (A=1, B=2, ...)",
+    "method": "number_to_letter",
     "solved_by": []
   },
   "last_disaster_time": null,
