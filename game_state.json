@@ -1,8 +1,8 @@
 {
   "version": "1.0",
-  "game_day": 25,
+  "game_day": 26,
   "start_date": "2026-05-12",
-  "last_update": "2026-06-05T21:56:54.469868",
+  "last_update": "2026-06-06T07:33:06.023016",
   "status": "active",
   "admin": {
     "game_speed": 1,
@@ -20,10 +20,10 @@
     "auction": []
   },
   "daily_mission": {
-    "date": "2026-06-05",
+    "date": "2026-06-06",
     "level": 1,
-    "cipher": "1-18-13-25",
-    "answer": "ARMY",
+    "cipher": "4-5-6-5-14-4",
+    "answer": "DEFEND",
     "hint": "🔢 عدد به حرف (A=1, B=2, ...)",
     "method": "number_to_letter",
     "solved_by": []
