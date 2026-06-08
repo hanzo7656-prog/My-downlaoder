@@ -1,8 +1,8 @@
 {
   "version": "1.0",
-  "game_day": 27,
+  "game_day": 28,
   "start_date": "2026-05-12",
-  "last_update": "2026-06-07T21:44:52.842875",
+  "last_update": "2026-06-08T09:12:01.887664",
   "status": "active",
   "admin": {
     "game_speed": 1,
@@ -20,12 +20,12 @@
     "auction": []
   },
   "daily_mission": {
-    "date": "2026-06-07",
-    "level": 3,
-    "cipher": "BSNZ",
-    "answer": "ARMY",
-    "hint": "➕ هر حرف یک مرحله جلوتر است (A→B)",
-    "method": "caesar",
+    "date": "2026-06-08",
+    "level": 1,
+    "cipher": "23-15-18-12-4",
+    "answer": "WORLD",
+    "hint": "🔢 عدد به حرف (A=1, B=2, ...)",
+    "method": "number_to_letter",
     "solved_by": []
   },
   "last_disaster_time": null,
