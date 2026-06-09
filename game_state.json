@@ -1,8 +1,8 @@
 {
   "version": "1.0",
-  "game_day": 28,
+  "game_day": 29,
   "start_date": "2026-05-12",
-  "last_update": "2026-06-08T22:10:42.645001",
+  "last_update": "2026-06-09T08:07:21.299399",
   "status": "active",
   "admin": {
     "game_speed": 1,
@@ -20,12 +20,12 @@
     "auction": []
   },
   "daily_mission": {
-    "date": "2026-06-08",
-    "level": 1,
-    "cipher": "23-15-18-12-4",
-    "answer": "WORLD",
-    "hint": "🔢 عدد به حرف (A=1, B=2, ...)",
-    "method": "number_to_letter",
+    "date": "2026-06-09",
+    "level": 3,
+    "cipher": "UBOL",
+    "answer": "TANK",
+    "hint": "➕ هر حرف یک مرحله جلوتر است (A→B)",
+    "method": "caesar",
     "solved_by": []
   },
   "last_disaster_time": null,
