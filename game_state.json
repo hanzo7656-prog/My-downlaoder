@@ -1,8 +1,8 @@
 {
   "version": "1.0",
-  "game_day": 32,
+  "game_day": 33,
   "start_date": "2026-05-12",
-  "last_update": "2026-06-12T22:07:25.071314",
+  "last_update": "2026-06-13T08:01:48.579635",
   "status": "active",
   "admin": {
     "game_speed": 1,
@@ -20,12 +20,12 @@
     "auction": []
   },
   "daily_mission": {
-    "date": "2026-06-12",
-    "level": 1,
-    "cipher": "6-9-7-8-20-5-18",
-    "answer": "FIGHTER",
-    "hint": "🔢 عدد به حرف (A=1, B=2, ...)",
-    "method": "number_to_letter",
+    "date": "2026-06-13",
+    "level": 3,
+    "cipher": "OVDMFBS",
+    "answer": "NUCLEAR",
+    "hint": "➕ هر حرف یک مرحله جلوتر است (A→B)",
+    "method": "caesar",
     "solved_by": []
   },
   "last_disaster_time": null,
