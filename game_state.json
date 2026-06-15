@@ -1,8 +1,8 @@
 {
   "version": "1.0",
-  "game_day": 34,
+  "game_day": 35,
   "start_date": "2026-05-12",
-  "last_update": "2026-06-14T21:51:55.261580",
+  "last_update": "2026-06-15T10:43:50.892245",
   "status": "active",
   "admin": {
     "game_speed": 1,
@@ -20,12 +20,12 @@
     "auction": []
   },
   "daily_mission": {
-    "date": "2026-06-14",
-    "level": 3,
-    "cipher": "EFGFOE",
-    "answer": "DEFEND",
-    "hint": "➕ هر حرف یک مرحله جلوتر است (A→B)",
-    "method": "caesar",
+    "date": "2026-06-15",
+    "level": 1,
+    "cipher": "23-15-18-12-4",
+    "answer": "WORLD",
+    "hint": "🔢 عدد به حرف (A=1, B=2, ...)",
+    "method": "number_to_letter",
     "solved_by": []
   },
   "last_disaster_time": null,
