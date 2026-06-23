@@ -1,8 +1,8 @@
 {
   "version": "1.0",
-  "game_day": 42,
+  "game_day": 43,
   "start_date": "2026-05-12",
-  "last_update": "2026-06-22T22:22:00.122293",
+  "last_update": "2026-06-23T08:03:53.711470",
   "status": "active",
   "admin": {
     "game_speed": 1,
@@ -20,12 +20,12 @@
     "auction": []
   },
   "daily_mission": {
-    "date": "2026-06-22",
-    "level": 2,
-    "cipher": "KСАТТА",
-    "answer": "ATTACK",
-    "hint": "🔄 کلمه برعکس شده است",
-    "method": "reverse",
+    "date": "2026-06-23",
+    "level": 1,
+    "cipher": "20-1-14-11",
+    "answer": "TANK",
+    "hint": "🔢 عدد به حرف (A=1, B=2, ...)",
+    "method": "number_to_letter",
     "solved_by": []
   },
   "last_disaster_time": null,
