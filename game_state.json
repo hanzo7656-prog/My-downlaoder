@@ -1,8 +1,8 @@
 {
   "version": "1.0",
-  "game_day": 48,
+  "game_day": 49,
   "start_date": "2026-05-12",
-  "last_update": "2026-06-28T21:38:31.215725",
+  "last_update": "2026-06-29T09:16:15.939997",
   "status": "active",
   "admin": {
     "game_speed": 1,
@@ -20,12 +20,12 @@
     "auction": []
   },
   "daily_mission": {
-    "date": "2026-06-28",
-    "level": 2,
-    "cipher": "KNAT",
-    "answer": "TANK",
-    "hint": "🔄 کلمه برعکس شده است",
-    "method": "reverse",
+    "date": "2026-06-29",
+    "level": 3,
+    "cipher": "BUUBDL",
+    "answer": "ATTACK",
+    "hint": "➕ هر حرف یک مرحله جلوتر است (A→B)",
+    "method": "caesar",
     "solved_by": []
   },
   "last_disaster_time": null,
