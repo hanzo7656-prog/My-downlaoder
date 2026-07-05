@@ -1,8 +1,8 @@
 {
   "version": "1.0",
-  "game_day": 54,
+  "game_day": 55,
   "start_date": "2026-05-12",
-  "last_update": "2026-07-04T21:28:45.689013",
+  "last_update": "2026-07-05T07:43:38.048142",
   "status": "active",
   "admin": {
     "game_speed": 1,
@@ -20,12 +20,12 @@
     "auction": []
   },
   "daily_mission": {
-    "date": "2026-07-04",
-    "level": 2,
-    "cipher": "OLLEH",
-    "answer": "HELLO",
-    "hint": "🔄 کلمه برعکس شده است",
-    "method": "reverse",
+    "date": "2026-07-05",
+    "level": 1,
+    "cipher": "13-9-19-19-9-12-5",
+    "answer": "MISSILE",
+    "hint": "🔢 عدد به حرف (A=1, B=2, ...)",
+    "method": "number_to_letter",
     "solved_by": []
   },
   "last_disaster_time": null,
