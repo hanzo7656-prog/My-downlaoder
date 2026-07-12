@@ -1,8 +1,8 @@
 {
   "version": "1.0",
-  "game_day": 61,
+  "game_day": 62,
   "start_date": "2026-05-12",
-  "last_update": "2026-07-11T21:23:16.943015",
+  "last_update": "2026-07-12T07:07:11.874924",
   "status": "active",
   "admin": {
     "game_speed": 1,
@@ -20,12 +20,12 @@
     "auction": []
   },
   "daily_mission": {
-    "date": "2026-07-11",
-    "level": 2,
-    "cipher": "KNAT",
-    "answer": "TANK",
-    "hint": "🔄 کلمه برعکس شده است",
-    "method": "reverse",
+    "date": "2026-07-12",
+    "level": 1,
+    "cipher": "19-20-5-1-12-20-8",
+    "answer": "STEALTH",
+    "hint": "🔢 عدد به حرف (A=1, B=2, ...)",
+    "method": "number_to_letter",
     "solved_by": []
   },
   "last_disaster_time": null,
