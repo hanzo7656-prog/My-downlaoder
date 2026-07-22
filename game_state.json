@@ -1,8 +1,8 @@
 {
   "version": "1.0",
-  "game_day": 71,
+  "game_day": 72,
   "start_date": "2026-05-12",
-  "last_update": "2026-07-21T21:39:46.652853",
+  "last_update": "2026-07-22T07:12:56.777576",
   "status": "active",
   "admin": {
     "game_speed": 1,
@@ -20,10 +20,10 @@
     "auction": []
   },
   "daily_mission": {
-    "date": "2026-07-21",
+    "date": "2026-07-22",
     "level": 1,
-    "cipher": "14-1-22-25",
-    "answer": "NAVY",
+    "cipher": "23-15-18-12-4",
+    "answer": "WORLD",
     "hint": "🔢 عدد به حرف (A=1, B=2, ...)",
     "method": "number_to_letter",
     "solved_by": []
