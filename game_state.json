@@ -1,8 +1,8 @@
 {
   "version": "1.0",
-  "game_day": 82,
+  "game_day": 83,
   "start_date": "2026-05-12",
-  "last_update": "2026-08-01T21:25:29.054200",
+  "last_update": "2026-08-02T07:07:16.769215",
   "status": "active",
   "admin": {
     "game_speed": 1,
@@ -20,10 +20,10 @@
     "auction": []
   },
   "daily_mission": {
-    "date": "2026-08-01",
+    "date": "2026-08-02",
     "level": 1,
-    "cipher": "6-9-7-8-20-5-18",
-    "answer": "FIGHTER",
+    "cipher": "20-1-14-11",
+    "answer": "TANK",
     "hint": "🔢 عدد به حرف (A=1, B=2, ...)",
     "method": "number_to_letter",
     "solved_by": []
