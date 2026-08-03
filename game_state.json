@@ -1,8 +1,8 @@
 {
   "version": "1.0",
-  "game_day": 83,
+  "game_day": 84,
   "start_date": "2026-05-12",
-  "last_update": "2026-08-02T21:25:32.524305",
+  "last_update": "2026-08-03T07:57:35.848774",
   "status": "active",
   "admin": {
     "game_speed": 1,
@@ -20,12 +20,12 @@
     "auction": []
   },
   "daily_mission": {
-    "date": "2026-08-02",
-    "level": 1,
-    "cipher": "20-1-14-11",
-    "answer": "TANK",
-    "hint": "🔢 عدد به حرف (A=1, B=2, ...)",
-    "method": "number_to_letter",
+    "date": "2026-08-03",
+    "level": 3,
+    "cipher": "NJTTJMF",
+    "answer": "MISSILE",
+    "hint": "➕ هر حرف یک مرحله جلوتر است (A→B)",
+    "method": "caesar",
     "solved_by": []
   },
   "last_disaster_time": null,
