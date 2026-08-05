@@ -1,8 +1,8 @@
 {
   "version": "1.0",
-  "game_day": 85,
+  "game_day": 86,
   "start_date": "2026-05-12",
-  "last_update": "2026-08-04T21:49:24.128591",
+  "last_update": "2026-08-05T07:15:58.789229",
   "status": "active",
   "admin": {
     "game_speed": 1,
@@ -20,12 +20,12 @@
     "auction": []
   },
   "daily_mission": {
-    "date": "2026-08-04",
-    "level": 2,
-    "cipher": "YVAN",
-    "answer": "NAVY",
-    "hint": "🔄 کلمه برعکس شده است",
-    "method": "reverse",
+    "date": "2026-08-05",
+    "level": 1,
+    "cipher": "14-21-3-12-5-1-18",
+    "answer": "NUCLEAR",
+    "hint": "🔢 عدد به حرف (A=1, B=2, ...)",
+    "method": "number_to_letter",
     "solved_by": []
   },
   "last_disaster_time": null,
