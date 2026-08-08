@@ -1,8 +1,8 @@
 {
   "version": "1.0",
-  "game_day": 88,
+  "game_day": 89,
   "start_date": "2026-05-12",
-  "last_update": "2026-08-07T21:11:26.572481",
+  "last_update": "2026-08-08T05:20:14.173658",
   "status": "active",
   "admin": {
     "game_speed": 1,
@@ -20,10 +20,10 @@
     "auction": []
   },
   "daily_mission": {
-    "date": "2026-08-07",
+    "date": "2026-08-08",
     "level": 1,
-    "cipher": "19-20-5-1-12-20-8",
-    "answer": "STEALTH",
+    "cipher": "14-1-22-25",
+    "answer": "NAVY",
     "hint": "🔢 عدد به حرف (A=1, B=2, ...)",
     "method": "number_to_letter",
     "solved_by": []
