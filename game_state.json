@@ -1,8 +1,8 @@
 {
   "version": "1.0",
-  "game_day": 89,
+  "game_day": 90,
   "start_date": "2026-05-12",
-  "last_update": "2026-08-08T20:59:38.652075",
+  "last_update": "2026-08-09T05:29:00.038866",
   "status": "active",
   "admin": {
     "game_speed": 1,
@@ -20,7 +20,7 @@
     "auction": []
   },
   "daily_mission": {
-    "date": "2026-08-08",
+    "date": "2026-08-09",
     "level": 1,
     "cipher": "14-1-22-25",
     "answer": "NAVY",
