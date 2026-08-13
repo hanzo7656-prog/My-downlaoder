@@ -1,8 +1,8 @@
 {
   "version": "1.0",
-  "game_day": 93,
+  "game_day": 94,
   "start_date": "2026-05-12",
-  "last_update": "2026-08-12T21:20:24.041512",
+  "last_update": "2026-08-13T05:58:36.132563",
   "status": "active",
   "admin": {
     "game_speed": 1,
@@ -20,10 +20,10 @@
     "auction": []
   },
   "daily_mission": {
-    "date": "2026-08-12",
+    "date": "2026-08-13",
     "level": 1,
-    "cipher": "1-20-20-1-3-11",
-    "answer": "ATTACK",
+    "cipher": "14-1-22-25",
+    "answer": "NAVY",
     "hint": "🔢 عدد به حرف (A=1, B=2, ...)",
     "method": "number_to_letter",
     "solved_by": []
