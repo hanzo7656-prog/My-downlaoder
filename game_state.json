@@ -1,8 +1,8 @@
 {
   "version": "1.0",
-  "game_day": 96,
+  "game_day": 97,
   "start_date": "2026-05-12",
-  "last_update": "2026-08-15T20:48:49.479157",
+  "last_update": "2026-08-16T05:01:01.842998",
   "status": "active",
   "admin": {
     "game_speed": 1,
@@ -20,10 +20,10 @@
     "auction": []
   },
   "daily_mission": {
-    "date": "2026-08-15",
+    "date": "2026-08-16",
     "level": 1,
-    "cipher": "1-20-20-1-3-11",
-    "answer": "ATTACK",
+    "cipher": "6-9-7-8-20-5-18",
+    "answer": "FIGHTER",
     "hint": "🔢 عدد به حرف (A=1, B=2, ...)",
     "method": "number_to_letter",
     "solved_by": []
