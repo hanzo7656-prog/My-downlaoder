@@ -1,8 +1,8 @@
 {
   "version": "1.0",
-  "game_day": 102,
+  "game_day": 103,
   "start_date": "2026-05-12",
-  "last_update": "2026-08-21T20:50:42.983836",
+  "last_update": "2026-08-22T05:00:22.648345",
   "status": "active",
   "admin": {
     "game_speed": 1,
@@ -20,12 +20,12 @@
     "auction": []
   },
   "daily_mission": {
-    "date": "2026-08-21",
-    "level": 3,
-    "cipher": "UBOL",
-    "answer": "TANK",
-    "hint": "➕ هر حرف یک مرحله جلوتر است (A→B)",
-    "method": "caesar",
+    "date": "2026-08-22",
+    "level": 2,
+    "cipher": "OLLEH",
+    "answer": "HELLO",
+    "hint": "🔄 کلمه برعکس شده است",
+    "method": "reverse",
     "solved_by": []
   },
   "last_disaster_time": null,
