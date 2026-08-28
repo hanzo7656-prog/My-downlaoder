@@ -1,8 +1,8 @@
 {
   "version": "1.0",
-  "game_day": 108,
+  "game_day": 109,
   "start_date": "2026-05-12",
-  "last_update": "2026-08-28T04:25:30.694618",
+  "last_update": "2026-08-28T16:51:01.546615",
   "status": "active",
   "admin": {
     "game_speed": 1,
@@ -20,10 +20,10 @@
     "auction": []
   },
   "daily_mission": {
-    "date": "2026-08-27",
+    "date": "2026-08-28",
     "level": 1,
-    "cipher": "23-15-18-12-4",
-    "answer": "WORLD",
+    "cipher": "4-5-6-5-14-4",
+    "answer": "DEFEND",
     "hint": "🔢 عدد به حرف (A=1, B=2, ...)",
     "method": "number_to_letter",
     "solved_by": []
