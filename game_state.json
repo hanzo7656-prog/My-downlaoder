@@ -1,8 +1,8 @@
 {
   "version": "1.0",
-  "game_day": 116,
+  "game_day": 117,
   "start_date": "2026-05-12",
-  "last_update": "2026-09-04T22:28:42.374540",
+  "last_update": "2026-09-05T08:30:06.667980",
   "status": "active",
   "admin": {
     "game_speed": 1,
@@ -20,10 +20,10 @@
     "auction": []
   },
   "daily_mission": {
-    "date": "2026-09-04",
+    "date": "2026-09-05",
     "level": 1,
-    "cipher": "14-21-3-12-5-1-18",
-    "answer": "NUCLEAR",
+    "cipher": "6-9-7-8-20-5-18",
+    "answer": "FIGHTER",
     "hint": "🔢 عدد به حرف (A=1, B=2, ...)",
     "method": "number_to_letter",
     "solved_by": []
