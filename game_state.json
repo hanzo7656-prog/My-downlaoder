@@ -1,8 +1,8 @@
 {
   "version": "1.0",
-  "game_day": 118,
+  "game_day": 119,
   "start_date": "2026-05-12",
-  "last_update": "2026-09-06T22:13:48.543758",
+  "last_update": "2026-09-07T09:35:53.582921",
   "status": "active",
   "admin": {
     "game_speed": 1,
@@ -20,12 +20,12 @@
     "auction": []
   },
   "daily_mission": {
-    "date": "2026-09-06",
-    "level": 2,
-    "cipher": "RAELCUN",
-    "answer": "NUCLEAR",
-    "hint": "🔄 کلمه برعکس شده است",
-    "method": "reverse",
+    "date": "2026-09-07",
+    "level": 3,
+    "cipher": "UBOL",
+    "answer": "TANK",
+    "hint": "➕ هر حرف یک مرحله جلوتر است (A→B)",
+    "method": "caesar",
     "solved_by": []
   },
   "last_disaster_time": null,
